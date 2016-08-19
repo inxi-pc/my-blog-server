@@ -1,7 +1,7 @@
-This my first blog
+# This my first blog
 
 
-Naming Rule:
+# Naming Rule:
 
 1. Folder name must be singular, like `model`, `resource`
 
