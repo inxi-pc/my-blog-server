@@ -1,48 +1,71 @@
 package myblog.dao.MyBatis;
 
 import myblog.dao.DaoFactory;
+import myblog.exception.InternalException;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class MyBatisDaoFactory extends DaoFactory {
 
+    private static MyBatisDaoFactory instance = new MyBatisDaoFactory();
     /**
      * mybatis session factory instance
      *
      */
-    public static SqlSessionFactory defaultSqlSessionFactory;
+    private SqlSessionFactory defaultSqlSessionFactory;
 
     /**
      * mybatis-config file name
      *
      */
-    private static final String resource = "mybatis-config.xml";
+    private static final String resource = "resource/mybatis-config.xml";
 
-    /**
-     *
-     *
-     */
-    static {
+    private MyBatisDaoFactory() {
         try {
             InputStream inputStream = Resources.getResourceAsStream(resource);
-            defaultSqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.defaultSqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        } catch (IOException e) {
+            throw new InternalException(e);
         }
     }
 
-    public MyBatisDaoFactory() {}
+    public static MyBatisDaoFactory getInstance() {
+        return instance;
+    }
 
+    /**
+     *
+     * @return
+     */
     // TODO: 8/18/16 use configuration class to new factory
     public static SqlSessionFactory getSqlSessionFactory() {
-        return defaultSqlSessionFactory;
+        return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public SqlSessionFactory getDefaultSqlSessionFactory() {
+        return this.defaultSqlSessionFactory;
     }
 
     @Override
     public MyBatisPostDao getPostDao() {
-        return new MyBatisPostDao();
+        return new MyBatisPostDao(this);
+    }
+
+    @Override
+    public MyBatisCommentDao getCommentDao() {
+        return new MyBatisCommentDao();
+    }
+
+    @Override
+    public MyBatisUserDao getUserDao() {
+        return new MyBatisUserDao();
     }
 }

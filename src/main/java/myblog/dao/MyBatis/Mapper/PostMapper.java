@@ -1,43 +1,37 @@
-package myblog.dao;
+package myblog.dao.MyBatis.Mapper;
 
 import myblog.model.Post;
 
 import java.util.List;
 import java.util.Map;
 
-public interface PostDao {
+public interface PostMapper {
     /**
      *
-     * @param insert
      * @return
      */
     Post insertPost(Post insert);
 
     /**
      *
-     * @param postId
      * @return
      */
     boolean deletePostById(int postId);
 
     /**
      *
-     * @param postId
-     * @param update
      * @return
      */
     boolean updatePost(int postId, Post update);
 
     /**
      *
-     * @param postId
      * @return
      */
     Post getPostById(int postId);
 
     /**
      *
-     * @param postIds
      * @return
      */
     List<Post> getPostListByIds(int[] postIds);

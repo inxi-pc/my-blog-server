@@ -1,7 +1,8 @@
 package myblog;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import myblog.dao.DaoFactory;
+import myblog.provider.ErrorMapper;
+import myblog.provider.ExtendExceptionMapper;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -33,5 +34,7 @@ class MyBlogApplication extends ResourceConfig {
     public MyBlogApplication() {
         packages("myblog.resource");
         register(JacksonJsonProvider.class);
+        register(ExtendExceptionMapper.class);
+        register(ErrorMapper.class);
     }
 }

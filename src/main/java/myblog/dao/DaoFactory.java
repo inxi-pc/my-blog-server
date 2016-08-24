@@ -24,20 +24,33 @@ abstract public class DaoFactory {
     public abstract PostDao getPostDao();
 
     /**
+     * Get user dao
+     *
+     * @return
+     */
+    public abstract UserDao getUserDao();
+
+    /**
+     * Get comment dao
+     *
+     * @return
+     */
+    public abstract CommentDao getCommentDao();
+
+    /**
      * Backend get method
      *
      * @param backend
      * @return
-     * @throws Exception
      */
-    public static DaoFactory getDaoFactory(DaoBackend backend) throws Exception {
+    public static DaoFactory getDaoFactory(DaoBackend backend) {
         switch (backend) {
             case MYBATIS:
-                return new MyBatisDaoFactory();
+                return MyBatisDaoFactory.getInstance();
             case HIBERNATE:
-                return new MyBatisDaoFactory();
+                return MyBatisDaoFactory.getInstance();
             default:
-                throw new Exception();
+                return MyBatisDaoFactory.getInstance();
         }
     }
 }

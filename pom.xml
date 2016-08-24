@@ -75,5 +75,11 @@
             <artifactId>mybatis</artifactId>
             <version>3.4.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.3</version>
+        </dependency>
     </dependencies>
 </project>

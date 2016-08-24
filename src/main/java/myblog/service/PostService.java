@@ -1,12 +1,15 @@
 package myblog.service;
 
+import myblog.dao.DaoFactory;
+import myblog.dao.MyBatis.MyBatisPostDao;
 import myblog.model.Post;
 
-import java.util.Vector;
-
 public class PostService {
-    public Vector<Post> getPostList() {
 
-        return new Vector<Post>();
+    public static Post getPostById(int postId) {
+        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
+        return myBatisPostDao.getPostById(postId);
     }
 }

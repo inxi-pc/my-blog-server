@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
+    <select id="getPostById" resultType="Post">
+        SELECT * FROM post WHERE post_id = #{postId}
+
+    </select>
+
+    <!-- Basic way to find list -->
+    <select id="getPostListByIds" resultType="Post">
+        SELECT * FROM post WHERE post_id IN
+        <foreach collection="list" item="post_id" index="index"
+                 open="(" separator="," close=")">
+            #{post_id}
+        </foreach>
+        <if test="post_published != null">
+            AND post_published = #{post_published}
+        </if>
+        <if test="offset != null and limit != null">
+            OFFSET #{offset} LIMIT #{limit}
+        </if>
+        <if test="orderBy != null">
+            ORDER BY #{orderBy}
+        </if>
+    </select>
+
+    <!-- More ways to find list -->
+    <select id="getPostListByCondition" resultType="Post">
+        SELECT * FROM post
+        <where>
+            <!-- find by time period -->
+            <if test="begin_time != null and end_time != null">
+                post_created_at &gt; #{begin_time} AND post_created_at &lt; #{end_time}
+            </if>
+            <!-- find by user id -->
+            <if test="user_id != null">
+                AND user_id = #{user_id}
+            </if>
+            <!-- find by user id -->
+            <if test="post_published != null">
+                AND post_published = #{post_published}
+            </if>
+        </where>
+        <if test="offset != null and limit != null">
+            OFFSET #{offset} LIMIT #{limit}
+        </if>
+        <if test="orderBy != null">
+            ORDER BY #{orderBy}
+        </if>
+    </select>
+</mapper>
