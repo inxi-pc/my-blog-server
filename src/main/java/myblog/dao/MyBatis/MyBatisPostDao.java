@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MyBatisPostDao implements PostDao {
+
     /**
-     *
+     * Reference of MyBatisDaoFactory instance
      */
     private MyBatisDaoFactory myBatisDaoFactory;
 
@@ -21,7 +22,6 @@ public class MyBatisPostDao implements PostDao {
     MyBatisPostDao(MyBatisDaoFactory factory) {
         this.myBatisDaoFactory = factory;
     }
-
 
     public Post insertPost(Post insert) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
@@ -69,7 +69,6 @@ public class MyBatisPostDao implements PostDao {
     }
 
     public List<Post> getPostListByCondition(Map<String, Object> params) {
-
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         List<Post> posts = postMapper.getPostListByCondition(params);

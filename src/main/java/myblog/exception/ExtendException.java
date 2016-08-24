@@ -4,14 +4,34 @@ import java.util.HashMap;
 
 public class ExtendException extends RuntimeException {
 
+    /**
+     * Exception status code will mapped to response status
+     *
+     */
     public int status;
 
+    /**
+     * Equal status
+     *
+     */
     public int code;
 
+    /**
+     * Exception message
+     *
+     */
     public String message;
 
+    /**
+     * Exception doc link
+     *
+     */
     public String link;
 
+    /**
+     * All exception doc links
+     *
+     */
     private static final HashMap<Integer, String> LINKS;
 
     static {
