@@ -2,7 +2,6 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
-import myblog.exception.InternalException;
 import myblog.exception.NotFoundException;
 import myblog.model.Post;
 import org.apache.ibatis.session.SqlSession;
@@ -25,83 +24,60 @@ public class MyBatisPostDao implements PostDao {
 
 
     public Post insertPost(Post insert) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
 
-            return postMapper.insertPost(insert);
-        } catch (Exception e) {
-            throw new InternalException(e);
-        }
+        return postMapper.insertPost(insert);
     }
 
     public boolean deletePostById(int postId) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
 
-            return postMapper.deletePostById(postId);
-        } catch (Exception e) {
-            throw new InternalException(e);
-        }
+        return postMapper.deletePostById(postId);
     }
 
     public boolean updatePost(int postId, Post update) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
 
-            return postMapper.updatePost(postId, update);
-        } catch (Exception e) {
-            throw new InternalException(e);
-        }
+        return postMapper.updatePost(postId, update);
     }
 
     public Post getPostById(int postId) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-            Post post = postMapper.getPostById(postId);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+        Post post = postMapper.getPostById(postId);
 
-            if (post == null) {
-                throw new NotFoundException("Post not found");
-            } else {
-                return post;
-            }
-        } catch (Exception e) {
-            throw new InternalException(e);
+        if (post == null) {
+            throw new NotFoundException("Post not found");
+        } else {
+            return post;
         }
     }
 
     public List<Post> getPostListByIds(int[] postIds) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-            List<Post> posts = postMapper.getPostListByIds(postIds);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+        List<Post> posts = postMapper.getPostListByIds(postIds);
 
-            if (posts.isEmpty()) {
-                throw new NotFoundException("Posts not found");
-            } else {
-                return posts;
-            }
-        } catch (Exception e) {
-            throw new InternalException(e);
+        if (posts == null || posts.isEmpty()) {
+            throw new NotFoundException("Posts not found");
+        } else {
+            return posts;
         }
     }
 
     public List<Post> getPostListByCondition(Map<String, Object> params) {
-        try {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-            List<Post> posts = postMapper.getPostListByCondition(params);
 
-            if (posts.isEmpty()) {
-                throw new NotFoundException("Posts not found");
-            } else {
-                return posts;
-            }
-        } catch (Exception e) {
-            throw new InternalException(e);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+        List<Post> posts = postMapper.getPostListByCondition(params);
+
+        if (posts == null || posts.isEmpty()) {
+            throw new NotFoundException("Posts not found");
+        } else {
+            return posts;
         }
     }
 }
