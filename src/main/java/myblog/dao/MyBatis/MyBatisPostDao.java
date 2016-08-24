@@ -23,16 +23,21 @@ public class MyBatisPostDao implements PostDao {
         this.myBatisDaoFactory = factory;
     }
 
-    public Post insertPost(Post insert) {
+    public int createPost(Post insert) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
+        postMapper.createPost(insert);
+        session.commit();
+        session.close();
 
-        return postMapper.insertPost(insert);
+        return insert.post_id;
     }
 
     public boolean deletePostById(int postId) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
+        session.commit();
+        session.close();
 
         return postMapper.deletePostById(postId);
     }
@@ -40,6 +45,8 @@ public class MyBatisPostDao implements PostDao {
     public boolean updatePost(int postId, Post update) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
+        session.commit();
+        session.close();
 
         return postMapper.updatePost(postId, update);
     }
@@ -48,6 +55,8 @@ public class MyBatisPostDao implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         Post post = postMapper.getPostById(postId);
+        session.commit();
+        session.close();
 
         if (post == null) {
             throw new NotFoundException("Post not found");
@@ -60,6 +69,8 @@ public class MyBatisPostDao implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         List<Post> posts = postMapper.getPostListByIds(postIds);
+        session.commit();
+        session.close();
 
         if (posts == null || posts.isEmpty()) {
             throw new NotFoundException("Posts not found");
@@ -72,6 +83,8 @@ public class MyBatisPostDao implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         List<Post> posts = postMapper.getPostListByCondition(params);
+        session.commit();
+        session.close();
 
         if (posts == null || posts.isEmpty()) {
             throw new NotFoundException("Posts not found");

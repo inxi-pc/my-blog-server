@@ -10,7 +10,7 @@ public interface PostMapper {
      *
      * @return
      */
-    Post insertPost(Post insert);
+    int createPost(Post insert);
 
     /**
      *

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
+    <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id">
+        INSERT INTO post(user_id, post_title, post_content, post_published)
+        VALUES(#{user_id}, #{post_title}, #{post_content}, #{post_published})
+    </insert>
+
     <select id="getPostById" resultType="Post">
         SELECT * FROM post WHERE post_id = #{postId}
-
     </select>
 
     <!-- Basic way to find list -->

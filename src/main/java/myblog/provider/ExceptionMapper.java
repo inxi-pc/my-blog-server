@@ -3,6 +3,7 @@ package myblog.provider;
 import myblog.exception.ExtendException;
 import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -20,6 +21,8 @@ public class ExceptionMapper implements ExtendedExceptionMapper<Exception> {
                     .entity(e)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
+        } else if (e instanceof WebApplicationException) {
+            return ((WebApplicationException) e).getResponse();
         } else {
             return Response.status(500)
                     .entity(e)

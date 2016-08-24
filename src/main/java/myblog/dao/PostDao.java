@@ -11,7 +11,7 @@ public interface PostDao {
      * @param insert
      * @return
      */
-    Post insertPost(Post insert);
+    int createPost(Post insert);
 
     /**
      *
