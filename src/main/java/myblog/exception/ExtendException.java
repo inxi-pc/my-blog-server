@@ -17,12 +17,6 @@ public class ExtendException extends RuntimeException {
     public int code;
 
     /**
-     * Exception message
-     *
-     */
-    public String message;
-
-    /**
      * Exception doc link
      *
      */
@@ -51,7 +45,6 @@ public class ExtendException extends RuntimeException {
 
         this.status = status;
         this.code = status;
-        this.message = message;
         this.link = LINKS.get(status);
     }
 
@@ -60,7 +53,43 @@ public class ExtendException extends RuntimeException {
 
         this.status = status;
         this.code = status;
-        this.message = e.getMessage();
         this.link = LINKS.get(status);
     }
+
+    public ResponseEntity toResponseEntity() {
+        ResponseEntity entity = new ResponseEntity();
+        entity.code = this.code;
+        entity.status = this.status;
+        entity.message = this.getMessage();
+        entity.link = this.link;
+
+        return entity;
+    }
 }
+
+class ResponseEntity {
+    /**
+     * Exception status code will mapped to response status
+     *
+     */
+    public int status;
+
+    /**
+     * Equal status
+     *
+     */
+    public int code;
+
+    /**
+     * Exception doc link
+     *
+     */
+    public String link;
+
+    /**
+     * Exception message
+     *
+     */
+    public String message;
+}
+

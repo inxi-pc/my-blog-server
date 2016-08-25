@@ -17,33 +17,27 @@ public class ExceptionMapper implements ExtendedExceptionMapper<Exception> {
     }
 
     public Response toResponse(Exception e) {
-        if (e instanceof WebApplicationException) {
-            return ((WebApplicationException) e).getResponse();
-        } else if (e instanceof ExtendException) {
-            if (App.isDebugModel()) {
-                return Response.status(((ExtendException) e).status)
-                        .entity(e)
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
-            } else {
-                return Response.status(((ExtendException) e).status)
-                        .entity(((ExtendException) e).message)
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
-            }
-
+        // Convert all exception to extend exception
+        ExtendException exException;
+        if (e instanceof ExtendException){
+            exException = (ExtendException) e;
+        } else if (e instanceof WebApplicationException) {
+            int status = ((WebApplicationException) e).getResponse().getStatus();
+            exException = new ExtendException(status, e);
         } else {
-            if (App.isDebugModel()) {
-                return Response.status(500)
-                        .entity(e)
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
-            } else {
-                return Response.status(500)
-                        .entity(e.getMessage())
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
-            }
+            exException = new ExtendException(500, e);
+        }
+
+        if (App.isDebugModel()) {
+            return Response.status(exException.status)
+                    .entity(exException)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } else {
+            return Response.status(exException.status)
+                    .entity(exException.toResponseEntity())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
     }
 }
