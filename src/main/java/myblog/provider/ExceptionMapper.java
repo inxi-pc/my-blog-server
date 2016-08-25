@@ -18,24 +18,24 @@ public class ExceptionMapper implements ExtendedExceptionMapper<Exception> {
 
     public Response toResponse(Exception e) {
         // Convert all exception to extend exception
-        ExtendException exException;
+        ExtendException ex;
         if (e instanceof ExtendException){
-            exException = (ExtendException) e;
+            ex = (ExtendException) e;
         } else if (e instanceof WebApplicationException) {
             int status = ((WebApplicationException) e).getResponse().getStatus();
-            exException = new ExtendException(status, e);
+            ex = new ExtendException(status, e);
         } else {
-            exException = new ExtendException(500, e);
+            ex = new ExtendException(500, e);
         }
 
         if (App.isDebugModel()) {
-            return Response.status(exException.status)
-                    .entity(exException)
+            return Response.status(ex.status)
+                    .entity(ex)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } else {
-            return Response.status(exException.status)
-                    .entity(exException.toResponseEntity())
+            return Response.status(ex.status)
+                    .entity(ex.toResponseEntity())
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         }
