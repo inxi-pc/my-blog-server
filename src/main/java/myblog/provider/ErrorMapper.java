@@ -1,5 +1,6 @@
 package myblog.provider;
 
+import myblog.App;
 import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 
 import javax.ws.rs.core.MediaType;
@@ -14,9 +15,16 @@ public class ErrorMapper implements ExtendedExceptionMapper<Error> {
     }
 
     public Response toResponse(Error e) {
-        return Response.status(500)
-                .entity(e)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+        if (App.isDebugModel()) {
+            return Response.status(500)
+                    .entity(e)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } else {
+            return Response.status(500)
+                    .entity(e.getMessage())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
     }
 }

@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 public class PostResource {
 
     @POST
-    @Consumes("application/x-www-form-urlencoded")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public int createPost(@FormParam("user_id") int user_id,
                           @FormParam("post_title") String post_title,
