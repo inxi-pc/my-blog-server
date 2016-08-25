@@ -30,14 +30,14 @@ public class ExtendException extends RuntimeException {
 
     static {
         LINKS = new HashMap<Integer, String>();
-        LINKS.put(200, "http://");
-        LINKS.put(201, "http://");
-        LINKS.put(204, "http://");
-        LINKS.put(400, "http://");
-        LINKS.put(404, "http://");
-        LINKS.put(405, "http://");
-        LINKS.put(409, "http://");
-        LINKS.put(500, "http://");
+        LINKS.put(200, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#200");
+        LINKS.put(201, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#201");
+        LINKS.put(204, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#204");
+        LINKS.put(400, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#400");
+        LINKS.put(404, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#404");
+        LINKS.put(405, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#405");
+        LINKS.put(409, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#409");
+        LINKS.put(500, "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#500");
     }
 
     public ExtendException(int status, String message) {
