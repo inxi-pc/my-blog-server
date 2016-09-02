@@ -28,7 +28,7 @@ public class ExceptionMapper implements ExtendedExceptionMapper<Exception> {
             exException = new ExtendException(500, e);
         }
 
-        if (App.isDebugModel()) {
+        if (App.isDebug()) {
             return Response.status(exException.status)
                     .entity(exException)
                     .type(MediaType.APPLICATION_JSON)
