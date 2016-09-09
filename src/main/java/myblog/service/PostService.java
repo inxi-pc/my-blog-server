@@ -14,6 +14,13 @@ public class PostService {
         return post_id;
     }
 
+    public static boolean updatePost(int post_id, Post update) {
+        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
+        return myBatisPostDao.updatePost(post_id, update);
+    }
+
     public static Post getPostById(int postId) {
         MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();

@@ -10,10 +10,11 @@ CREATE TABLE user (
 
 CREATE TABLE post (
   post_id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+  post_title      VARCHAR(100),
   post_content    TEXT,
   user_id         INTEGER  NOT NULL,
   post_created_at DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP,
   post_published  BOOLEAN  NOT NULL   DEFAULT FALSE,
   post_updated_at DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-)
+);
