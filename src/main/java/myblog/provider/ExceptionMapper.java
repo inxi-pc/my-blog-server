@@ -29,6 +29,7 @@ public class ExceptionMapper implements ExtendedExceptionMapper<Exception> {
         }
 
         if (App.isDebug()) {
+            e.printStackTrace();
             return Response.status(ex.status)
                     .entity(ex)
                     .type(MediaType.APPLICATION_JSON)

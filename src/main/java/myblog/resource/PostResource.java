@@ -1,5 +1,6 @@
 package myblog.resource;
 
+import myblog.Helper;
 import myblog.model.SqlOrder;
 import myblog.model.SqlPagination;
 import myblog.model.Post;
@@ -7,6 +8,7 @@ import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/posts")
@@ -19,13 +21,21 @@ public class PostResource {
                           @FormParam("post_title") String post_title,
                           @FormParam("post_content") String post_content,
                           @FormParam("post_published") boolean post_published) {
-        Post insert = new Post();
-        insert.user_id = user_id;
-        insert.post_title = post_title;
-        insert.post_content = post_content;
-        insert.post_published = post_published;
+        if (user_id > 0) {
+            Post insert = new Post();
+            if (!Helper.isNullOrEmpty(post_title)) {
+                insert.post_title = post_title;
+            }
+            if (!Helper.isNullOrEmpty(post_content)) {
+                insert.post_content = post_content;
+            }
+            insert.user_id = user_id;
+            insert.post_published = post_published;
 
-        return PostService.createPost(insert);
+            return PostService.createPost(insert);
+        } else {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
     }
 
     @PUT
@@ -36,31 +46,38 @@ public class PostResource {
                               @FormParam("post_title") String post_title,
                               @FormParam("post_content") String post_content,
                               @FormParam("post_published") boolean post_published) {
-        Post update = new Post();
+        if (post_id > 0) {
+            Post update = new Post();
+            if (user_id != 0) {
+                update.user_id = user_id;
+            }
+            if (!Helper.isNullOrEmpty(post_title)) {
+                update.post_title = post_title;
+            }
+            if (!Helper.isNullOrEmpty(post_content)) {
+                update.post_content = post_content;
+            }
 
-        if (user_id != 0) {
-            update.user_id = user_id;
+            return PostService.updatePost(post_id, update);
+        } else {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        if (post_title != null) {
-            update.post_title = post_title;
-        }
-        if (post_content != null) {
-            update.post_content = post_content;
-        }
-
-        return false;
     }
 
     @GET
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPost(@PathParam("postId") int postId) {
-        return PostService.getPostById(postId);
+        if (postId > 0) {
+            return PostService.getPostById(postId);
+        } else {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> getPostsWithPagination(@QueryParam("limit") int limit,
+    public List<Post> getPosts(@QueryParam("limit") int limit,
                                @QueryParam("offset") int offset,
                                @QueryParam("orderBy") String orderBy,
                                @QueryParam("orderType") String orderType) {

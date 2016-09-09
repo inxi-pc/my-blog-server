@@ -16,6 +16,7 @@ public class ErrorMapper implements ExtendedExceptionMapper<Error> {
 
     public Response toResponse(Error e) {
         if (App.isDebug()) {
+            e.printStackTrace();
             return Response.status(500)
                     .entity(e)
                     .type(MediaType.APPLICATION_JSON)

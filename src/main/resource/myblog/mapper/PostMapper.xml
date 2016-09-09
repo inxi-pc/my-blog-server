@@ -6,6 +6,24 @@
         VALUES(#{user_id}, #{post_title}, #{post_content}, #{post_published})
     </insert>
 
+    <update id="updatePost">
+        UPDATE post
+        <set>
+            <if test="user_id != null">
+                user_id = #{user_id}
+            </if>
+            <if test="post_title != null">
+                post_title = #{post_title}
+            </if>
+            <if test="post_content != null">
+                post_content = #{post_content}
+            </if>
+            <if test="post_published != null">
+                post_published = #{post_published}
+            </if>
+        </set>
+    </update>
+
     <select id="getPostById" resultType="Post">
         SELECT * FROM post WHERE post_id = #{postId}
     </select>
