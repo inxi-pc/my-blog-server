@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
-    <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id">
+    <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id" parameterType="Post">
         INSERT INTO post(user_id, post_title, post_content, post_published)
         VALUES(#{user_id}, #{post_title}, #{post_content}, #{post_published})
     </insert>
@@ -18,13 +18,13 @@
             #{post_id}
         </foreach>
         <if test="post_published != null">
-            AND post_published = #{post_published}
+            post_published = #{post_published}
+        </if>
+        <if test="orderBy != null and orderType != null">
+            ORDER BY #{orderBy} #{orderType}
         </if>
         <if test="offset != null and limit != null">
-            OFFSET #{offset} LIMIT #{limit}
-        </if>
-        <if test="orderBy != null">
-            ORDER BY #{orderBy}
+            LIMIT #{limit} OFFSET #{offset}
         </if>
     </select>
 
@@ -40,16 +40,16 @@
             <if test="user_id != null">
                 AND user_id = #{user_id}
             </if>
-            <!-- find by user id -->
+            <!-- find if published-->
             <if test="post_published != null">
-                AND post_published = #{post_published}
+                post_published = #{post_published}
             </if>
         </where>
-        <if test="offset != null and limit != null">
-            OFFSET #{offset} LIMIT #{limit}
+        <if test="orderBy != null and orderType != null">
+            ORDER BY #{orderBy} #{orderType}
         </if>
-        <if test="orderBy != null">
-            ORDER BY #{orderBy}
+        <if test="offset != null and limit != null">
+            LIMIT #{limit} OFFSET #{offset}
         </if>
     </select>
 </mapper>

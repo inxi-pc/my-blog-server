@@ -1,10 +1,13 @@
 package myblog.resource;
 
+import myblog.model.SqlOrder;
+import myblog.model.SqlPagination;
 import myblog.model.Post;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/posts")
 public class PostResource {
@@ -44,6 +47,8 @@ public class PostResource {
         if (post_content != null) {
             update.post_content = post_content;
         }
+
+        return false;
     }
 
     @GET
@@ -52,4 +57,17 @@ public class PostResource {
     public Post getPost(@PathParam("postId") int postId) {
         return PostService.getPostById(postId);
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Post> getPostsWithPagination(@QueryParam("limit") int limit,
+                               @QueryParam("offset") int offset,
+                               @QueryParam("orderBy") String orderBy,
+                               @QueryParam("orderType") String orderType) {
+        SqlPagination page = new SqlPagination(limit, offset);
+        SqlOrder order = new SqlOrder(orderBy, orderType);
+
+        return PostService.getPosts(page, order);
+    }
+
 }
