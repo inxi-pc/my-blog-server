@@ -3,6 +3,7 @@ package myblog;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.provider.ErrorMapper;
 import myblog.provider.ExceptionMapper;
+import org.apache.ibatis.io.Resources;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -14,6 +15,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.apache.ibatis.io.Resources.getResourceAsStream;
+
 /**
  * My blog main class
  *
@@ -22,6 +25,7 @@ public class App extends ResourceConfig {
 
     /**
      * Server root URI
+     *
      */
     private static URI BASE_URI = URI.create("http://localhost:8080/");
 
@@ -30,6 +34,12 @@ public class App extends ResourceConfig {
      *
      */
     private static final String CONFIG_NAME = "myblog/config.properties";
+
+    /**
+     * App config
+     *
+     */
+    private static Properties config;
 
     /**
      * Register component
@@ -45,6 +55,8 @@ public class App extends ResourceConfig {
     public static void main(String[] args) {
         System.out.println("Hello World!Blog server");
 
+        loadApplicationConfig();
+
         try {
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, new App(), false);
             server.start();
@@ -58,17 +70,15 @@ public class App extends ResourceConfig {
      *
      * @return
      */
-    public static Properties getApplicationConfig() {
-        InputStream in = App.class.getClassLoader().getResourceAsStream(CONFIG_NAME);
-        Properties config = new Properties();
+    private static void loadApplicationConfig() {
+        config = new Properties();
         try {
+            InputStream in = App.class.getClassLoader().getResourceAsStream(CONFIG_NAME);
             config.load(in);
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return config;
     }
 
     /**
@@ -76,9 +86,12 @@ public class App extends ResourceConfig {
      *
      * @return
      */
-    public static boolean isDebugModel() {
-        Properties config = getApplicationConfig();
-
-        return Boolean.parseBoolean(config.getProperty("debug"));
+    public static boolean isDebug() {
+        if (config != null) {
+           return Boolean.parseBoolean(config.getProperty("debug"));
+        } else {
+            loadApplicationConfig();
+            return Boolean.parseBoolean(config.getProperty("debug"));
+        }
     }
 }

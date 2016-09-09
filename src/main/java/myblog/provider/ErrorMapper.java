@@ -15,7 +15,7 @@ public class ErrorMapper implements ExtendedExceptionMapper<Error> {
     }
 
     public Response toResponse(Error e) {
-        if (App.isDebugModel()) {
+        if (App.isDebug()) {
             return Response.status(500)
                     .entity(e)
                     .type(MediaType.APPLICATION_JSON)
