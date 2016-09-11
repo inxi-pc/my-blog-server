@@ -39,14 +39,15 @@ public class PostResource {
     }
 
     @PUT
+    @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updatePost(@FormParam("post_id") int post_id,
+    public boolean updatePost(@PathParam("postId") int postId,
                               @FormParam("user_id") int user_id,
                               @FormParam("post_title") String post_title,
                               @FormParam("post_content") String post_content,
                               @FormParam("post_published") boolean post_published) {
-        if (post_id > 0) {
+        if (postId > 0) {
             Post update = new Post();
             if (user_id != 0) {
                 update.user_id = user_id;
@@ -58,7 +59,7 @@ public class PostResource {
                 update.post_content = post_content;
             }
 
-            return PostService.updatePost(post_id, update);
+            return PostService.updatePost(postId, update);
         } else {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }

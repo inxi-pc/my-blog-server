@@ -18,11 +18,11 @@ public class PostService {
         return myBatisPostDao.createPost(insert);
     }
 
-    public static boolean updatePost(int post_id, Post update) {
+    public static boolean updatePost(int postId, Post update) {
         MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        return myBatisPostDao.updatePost(post_id, update);
+        return myBatisPostDao.updatePost(postId, update);
     }
 
     public static Post getPostById(int postId) {

@@ -22,7 +22,7 @@ public interface PostMapper {
      *
      * @return
      */
-    boolean updatePost(int postId, Post update);
+    boolean updatePost(Post update);
 
     /**
      *
