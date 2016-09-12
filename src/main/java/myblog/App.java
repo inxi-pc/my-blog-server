@@ -1,6 +1,7 @@
 package myblog;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import myblog.provider.CORSFilter;
 import myblog.provider.ErrorMapper;
 import myblog.provider.ExceptionMapper;
 import org.apache.ibatis.io.Resources;
@@ -27,7 +28,7 @@ public class App extends ResourceConfig {
      * Server root URI
      *
      */
-    private static URI BASE_URI = URI.create("http://localhost:8080/");
+    private static URI BASE_URI = URI.create("http://localhost:8888/");
 
     /**
      * Server config file name
@@ -50,6 +51,7 @@ public class App extends ResourceConfig {
         register(JacksonJsonProvider.class);
         register(ExceptionMapper.class);
         register(ErrorMapper.class);
+        register(CORSFilter.class);
     }
 
     public static void main(String[] args) {
