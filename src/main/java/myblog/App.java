@@ -4,7 +4,6 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.provider.CORSFilter;
 import myblog.provider.ErrorMapper;
 import myblog.provider.ExceptionMapper;
-import org.apache.ibatis.io.Resources;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -15,8 +14,6 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.apache.ibatis.io.Resources.getResourceAsStream;
 
 /**
  * My blog main class

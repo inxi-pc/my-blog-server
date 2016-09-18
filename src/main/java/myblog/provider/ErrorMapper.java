@@ -1,18 +1,14 @@
 package myblog.provider;
 
 import myblog.App;
-import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ErrorMapper implements ExtendedExceptionMapper<Error> {
-
-    public boolean isMappable(Error exception) {
-        return true;
-    }
+public class ErrorMapper implements ExceptionMapper<Error> {
 
     public Response toResponse(Error e) {
         if (App.isDebug()) {
