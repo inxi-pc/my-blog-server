@@ -36,19 +36,21 @@ public class MyBatisPostDao implements PostDao {
     public boolean deletePostById(int postId) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
+        boolean isSucceed = postMapper.deletePostById(postId);
         session.commit();
         session.close();
 
-        return postMapper.deletePostById(postId);
+        return isSucceed;
     }
 
     public boolean updatePost(int postId, Post update) {
-        update.post_id = postId;
-
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
+        boolean isSucceed = postMapper.updatePost(update);
+        session.commit();
+        session.close();
 
-        return postMapper.updatePost(update);
+        return isSucceed;
     }
 
     public Post getPostById(int postId) {

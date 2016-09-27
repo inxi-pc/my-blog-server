@@ -1,9 +1,8 @@
 package myblog.resource;
 
-import myblog.Helper;
+import myblog.model.Post;
 import myblog.model.SqlOrder;
 import myblog.model.SqlPagination;
-import myblog.model.Post;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
@@ -17,23 +16,25 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public int createPost(@FormParam("user_id") int user_id,
-                          @FormParam("post_title") String post_title,
-                          @FormParam("post_content") String post_content,
-                          @FormParam("post_published") boolean post_published) {
-        if (user_id > 0) {
+    public int createPost(@FormParam("userId") Integer userId,
+                          @FormParam("categoryId") Integer categoryId,
+                          @FormParam("postTitle") String postTitle,
+                          @FormParam("postContent") String postContent,
+                          @FormParam("postPublished") Boolean postPublished,
+                          @FormParam("postEnabled") Boolean postEnabled) {
+        try {
             Post insert = new Post();
-            if (!Helper.isNullOrEmpty(post_title)) {
-                insert.post_title = post_title;
-            }
-            if (!Helper.isNullOrEmpty(post_content)) {
-                insert.post_content = post_content;
-            }
-            insert.user_id = user_id;
-            insert.post_published = post_published;
+            insert.setUser_id(userId);
+            insert.setCategory_id(categoryId);
+            insert.setPost_title(postTitle);
+            insert.setPost_content(postContent);
+            insert.setPost_published(postPublished);
+            insert.setPost_enabled(postEnabled);
+            insert.setPost_created_at(null);
+            insert.setPost_updated_at(null);
 
             return PostService.createPost(insert);
-        } else {
+        } catch (Exception e) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
     }
@@ -42,24 +43,41 @@ public class PostResource {
     @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updatePost(@PathParam("postId") int postId,
-                              @FormParam("user_id") int user_id,
-                              @FormParam("post_title") String post_title,
-                              @FormParam("post_content") String post_content,
-                              @FormParam("post_published") boolean post_published) {
-        if (postId > 0) {
-            Post update = new Post();
-            if (user_id != 0) {
-                update.user_id = user_id;
-            }
-            if (!Helper.isNullOrEmpty(post_title)) {
-                update.post_title = post_title;
-            }
-            if (!Helper.isNullOrEmpty(post_content)) {
-                update.post_content = post_content;
-            }
+    public boolean updatePost(@PathParam("postId") Integer postId,
+                              @FormParam("userId") Integer userId,
+                              @FormParam("categoryId") Integer categoryId,
+                              @FormParam("postTitle") String postTitle,
+                              @FormParam("postContent") String postContent,
+                              @FormParam("postPublished") Boolean postPublished,
+                              @FormParam("postEnabled") Boolean postEnabled) {
+        if (postId != null) {
+            try {
+                Post update = new Post();
+                update.setPost_id(postId);
+                if (userId != null) {
+                    update.setUser_id(userId);
+                }
+                if (categoryId != null) {
+                    update.setCategory_id(categoryId);
+                }
+                if (postTitle != null) {
+                    update.setPost_title(postTitle);
+                }
+                if (postContent != null) {
+                    update.setPost_content(postContent);
+                }
+                if (postPublished != null) {
+                    update.setPost_published(postPublished);
+                }
+                if (postEnabled != null) {
+                    update.setPost_enabled(postEnabled);
+                }
+                update.setPost_updated_at(null);
 
-            return PostService.updatePost(postId, update);
+                return PostService.updatePost(postId, update);
+            } catch (Exception e) {
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
         } else {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
@@ -68,8 +86,8 @@ public class PostResource {
     @GET
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Post getPost(@PathParam("postId") int postId) {
-        if (postId > 0) {
+    public Post getPost(@PathParam("postId") Integer postId) {
+        if (postId != null) {
             return PostService.getPostById(postId);
         } else {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
