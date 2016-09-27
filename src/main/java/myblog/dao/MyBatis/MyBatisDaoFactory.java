@@ -1,5 +1,6 @@
 package myblog.dao.MyBatis;
 
+import myblog.dao.CategoryDao;
 import myblog.dao.DaoFactory;
 import myblog.exception.InternalException;
 import org.apache.ibatis.io.Resources;
@@ -67,5 +68,10 @@ public class MyBatisDaoFactory extends DaoFactory {
     @Override
     public MyBatisUserDao getUserDao() {
         return new MyBatisUserDao();
+    }
+
+    @Override
+    public MyBatisCategoryDao getCategoryDao() {
+        return new MyBatisCategoryDao(this);
     }
 }

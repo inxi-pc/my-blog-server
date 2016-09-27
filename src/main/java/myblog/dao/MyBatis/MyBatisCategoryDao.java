@@ -1,0 +1,35 @@
+package myblog.dao.MyBatis;
+
+import myblog.dao.CategoryDao;
+import myblog.dao.MyBatis.Mapper.CategoryMapper;
+import myblog.exception.NotFoundException;
+import myblog.model.Category;
+import org.apache.ibatis.session.SqlSession;
+
+import java.util.List;
+import java.util.Map;
+
+public class MyBatisCategoryDao implements CategoryDao {
+    /**
+     * Reference of MyBatisDaoFactory instance
+     */
+    private MyBatisDaoFactory myBatisDaoFactory;
+
+    MyBatisCategoryDao(MyBatisDaoFactory factory) {
+        this.myBatisDaoFactory = factory;
+    }
+
+    public List<Category> getCategoryListByCondition(Map<String, Object> params) {
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+        List<Category> categories = categoryMapper.getCategoryListByCondition(params);
+        session.commit();
+        session.close();
+
+        if (categories == null || categories.isEmpty()) {
+            throw new NotFoundException("Categories not found");
+        } else {
+            return categories;
+        }
+    }
+}

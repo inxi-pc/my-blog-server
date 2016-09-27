@@ -2,24 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
     <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id" parameterType="Post">
-        INSERT INTO post(user_id, post_title, post_content, post_published)
-        VALUES(#{user_id}, #{post_title}, #{post_content}, #{post_published})
+        INSERT INTO post(user_id, category_id, post_title, post_content, post_published, post_enabled)
+        VALUES(#{user_id}, #{category_id}, #{post_title}, #{post_content}, #{post_published}, #{post_enabled})
     </insert>
 
-    <update id="updatePost">
+    <update id="updatePost" parameterType="Post">
         UPDATE post
         <set>
             <if test="user_id != null and user_id != 0">
                 user_id = #{user_id},
             </if>
             <if test="post_title != null">
-                post_title = #{post_title},
+                post_title LIKE #{post_title},
             </if>
             <if test="post_content != null">
                 post_content = #{post_content},
             </if>
             <if test="post_published != null">
                 post_published = #{post_published},
+            </if>
+            <if test="post_enabled != null">
+                post_enabled = #{post_enabled},
             </if>
         </set>
         WHERE post_id = #{post_id}
@@ -37,7 +40,7 @@
             #{post_id}
         </foreach>
         <if test="post_published != null">
-            post_published = #{post_published}
+            AND post_published = #{post_published}
         </if>
         <if test="orderBy != null and orderType != null">
             ORDER BY #{orderBy} #{orderType}
@@ -56,12 +59,16 @@
                 post_created_at &gt; #{begin_time} AND post_created_at &lt; #{end_time}
             </if>
             <!-- find by user id -->
-            <if test="user_id != null">
+            <if test="user_id != null and user_id != 0">
                 AND user_id = #{user_id}
             </if>
             <!-- find if published-->
             <if test="post_published != null">
-                post_published = #{post_published}
+                AND post_published = #{post_published}
+            </if>
+--          <!-- find if enabled-->
+            <if test="post_enabled != null">
+                AND post_enabled = #{post_enabled}
             </if>
         </where>
         <if test="orderBy != null and orderType != null">

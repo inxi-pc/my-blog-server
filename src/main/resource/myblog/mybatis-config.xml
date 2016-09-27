@@ -7,6 +7,7 @@
         <typeAlias type="myblog.model.Post" alias="Post"/>
         <typeAlias type="myblog.model.Comment" alias="Comment"/>
         <typeAlias type="myblog.model.User" alias="User"/>
+        <typeAlias type="myblog.model.Category" alias="Category"/>
     </typeAliases>
 
     <environments default="development">
@@ -23,5 +24,6 @@
 
     <mappers>
         <mapper resource="myblog/mapper/PostMapper.xml"/>
+        <mapper resource="myblog/mapper/CategoryMapper.xml"/>
     </mappers>
 </configuration>

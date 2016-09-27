@@ -38,6 +38,13 @@ abstract public class DaoFactory {
     public abstract CommentDao getCommentDao();
 
     /**
+     * Get category dao
+     *
+     * @return
+     */
+    public abstract CategoryDao getCategoryDao();
+
+    /**
      * Backend get method
      *
      * @param backend

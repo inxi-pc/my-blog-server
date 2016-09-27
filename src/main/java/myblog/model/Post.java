@@ -10,6 +10,6 @@ public class Post extends Model {
     public int user_id;
     public String post_created_at;
     public String post_updated_at;
-    public boolean post_published;
-    public boolean post_enabled;
+    public Boolean post_published;
+    public Boolean post_enabled;
 }
