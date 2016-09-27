@@ -1,6 +1,5 @@
 package myblog.dao.MyBatis;
 
-import myblog.dao.CategoryDao;
 import myblog.dao.DaoFactory;
 import myblog.exception.InternalException;
 import org.apache.ibatis.io.Resources;
