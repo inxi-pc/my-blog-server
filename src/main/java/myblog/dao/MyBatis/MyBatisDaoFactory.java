@@ -1,11 +1,11 @@
 package myblog.dao.MyBatis;
 
 import myblog.dao.DaoFactory;
-import myblog.exception.InternalException;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,7 +29,7 @@ public class MyBatisDaoFactory extends DaoFactory {
             InputStream inputStream = Resources.getResourceAsStream(resource);
             this.defaultSqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         } catch (IOException e) {
-            throw new InternalException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 

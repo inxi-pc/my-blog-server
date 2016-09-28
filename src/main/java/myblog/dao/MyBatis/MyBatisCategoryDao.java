@@ -2,10 +2,10 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
-import myblog.exception.NotFoundException;
 import myblog.model.Category;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.Map;
 

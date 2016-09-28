@@ -12,12 +12,12 @@ public class ErrorMapper implements javax.ws.rs.ext.ExceptionMapper<Error> {
     public Response toResponse(Error e) {
         if (App.isDebug()) {
             e.printStackTrace();
-            return Response.status(500)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } else {
-            return Response.status(500)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage())
                     .type(MediaType.APPLICATION_JSON)
                     .build();

@@ -46,7 +46,7 @@ public class PostResource {
     public boolean updatePost(@PathParam("postId") Integer postId,
                               @FormParam("user_id") Integer userId,
                               @FormParam("category_id") Integer categoryId,
-                              @FormParam("post_title") Integer postTitle,
+                              @FormParam("post_title") String postTitle,
                               @FormParam("post_content") String postContent,
                               @FormParam("post_published") Boolean postPublished,
                               @FormParam("post_enabled") Boolean postEnabled) {
@@ -59,9 +59,9 @@ public class PostResource {
             if (categoryId != null) {
                 update.setCategory_id(categoryId);
             }
-//            if (postTitle != null) {
-//                update.setPost_title(postTitle);
-//            }
+            if (postTitle != null) {
+                update.setPost_title(postTitle);
+            }
             if (postContent != null) {
                 update.setPost_content(postContent);
             }
