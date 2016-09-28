@@ -1,6 +1,6 @@
 package myblog.model;
 
-public class User extends Model {
+public class User {
     public int user_id;
     public String user_username;
     public String user_telephone;

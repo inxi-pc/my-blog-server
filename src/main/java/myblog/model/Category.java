@@ -4,7 +4,7 @@ import myblog.Helper;
 
 import java.util.Date;
 
-public class Category extends Model {
+public class Category {
     public Integer category_id;
     public String category_name_en;
     public String category_name_cn;
