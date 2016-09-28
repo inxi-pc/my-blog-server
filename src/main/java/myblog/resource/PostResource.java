@@ -44,43 +44,39 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public boolean updatePost(@PathParam("postId") Integer postId,
-                              @FormParam("userId") Integer userId,
-                              @FormParam("categoryId") Integer categoryId,
-                              @FormParam("postTitle") String postTitle,
-                              @FormParam("postContent") String postContent,
-                              @FormParam("postPublished") Boolean postPublished,
-                              @FormParam("postEnabled") Boolean postEnabled) {
-        if (postId != null) {
-            try {
-                Post update = new Post();
-                update.setPost_id(postId);
-                if (userId != null) {
-                    update.setUser_id(userId);
-                }
-                if (categoryId != null) {
-                    update.setCategory_id(categoryId);
-                }
-                if (postTitle != null) {
-                    update.setPost_title(postTitle);
-                }
-                if (postContent != null) {
-                    update.setPost_content(postContent);
-                }
-                if (postPublished != null) {
-                    update.setPost_published(postPublished);
-                }
-                if (postEnabled != null) {
-                    update.setPost_enabled(postEnabled);
-                }
-                update.setPost_updated_at(null);
-
-                return PostService.updatePost(postId, update);
-            } catch (Exception e) {
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                              @FormParam("user_id") Integer userId,
+                              @FormParam("category_id") Integer categoryId,
+                              @FormParam("post_title") String postTitle,
+                              @FormParam("post_content") String postContent,
+                              @FormParam("post_published") Boolean postPublished,
+                              @FormParam("post_enabled") Boolean postEnabled) {
+        Post update = new Post();
+        try {
+            update.setPost_id(postId);
+            if (userId != null) {
+                update.setUser_id(userId);
             }
-        } else {
+            if (categoryId != null) {
+                update.setCategory_id(categoryId);
+            }
+            if (postTitle != null) {
+                update.setPost_title(postTitle);
+            }
+            if (postContent != null) {
+                update.setPost_content(postContent);
+            }
+            if (postPublished != null) {
+                update.setPost_published(postPublished);
+            }
+            if (postEnabled != null) {
+                update.setPost_enabled(postEnabled);
+            }
+            update.setPost_updated_at(null);
+        } catch (Exception e) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
+
+        return PostService.updatePost(postId, update);
     }
 
     @GET

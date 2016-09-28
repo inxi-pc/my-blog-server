@@ -27,7 +27,7 @@ public class Helper {
      * @return
      */
     public static String formatDatetimeUTC(Date date) {
-        SimpleDateFormat formatUTC = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ssZ");
+        SimpleDateFormat formatUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         return formatUTC.format(date);

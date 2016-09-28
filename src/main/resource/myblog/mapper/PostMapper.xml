@@ -34,7 +34,7 @@
                 category_id = #{category_id},
             </if>
             <if test="post_title != null">
-                post_title LIKE #{post_title},
+                post_title = #{post_title},
             </if>
             <if test="post_content != null">
                 post_content = #{post_content},
