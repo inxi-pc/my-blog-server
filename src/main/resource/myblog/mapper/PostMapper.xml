@@ -49,7 +49,7 @@
                 post_updated_at = #{post_updated_at}
             </if>
         </set>
-        WHERE post_id = #{postId}
+        WHERE post_id = #{post_id}
     </update>
 
     <select id="getPostById" resultType="Post">
