@@ -2,8 +2,8 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.MyBatisPostDao;
-import myblog.model.persistent.SqlOrder;
-import myblog.model.persistent.SqlPagination;
+import myblog.model.business.OrderBo;
+import myblog.model.business.PaginationBo;
 import myblog.model.persistent.Post;
 
 import java.util.HashMap;
@@ -32,15 +32,15 @@ public class PostService {
         return myBatisPostDao.getPostById(postId);
     }
 
-    public static List<Post> getPosts(SqlPagination page, SqlOrder order) {
+    public static List<Post> getPostList(PaginationBo page, OrderBo order) {
         MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
-        params.put("orderBy", order.getOrderBy());
-        params.put("orderType", order.getOrderType());
+        params.put("orderBy", order.getOrder_by());
+        params.put("orderType", order.getOrder_type());
 
-        return myBatisPostDao.getPostListByCondition(params);
+        return myBatisPostDao.getPostsByCondition(params);
     }
 }

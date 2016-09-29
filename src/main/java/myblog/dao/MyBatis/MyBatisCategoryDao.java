@@ -19,10 +19,10 @@ public class MyBatisCategoryDao implements CategoryDao {
         this.myBatisDaoFactory = factory;
     }
 
-    public List<Category> getCategoryListByCondition(Map<String, Object> params) {
+    public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-        List<Category> categories = categoryMapper.getCategoryListByCondition(params);
+        List<Category> categories = categoryMapper.getCategoriesByCondition(params);
         session.commit();
         session.close();
 

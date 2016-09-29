@@ -1,8 +1,8 @@
 package myblog.resource;
 
 import myblog.model.persistent.Post;
-import myblog.model.persistent.SqlOrder;
-import myblog.model.persistent.SqlPagination;
+import myblog.model.business.OrderBo;
+import myblog.model.business.PaginationBo;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
@@ -16,12 +16,12 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public int createPost(@FormParam("userId") Integer userId,
-                          @FormParam("categoryId") Integer categoryId,
-                          @FormParam("postTitle") String postTitle,
-                          @FormParam("postContent") String postContent,
-                          @FormParam("postPublished") Boolean postPublished,
-                          @FormParam("postEnabled") Boolean postEnabled) {
+    public int createPost(@FormParam("user_id") Integer userId,
+                          @FormParam("category_id") Integer categoryId,
+                          @FormParam("post_title") String postTitle,
+                          @FormParam("post_content") String postContent,
+                          @FormParam("post_published") Boolean postPublished,
+                          @FormParam("post_enabled") Boolean postEnabled) {
         try {
             Post insert = new Post();
             insert.setUser_id(userId);
@@ -92,14 +92,14 @@ public class PostResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> getPosts(@QueryParam("limit") int limit,
-                               @QueryParam("offset") int offset,
-                               @QueryParam("orderBy") String orderBy,
-                               @QueryParam("orderType") String orderType) {
-        SqlPagination page = new SqlPagination(limit, offset);
-        SqlOrder order = new SqlOrder(orderBy, orderType);
+    public List<Post> getPostList(@QueryParam("limit") int limit,
+                                  @QueryParam("offset") int offset,
+                                  @QueryParam("order_by") String orderBy,
+                                  @QueryParam("order_type") String orderType) {
+        PaginationBo page = new PaginationBo(limit, offset);
+        OrderBo order = new OrderBo(orderBy, orderType);
 
-        return PostService.getPosts(page, order);
+        return PostService.getPostList(page, order);
     }
 
 }

@@ -67,10 +67,10 @@ public class MyBatisPostDao implements PostDao {
         }
     }
 
-    public List<Post> getPostListByIds(int[] postIds) {
+    public List<Post> getPostsByIds(int[] postIds) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
-        List<Post> posts = postMapper.getPostListByIds(postIds);
+        List<Post> posts = postMapper.getPostsByIds(postIds);
         session.commit();
         session.close();
 
@@ -81,10 +81,10 @@ public class MyBatisPostDao implements PostDao {
         }
     }
 
-    public List<Post> getPostListByCondition(Map<String, Object> params) {
+    public List<Post> getPostsByCondition(Map<String, Object> params) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
-        List<Post> posts = postMapper.getPostListByCondition(params);
+        List<Post> posts = postMapper.getPostsByCondition(params);
         session.commit();
         session.close();
 

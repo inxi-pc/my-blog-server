@@ -1,4 +1,4 @@
-package myblog.model.persistent;
+package myblog.model.business;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * Sql pagination statement
  *
  */
-public class SqlPagination {
+public class PaginationBo {
 
     /**
      * Pagination length
@@ -23,19 +23,19 @@ public class SqlPagination {
      * Number of records
      *
      */
-    public int total;
+    private int total;
 
     /**
      * Records
      *
      */
-    public List<Object> data;
+    private List<Object> data;
 
-    public SqlPagination(int limit, int offset) {
+    public PaginationBo(int limit, int offset) {
         this.setLimit(limit);
         this.setOffset(offset);
-        this.total = 0;
-        this.data = new ArrayList<Object>();
+        this.setTotal(0);
+        this.setData(new ArrayList<Object>());
     }
 
     /**
@@ -56,11 +56,37 @@ public class SqlPagination {
         this.offset = offset < 0 ? 0 : offset;
     }
 
+    /**
+     * Guarantee this.total is valid
+     *
+     * @param total
+     */
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    /**
+     * Guarantee this.data is valid
+     *
+     * @param data
+     */
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
     public int getLimit() {
         return limit;
     }
 
     public int getOffset() {
         return offset;
+    }
+
+    public int getTotal() {
+        return this.total;
+    }
+
+    public List<Object> getData() {
+        return this.data;
     }
 }

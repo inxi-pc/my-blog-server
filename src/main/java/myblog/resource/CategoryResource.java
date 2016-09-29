@@ -1,8 +1,8 @@
 package myblog.resource;
 
 import myblog.model.persistent.Category;
-import myblog.model.persistent.SqlOrder;
-import myblog.model.persistent.SqlPagination;
+import myblog.model.business.OrderBo;
+import myblog.model.business.PaginationBo;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.GET;
@@ -17,13 +17,13 @@ public class CategoryResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> getCategories(@QueryParam("limit") int limit,
-                                        @QueryParam("offset") int offset,
-                                        @QueryParam("orderBy") String orderBy,
-                                        @QueryParam("orderType") String orderType) {
-        SqlPagination sqlPagination = new SqlPagination(limit, offset);
-        SqlOrder sqlOrder = new SqlOrder(orderBy, orderType);
+    public List<Category> getCategoryList(@QueryParam("limit") int limit,
+                                          @QueryParam("offset") int offset,
+                                          @QueryParam("order_by") String orderBy,
+                                          @QueryParam("order_type") String orderType) {
+        PaginationBo page = new PaginationBo(limit, offset);
+        OrderBo order = new OrderBo(orderBy, orderType);
 
-        return CategoryService.getCategories(sqlPagination, sqlOrder);
+        return CategoryService.getCategoryList(page, order);
     }
 }

@@ -11,5 +11,5 @@ public interface CategoryMapper {
      * @param params
      * @return
      */
-    List<Category> getCategoryListByCondition(Map<String, Object> params);
+    List<Category> getCategoriesByCondition(Map<String, Object> params);
 }

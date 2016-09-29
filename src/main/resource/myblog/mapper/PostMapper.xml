@@ -57,7 +57,7 @@
     </select>
 
     <!-- Basic way to find list -->
-    <select id="getPostListByIds" resultType="Post">
+    <select id="getPostsByIds" resultType="Post">
         SELECT * FROM post WHERE post_id IN
         <foreach collection="list" item="post_id" index="index"
                  open="(" separator="," close=")">
@@ -75,7 +75,7 @@
     </select>
 
     <!-- More ways to find list -->
-    <select id="getPostListByCondition" resultType="Post">
+    <select id="getPostsByCondition" resultType="Post">
         SELECT * FROM post
         <where>
             <!-- find by time period -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.CategoryMapper">
-    <select id="getCategoryListByCondition" resultType="Category">
+    <select id="getCategoriesByCondition" resultType="Category">
         SELECT * FROM category
         <where>
             <if test="category_name_en != null">
