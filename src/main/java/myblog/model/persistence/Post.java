@@ -1,4 +1,4 @@
-package myblog.model.persistent;
+package myblog.model.persistence;
 
 import myblog.Helper;
 

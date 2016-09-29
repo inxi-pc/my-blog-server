@@ -1,4 +1,4 @@
-package myblog.model.persistent;
+package myblog.model.persistence;
 
 public class Comment {
     public int comment_id;

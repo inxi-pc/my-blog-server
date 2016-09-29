@@ -2,9 +2,9 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.MyBatisCategoryDao;
-import myblog.model.persistent.Category;
 import myblog.model.business.OrderBo;
 import myblog.model.business.PaginationBo;
+import myblog.model.persistence.Category;
 
 import java.util.HashMap;
 import java.util.List;

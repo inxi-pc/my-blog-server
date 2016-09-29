@@ -4,21 +4,22 @@ import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.MyBatisPostDao;
 import myblog.model.business.OrderBo;
 import myblog.model.business.PaginationBo;
-import myblog.model.persistent.Post;
+import myblog.model.business.PostBo;
+import myblog.model.persistence.Post;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class PostService {
 
-    public static int createPost(Post insert) {
+    public static int createPost(PostBo insert) {
         MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         return myBatisPostDao.createPost(insert);
     }
 
-    public static boolean updatePost(int postId, Post update) {
+    public static boolean updatePost(int postId, PostBo update) {
         MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 

@@ -1,8 +1,8 @@
 package myblog.resource;
 
-import myblog.model.persistent.Category;
 import myblog.model.business.OrderBo;
 import myblog.model.business.PaginationBo;
+import myblog.model.persistence.Category;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.GET;

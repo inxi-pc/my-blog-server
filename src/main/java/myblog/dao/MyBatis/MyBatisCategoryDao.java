@@ -2,7 +2,7 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
-import myblog.model.persistent.Category;
+import myblog.model.persistence.Category;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.ws.rs.NotFoundException;

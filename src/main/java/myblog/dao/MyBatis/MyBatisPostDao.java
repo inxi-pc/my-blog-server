@@ -2,7 +2,8 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
-import myblog.model.persistent.Post;
+import myblog.model.business.PostBo;
+import myblog.model.persistence.Post;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.ws.rs.NotFoundException;
@@ -23,7 +24,7 @@ public class MyBatisPostDao implements PostDao {
         this.myBatisDaoFactory = factory;
     }
 
-    public int createPost(Post insert) {
+    public int createPost(PostBo insert) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         postMapper.createPost(insert);
@@ -43,7 +44,7 @@ public class MyBatisPostDao implements PostDao {
         return isSucceed;
     }
 
-    public boolean updatePost(int postId, Post update) {
+    public boolean updatePost(int postId, PostBo update) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         boolean isSucceed = postMapper.updatePost(update);

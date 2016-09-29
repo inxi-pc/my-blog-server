@@ -1,6 +1,7 @@
 package myblog.dao;
 
-import myblog.model.persistent.Post;
+import myblog.model.business.PostBo;
+import myblog.model.persistence.Post;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ public interface PostDao {
      * @param insert
      * @return
      */
-    int createPost(Post insert);
+    int createPost(PostBo insert);
 
     /**
      *
@@ -26,7 +27,7 @@ public interface PostDao {
      * @param update
      * @return
      */
-    boolean updatePost(int postId, Post update);
+    boolean updatePost(int postId, PostBo update);
 
     /**
      *

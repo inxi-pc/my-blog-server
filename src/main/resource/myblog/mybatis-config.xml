@@ -4,10 +4,10 @@
     <properties resource="myblog/database.properties"/>
 
     <typeAliases>
-        <typeAlias type="myblog.model.persistent.Post" alias="Post"/>
-        <typeAlias type="myblog.model.persistent.Comment" alias="Comment"/>
-        <typeAlias type="myblog.model.persistent.User" alias="User"/>
-        <typeAlias type="myblog.model.persistent.Category" alias="Category"/>
+        <typeAlias type="myblog.model.persistence.Post" alias="Post"/>
+        <typeAlias type="myblog.model.persistence.Comment" alias="Comment"/>
+        <typeAlias type="myblog.model.persistence.User" alias="User"/>
+        <typeAlias type="myblog.model.persistence.Category" alias="Category"/>
     </typeAliases>
 
     <environments default="development">

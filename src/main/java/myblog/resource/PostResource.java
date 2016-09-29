@@ -1,82 +1,46 @@
 package myblog.resource;
 
-import myblog.model.persistent.Post;
+import myblog.Helper;
 import myblog.model.business.OrderBo;
 import myblog.model.business.PaginationBo;
+import myblog.model.business.PostBo;
+import myblog.model.persistence.Post;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 
 @Path("/posts")
 public class PostResource {
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public int createPost(@FormParam("user_id") Integer userId,
-                          @FormParam("category_id") Integer categoryId,
-                          @FormParam("post_title") String postTitle,
-                          @FormParam("post_content") String postContent,
-                          @FormParam("post_published") Boolean postPublished,
-                          @FormParam("post_enabled") Boolean postEnabled) {
-        try {
-            Post insert = new Post();
-            insert.setUser_id(userId);
-            insert.setCategory_id(categoryId);
-            insert.setPost_title(postTitle);
-            insert.setPost_content(postContent);
-            insert.setPost_published(postPublished);
-            insert.setPost_enabled(postEnabled);
-            insert.setPost_created_at(null);
-            insert.setPost_updated_at(null);
-
-            return PostService.createPost(insert);
-        } catch (Exception e) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    public int createPost(PostBo postBo) {
+        if (postBo.category_id == null || postBo.user_id == null) {
+            throw new WebApplicationException("category_id is required",
+                    Response.Status.BAD_REQUEST);
         }
+        postBo.setDefaultValue();
+
+        return PostService.createPost(postBo);
     }
 
     @PUT
     @Path("/{postId}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public boolean updatePost(@PathParam("postId") Integer postId,
-                              @FormParam("user_id") Integer userId,
-                              @FormParam("category_id") Integer categoryId,
-                              @FormParam("post_title") String postTitle,
-                              @FormParam("post_content") String postContent,
-                              @FormParam("post_published") Boolean postPublished,
-                              @FormParam("post_enabled") Boolean postEnabled) {
-        Post update = new Post();
-        try {
-            update.setPost_id(postId);
-            if (userId != null) {
-                update.setUser_id(userId);
-            }
-            if (categoryId != null) {
-                update.setCategory_id(categoryId);
-            }
-            if (postTitle != null) {
-                update.setPost_title(postTitle);
-            }
-            if (postContent != null) {
-                update.setPost_content(postContent);
-            }
-            if (postPublished != null) {
-                update.setPost_published(postPublished);
-            }
-            if (postEnabled != null) {
-                update.setPost_enabled(postEnabled);
-            }
-            update.setPost_updated_at(null);
-        } catch (Exception e) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                              PostBo postBo) {
+        if (postId != null) {
+            return PostService.updatePost(postId, postBo);
+        } else {
+            throw new WebApplicationException("post_id is required",
+                    Response.Status.BAD_REQUEST);
         }
-
-        return PostService.updatePost(postId, update);
     }
 
     @GET

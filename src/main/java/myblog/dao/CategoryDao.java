@@ -1,6 +1,6 @@
 package myblog.dao;
 
-import myblog.model.persistent.Category;
+import myblog.model.persistence.Category;
 
 import java.util.List;
 import java.util.Map;
