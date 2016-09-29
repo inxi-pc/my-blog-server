@@ -2,9 +2,9 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.MyBatisCategoryDao;
-import myblog.model.Category;
-import myblog.model.SqlOrder;
-import myblog.model.SqlPagination;
+import myblog.model.persistent.Category;
+import myblog.model.persistent.SqlOrder;
+import myblog.model.persistent.SqlPagination;
 
 import java.util.HashMap;
 import java.util.List;

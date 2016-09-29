@@ -1,4 +1,4 @@
-package myblog.model;
+package myblog.model.persistent;
 
 public class User {
     public int user_id;

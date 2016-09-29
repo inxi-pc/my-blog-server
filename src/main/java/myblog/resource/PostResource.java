@@ -1,8 +1,8 @@
 package myblog.resource;
 
-import myblog.model.Post;
-import myblog.model.SqlOrder;
-import myblog.model.SqlPagination;
+import myblog.model.persistent.Post;
+import myblog.model.persistent.SqlOrder;
+import myblog.model.persistent.SqlPagination;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;

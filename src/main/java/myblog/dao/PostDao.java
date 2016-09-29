@@ -1,6 +1,6 @@
 package myblog.dao;
 
-import myblog.model.Post;
+import myblog.model.persistent.Post;
 
 import java.util.List;
 import java.util.Map;

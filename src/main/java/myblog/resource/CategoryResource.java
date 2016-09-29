@@ -1,8 +1,8 @@
 package myblog.resource;
 
-import myblog.model.Category;
-import myblog.model.SqlOrder;
-import myblog.model.SqlPagination;
+import myblog.model.persistent.Category;
+import myblog.model.persistent.SqlOrder;
+import myblog.model.persistent.SqlPagination;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.GET;

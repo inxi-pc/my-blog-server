@@ -2,7 +2,7 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
-import myblog.model.Post;
+import myblog.model.persistent.Post;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.ws.rs.NotFoundException;

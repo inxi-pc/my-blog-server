@@ -1,4 +1,4 @@
-package myblog.model;
+package myblog.model.persistent;
 
 /**
  * Sql Order statement
