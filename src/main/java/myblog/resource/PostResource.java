@@ -20,11 +20,11 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public int createPost(PostBo postBo) {
-        if (postBo.category_id == null || postBo.user_id == null) {
-            throw new WebApplicationException("category_id is required",
-                    Response.Status.BAD_REQUEST);
+        try {
+            postBo.checkCreateObject();
+        } catch (Exception e) {
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        postBo.setDefaultValue();
 
         return PostService.createPost(postBo);
     }
@@ -33,14 +33,14 @@ public class PostResource {
     @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updatePost(@PathParam("postId") Integer postId,
-                              PostBo postBo) {
-        if (postId != null) {
-            return PostService.updatePost(postId, postBo);
-        } else {
-            throw new WebApplicationException("post_id is required",
-                    Response.Status.BAD_REQUEST);
+    public boolean updatePost(@PathParam("postId") Integer postId, PostBo postBo) {
+        try {
+            postBo.checkUpdateObject();
+        } catch (Exception e) {
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
+
+        return PostService.updatePost(postId, postBo);
     }
 
     @GET

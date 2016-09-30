@@ -5,15 +5,15 @@ import myblog.Helper;
 import java.util.Date;
 
 public class Post {
-    public Integer post_id;
-    public Integer category_id;
-    public Integer user_id;
-    public String post_title;
-    public String post_content;
-    public Boolean post_published;
-    public Boolean post_enabled;
-    public String post_created_at;
-    public String post_updated_at;
+    private Integer post_id;
+    private Integer category_id;
+    private Integer user_id;
+    private String post_title;
+    private String post_content;
+    private Boolean post_published;
+    private Boolean post_enabled;
+    private String post_created_at;
+    private String post_updated_at;
 
     public Post() {
         this.post_id = null;
@@ -124,5 +124,41 @@ public class Post {
         } else {
             this.post_updated_at = Helper.formatDatetimeUTC(new Date());
         }
+    }
+
+    public Integer getPost_id() {
+        return post_id;
+    }
+
+    public Integer getCategory_id() {
+        return category_id;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public String getPost_title() {
+        return post_title;
+    }
+
+    public String getPost_content() {
+        return post_content;
+    }
+
+    public Boolean getPost_published() {
+        return post_published;
+    }
+
+    public Boolean getPost_enabled() {
+        return post_enabled;
+    }
+
+    public String getPost_created_at() {
+        return post_created_at;
+    }
+
+    public String getPost_updated_at() {
+        return post_updated_at;
     }
 }
