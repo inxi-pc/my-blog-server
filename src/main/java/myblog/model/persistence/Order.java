@@ -1,10 +1,14 @@
-package myblog.model.business;
+package myblog.model.persistence;
+
+import myblog.model.annotation.PrimaryKey;
+
+import java.lang.reflect.Field;
 
 /**
  * Sql Order statement
  *
  */
-public class OrderBo {
+public class Order<T> {
 
     /**
      * Order By any column
@@ -17,8 +21,8 @@ public class OrderBo {
      */
     private String order_type;
 
-    public OrderBo(String orderBy, String orderType) {
-        this.setOrder_by(orderBy);
+    public Order(String orderBy, String orderType, Class<T> cls) {
+        this.setOrder_by(orderBy, cls);
         this.setOrder_type(orderType);
     }
 
@@ -27,9 +31,16 @@ public class OrderBo {
      *
      * @param orderBy
      */
-    public void setOrder_by(String orderBy) {
-        this.order_by = orderBy != null
-                && orderBy.length() > 0 ? orderBy : "id";
+    public void setOrder_by(String orderBy, Class<T> cls) {
+        if (orderBy == null) {
+            for (Field field : cls.getFields()) {
+                if (field.isAnnotationPresent(PrimaryKey.class)) {
+                    this.order_by = field.getName();
+                }
+            }
+        } else {
+            this.order_by = orderBy;
+        }
     }
 
     /**

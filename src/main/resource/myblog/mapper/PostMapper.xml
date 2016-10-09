@@ -80,7 +80,7 @@
         <where>
             <!-- find by time period -->
             <if test="begin_time != null and end_time != null">
-                post_created_at &gt; #{begin_time} AND post_created_at &lt; #{end_time}
+                post_created_at &gt; #{duration_begin} AND post_created_at &lt; #{duration_end}
             </if>
             <!-- find by user id -->
             <if test="user_id != null">

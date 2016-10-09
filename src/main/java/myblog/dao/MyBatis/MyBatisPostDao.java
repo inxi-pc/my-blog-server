@@ -2,7 +2,6 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
-import myblog.model.business.PostBo;
 import myblog.model.persistence.Post;
 import org.apache.ibatis.session.SqlSession;
 
@@ -24,14 +23,14 @@ public class MyBatisPostDao implements PostDao {
         this.myBatisDaoFactory = factory;
     }
 
-    public int createPost(PostBo insert) {
+    public int createPost(Post insert) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         postMapper.createPost(insert);
         session.commit();
         session.close();
 
-        return insert.post_id;
+        return insert.getPost_id();
     }
 
     public boolean deletePostById(int postId) {
@@ -44,7 +43,7 @@ public class MyBatisPostDao implements PostDao {
         return isSucceed;
     }
 
-    public boolean updatePost(int postId, PostBo update) {
+    public boolean updatePost(int postId, Post update) {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
         PostMapper postMapper = session.getMapper(PostMapper.class);
         boolean isSucceed = postMapper.updatePost(update);

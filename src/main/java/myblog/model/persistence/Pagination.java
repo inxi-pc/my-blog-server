@@ -1,4 +1,4 @@
-package myblog.model.business;
+package myblog.model.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * Sql pagination statement
  *
  */
-public class PaginationBo {
+public class Pagination<T> {
 
     /**
      * Pagination length
@@ -29,13 +29,13 @@ public class PaginationBo {
      * Records
      *
      */
-    private List<Object> data;
+    private List<T> data;
 
-    public PaginationBo(int limit, int offset) {
+    public Pagination(int limit, int offset) {
         this.setLimit(limit);
         this.setOffset(offset);
         this.setTotal(0);
-        this.setData(new ArrayList<Object>());
+        this.setData(new ArrayList<T>());
     }
 
     /**
@@ -70,7 +70,7 @@ public class PaginationBo {
      *
      * @param data
      */
-    public void setData(List<Object> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 
@@ -86,7 +86,7 @@ public class PaginationBo {
         return this.total;
     }
 
-    public List<Object> getData() {
+    public List<T> getData() {
         return this.data;
     }
 }

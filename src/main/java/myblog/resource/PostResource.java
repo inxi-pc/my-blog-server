@@ -1,15 +1,13 @@
 package myblog.resource;
 
-import myblog.model.business.OrderBo;
-import myblog.model.business.PaginationBo;
-import myblog.model.business.PostBo;
+import myblog.model.persistence.Order;
+import myblog.model.persistence.Pagination;
 import myblog.model.persistence.Post;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/posts")
 public class PostResource {
@@ -17,34 +15,43 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public int createPost(PostBo postBo) {
-        try {
-            postBo.checkCreateObject();
-        } catch (Exception e) {
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
+    public int createPost(Post post) {
+        if (post.getCategory_id() == null || post.getUser_id() == null) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        } else {
+            if (post.getPost_enabled() == null) {
+                post.setPost_enabled(null);
+            }
+            if (post.getPost_published() == null) {
+                post.setPost_published(null);
+            }
+            if (post.getPost_created_at() == null) {
+                post.setPost_created_at(null);
+            }
+            if (post.getPost_updated_at() == null) {
+                post.setPost_updated_at(null);
+            }
 
-        return PostService.createPost(postBo);
+            return PostService.createPost(post);
+        }
     }
 
     @PUT
     @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updatePost(@PathParam("postId") Integer postId, PostBo postBo) {
-        try {
-            postBo.checkUpdateObject();
-        } catch (Exception e) {
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+    public boolean updatePost(Post post) {
+        if (post.getPost_id() == null) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        } else {
+            return PostService.updatePost(post.getPost_id(), post);
         }
-
-        return PostService.updatePost(postId, postBo);
     }
 
     @GET
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Post getPost(@PathParam("postId") Integer postId) {
+    public Post getPostById(@PathParam("postId") Integer postId) {
         if (postId != null) {
             return PostService.getPostById(postId);
         } else {
@@ -54,12 +61,12 @@ public class PostResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> getPostList(@QueryParam("limit") int limit,
+    public Pagination getPostList(@QueryParam("limit") int limit,
                                   @QueryParam("offset") int offset,
                                   @QueryParam("order_by") String orderBy,
                                   @QueryParam("order_type") String orderType) {
-        PaginationBo page = new PaginationBo(limit, offset);
-        OrderBo order = new OrderBo(orderBy, orderType);
+        Pagination<Post> page = new Pagination<Post>(limit, offset);
+        Order<Post> order = new Order<Post>(orderBy, orderType, Post.class);
 
         return PostService.getPostList(page, order);
     }

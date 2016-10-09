@@ -1,17 +1,58 @@
 package myblog.model.persistence;
 
 import myblog.Helper;
+import myblog.model.annotation.PrimaryKey;
 
 import java.util.Date;
 
 public class Category {
-    public Integer category_id;
-    public String category_name_en;
-    public String category_name_cn;
-    public Integer category_level;
-    public String category_created_at;
-    public String category_updated_at;
-    public Boolean category_enabled;
+
+    @PrimaryKey
+    private Integer category_id;
+    private String category_name_en;
+    private String category_name_cn;
+    private Integer category_level;
+    private String category_created_at;
+    private String category_updated_at;
+    private Boolean category_enabled;
+
+    public Category() {
+        this.category_id = null;
+        this.category_name_en = null;
+        this.category_name_cn = null;
+        this.category_level = null;
+        this.category_created_at = null;
+        this.category_updated_at = null;
+        this.category_enabled = null;
+    }
+
+    public Integer getCategory_id() {
+        return category_id;
+    }
+
+    public String getCategory_name_en() {
+        return category_name_en;
+    }
+
+    public String getCategory_name_cn() {
+        return category_name_cn;
+    }
+
+    public Integer getCategory_level() {
+        return category_level;
+    }
+
+    public String getCategory_created_at() {
+        return category_created_at;
+    }
+
+    public String getCategory_updated_at() {
+        return category_updated_at;
+    }
+
+    public Boolean getCategory_enabled() {
+        return category_enabled;
+    }
 
     /**
      * Not null

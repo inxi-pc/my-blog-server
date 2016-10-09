@@ -1,10 +1,16 @@
 package myblog.model.persistence;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
+import myblog.model.annotation.PrimaryKey;
 
 import java.util.Date;
 
 public class Post {
+
+    @PrimaryKey
     private Integer post_id;
     private Integer category_id;
     private Integer user_id;
@@ -14,6 +20,10 @@ public class Post {
     private Boolean post_enabled;
     private String post_created_at;
     private String post_updated_at;
+
+    // Additional fields
+    private String duration_begin;
+    private String duration_end;
 
     public Post() {
         this.post_id = null;
@@ -25,6 +35,77 @@ public class Post {
         this.post_enabled = null;
         this.post_created_at = null;
         this.post_updated_at = null;
+    }
+
+    @JsonCreator
+    public Post(@JsonProperty("post_id") Integer postId,
+                @JsonProperty("category_id") Integer categoryId,
+                @JsonProperty("user_id") Integer userId,
+                @JsonProperty("post_title") String postTitle,
+                @JsonProperty("post_content") String postContent,
+                @JsonProperty("post_published") Boolean postPublished,
+                @JsonProperty("post_enabled") Boolean postEnabled,
+                @JsonProperty("post_created_at") String postCreatedAt,
+                @JsonProperty("post_updated_at") String postUpdatedAt,
+                @JsonProperty("duration_begin") String durationBegin,
+                @JsonProperty("duration_end") String durationEnd) {
+        this.post_id = postId;
+        this.category_id = categoryId;
+        this.user_id = userId;
+        this.post_title = postTitle;
+        this.post_content = postContent;
+        this.post_published = postPublished;
+        this.post_enabled = postEnabled;
+        this.post_created_at = postCreatedAt;
+        this.post_updated_at = postUpdatedAt;
+        this.duration_begin = durationBegin;
+        this.duration_end = durationEnd;
+    }
+
+    public Integer getPost_id() {
+        return post_id;
+    }
+
+    public Integer getCategory_id() {
+        return category_id;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public String getPost_title() {
+        return post_title;
+    }
+
+    public String getPost_content() {
+        return post_content;
+    }
+
+    public Boolean getPost_published() {
+        return post_published;
+    }
+
+    public Boolean getPost_enabled() {
+        return post_enabled;
+    }
+
+    public String getPost_created_at() {
+        return post_created_at;
+    }
+
+    public String getPost_updated_at() {
+        return post_updated_at;
+    }
+
+    @JsonIgnore
+    public String getDuration_begin() {
+        return duration_begin;
+    }
+
+    @JsonIgnore
+    public String getDuration_end() {
+        return duration_end;
     }
 
     /**
@@ -124,41 +205,5 @@ public class Post {
         } else {
             this.post_updated_at = Helper.formatDatetimeUTC(new Date());
         }
-    }
-
-    public Integer getPost_id() {
-        return post_id;
-    }
-
-    public Integer getCategory_id() {
-        return category_id;
-    }
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public String getPost_title() {
-        return post_title;
-    }
-
-    public String getPost_content() {
-        return post_content;
-    }
-
-    public Boolean getPost_published() {
-        return post_published;
-    }
-
-    public Boolean getPost_enabled() {
-        return post_enabled;
-    }
-
-    public String getPost_created_at() {
-        return post_created_at;
-    }
-
-    public String getPost_updated_at() {
-        return post_updated_at;
     }
 }

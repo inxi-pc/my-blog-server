@@ -1,6 +1,5 @@
 package myblog.dao.MyBatis.Mapper;
 
-import myblog.model.business.PostBo;
 import myblog.model.persistence.Post;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public interface PostMapper {
      *
      * @return
      */
-    int createPost(PostBo insert);
+    int createPost(Post insert);
 
     /**
      *
@@ -23,7 +22,7 @@ public interface PostMapper {
      *
      * @return
      */
-    boolean updatePost(PostBo update);
+    boolean updatePost(Post update);
 
     /**
      *
