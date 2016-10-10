@@ -1,14 +1,15 @@
-package myblog.model.persistence;
+package myblog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
-import myblog.model.annotation.PrimaryKey;
+import myblog.annotation.PrimaryKey;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.util.Date;
 
-public class Post {
+public class Post extends Domain {
 
     @PrimaryKey
     private Integer post_id;
@@ -46,9 +47,7 @@ public class Post {
                 @JsonProperty("post_published") Boolean postPublished,
                 @JsonProperty("post_enabled") Boolean postEnabled,
                 @JsonProperty("post_created_at") String postCreatedAt,
-                @JsonProperty("post_updated_at") String postUpdatedAt,
-                @JsonProperty("duration_begin") String durationBegin,
-                @JsonProperty("duration_end") String durationEnd) {
+                @JsonProperty("post_updated_at") String postUpdatedAt) {
         this.post_id = postId;
         this.category_id = categoryId;
         this.user_id = userId;
@@ -58,8 +57,6 @@ public class Post {
         this.post_enabled = postEnabled;
         this.post_created_at = postCreatedAt;
         this.post_updated_at = postUpdatedAt;
-        this.duration_begin = durationBegin;
-        this.duration_end = durationEnd;
     }
 
     public Integer getPost_id() {
@@ -108,16 +105,52 @@ public class Post {
         return duration_end;
     }
 
+    public static boolean isValidPostId(Integer postId) {
+        return postId != null && postId > 0;
+    }
+
+    public static boolean isValidCategoryId(Integer categoryId) {
+        return categoryId != null && categoryId > 0;
+    }
+
+    public static boolean isValidUserId(Integer userId) {
+        return userId != null && userId > 0;
+    }
+
+    public static boolean isValidPostPublished(Boolean postPublished) {
+        return postPublished != null;
+    }
+
+    public static boolean isValidPostEnabled(Boolean postEnabled) {
+        return postEnabled != null;
+    }
+
+    public static boolean isValidPostCreatedAt(String postCreatedAt) {
+        return postCreatedAt != null;
+    }
+
+    public static boolean isValidPostUpdatedAt(String postUpdatedAt) {
+        return postUpdatedAt != null;
+    }
+
+    public static boolean isValidDurationBegin(String durationBegin) {
+        return durationBegin != null;
+    }
+
+    public static boolean isValidDurationEnd(String durationEnd) {
+        return durationEnd != null;
+    }
+
     /**
      * Not null
      *
      * @param post_id
      */
-    public void setPost_id(Integer post_id) throws Exception {
-        if (post_id != null && post_id > 0) {
+    public void setPost_id(Integer post_id) {
+        if (isValidPostId(post_id)) {
             this.post_id = post_id;
         } else {
-            throw new Exception("Set a invalid value in Post.post_id");
+            throw new InternalServerErrorException();
         }
     }
 
@@ -126,11 +159,11 @@ public class Post {
      *
      * @param category_id
      */
-    public void setCategory_id(Integer category_id) throws Exception {
-        if (category_id != null && category_id > 0) {
+    public void setCategory_id(Integer category_id) {
+        if (isValidCategoryId(category_id)) {
             this.category_id = category_id;
         } else {
-            throw new Exception("Set a invalid value in Post.category_id");
+            throw new InternalServerErrorException();
         }
     }
 
@@ -139,11 +172,11 @@ public class Post {
      *
      * @param user_id
      */
-    public void setUser_id(Integer user_id) throws Exception {
-        if (user_id != null && user_id > 0) {
+    public void setUser_id(Integer user_id) {
+        if (isValidUserId(user_id)) {
             this.user_id = user_id;
         } else {
-            throw new Exception("Set a invalid value in Post.user_id");
+            throw new InternalServerErrorException();
         }
     }
 
@@ -161,7 +194,7 @@ public class Post {
      * @param post_published
      */
     public void setPost_published(Boolean post_published) {
-        if (post_published != null) {
+        if (isValidPostPublished(post_published)) {
             this.post_published = post_published;
         } else {
             this.post_published = false;
@@ -174,7 +207,7 @@ public class Post {
      * @param post_enabled
      */
     public void setPost_enabled(Boolean post_enabled) {
-        if (post_enabled != null) {
+        if (isValidPostEnabled(post_enabled)) {
             this.post_enabled = post_enabled;
         } else {
             this.post_enabled = false;
@@ -187,7 +220,7 @@ public class Post {
      * @param post_created_at
      */
     public void setPost_created_at(String post_created_at) {
-        if (post_created_at != null) {
+        if (isValidPostCreatedAt(post_created_at)) {
             this.post_created_at = post_created_at;
         } else {
             this.post_created_at = Helper.formatDatetimeUTC(new Date());
@@ -200,10 +233,28 @@ public class Post {
      * @param post_updated_at
      */
     public void setPost_updated_at(String post_updated_at) {
-        if (post_updated_at != null) {
+        if (isValidPostUpdatedAt(post_updated_at)) {
             this.post_updated_at = post_updated_at;
         } else {
             this.post_updated_at = Helper.formatDatetimeUTC(new Date());
+        }
+    }
+
+    @JsonIgnore
+    public void setDuration_begin(String duration_begin) {
+        if (isValidDurationBegin(duration_begin)) {
+            this.duration_begin = duration_begin;
+        } else {
+            this.duration_begin = Helper.formatDatetimeUTC(new Date());
+        }
+    }
+
+    @JsonIgnore
+    public void setDuration_end(String duration_end) {
+        if (isValidDurationBegin(duration_end)) {
+            this.duration_end = duration_end;
+        } else {
+            this.duration_end = Helper.formatDatetimeUTC(new Date());
         }
     }
 }

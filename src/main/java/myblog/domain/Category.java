@@ -1,7 +1,7 @@
-package myblog.model.persistence;
+package myblog.domain;
 
 import myblog.Helper;
-import myblog.model.annotation.PrimaryKey;
+import myblog.annotation.PrimaryKey;
 
 import java.util.Date;
 

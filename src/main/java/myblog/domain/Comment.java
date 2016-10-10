@@ -1,6 +1,6 @@
-package myblog.model.persistence;
+package myblog.domain;
 
-import myblog.model.annotation.PrimaryKey;
+import myblog.annotation.PrimaryKey;
 
 public class Comment {
 

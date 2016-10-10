@@ -1,6 +1,6 @@
 package myblog.dao.MyBatis.Mapper;
 
-import myblog.model.persistence.Post;
+import myblog.domain.Post;
 
 import java.util.List;
 import java.util.Map;

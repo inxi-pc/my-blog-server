@@ -1,10 +1,10 @@
 package myblog.service;
 
 import myblog.dao.DaoFactory;
-import myblog.dao.MyBatis.MyBatisCategoryDao;
-import myblog.model.persistence.Category;
-import myblog.model.persistence.Order;
-import myblog.model.persistence.Pagination;
+import myblog.dao.MyBatis.CategoryDaoMyBatisImpl;
+import myblog.domain.Category;
+import myblog.domain.Order;
+import myblog.domain.Pagination;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public class CategoryService {
 
     public static Pagination<Category> getCategoryList(Pagination<Category> page, Order order) {
-        MyBatisCategoryDao myBatisCategoryDao = (MyBatisCategoryDao)
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("limit", page.getLimit());

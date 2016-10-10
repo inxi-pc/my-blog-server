@@ -1,6 +1,6 @@
 package myblog.dao;
 
-import myblog.model.persistence.Post;
+import myblog.domain.Post;
 
 import java.util.List;
 import java.util.Map;
@@ -22,11 +22,10 @@ public interface PostDao {
 
     /**
      *
-     * @param postId
      * @param update
      * @return
      */
-    boolean updatePost(int postId, Post update);
+    boolean updatePost(Post update);
 
     /**
      *

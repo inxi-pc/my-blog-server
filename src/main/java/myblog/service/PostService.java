@@ -1,10 +1,10 @@
 package myblog.service;
 
 import myblog.dao.DaoFactory;
-import myblog.dao.MyBatis.MyBatisPostDao;
-import myblog.model.persistence.Order;
-import myblog.model.persistence.Pagination;
-import myblog.model.persistence.Post;
+import myblog.dao.MyBatis.PostDaoMyBatisImpl;
+import myblog.domain.Order;
+import myblog.domain.Pagination;
+import myblog.domain.Post;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,30 +12,39 @@ import java.util.List;
 public class PostService {
 
     public static int createPost(Post insert) {
-        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         return myBatisPostDao.createPost(insert);
     }
 
-    public static boolean updatePost(int postId, Post update) {
-        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+    public static boolean updatePost(Post update) {
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        return myBatisPostDao.updatePost(postId, update);
+        return myBatisPostDao.updatePost(update);
     }
 
     public static Post getPostById(int postId) {
-        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         return myBatisPostDao.getPostById(postId);
     }
 
-    public static Pagination<Post> getPostList(Pagination<Post> page, Order order) {
-        MyBatisPostDao myBatisPostDao = (MyBatisPostDao)
+    public static List<Post> getPosts(Post post) {
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = post.convertToHashMap();
+
+        return myBatisPostDao.getPostsByCondition(params);
+    }
+
+    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Order order) {
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+        HashMap<String, Object> params = post.convertToHashMap();
+
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
         params.put("orderBy", order.getOrder_by());

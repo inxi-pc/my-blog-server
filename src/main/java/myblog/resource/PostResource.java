@@ -1,13 +1,13 @@
 package myblog.resource;
 
-import myblog.model.persistence.Order;
-import myblog.model.persistence.Pagination;
-import myblog.model.persistence.Post;
+import myblog.domain.Order;
+import myblog.domain.Pagination;
+import myblog.domain.Post;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/posts")
 public class PostResource {
@@ -16,9 +16,8 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public int createPost(Post post) {
-        if (post.getCategory_id() == null || post.getUser_id() == null) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        } else {
+        if (Post.isValidUserId(post.getUser_id())
+                && Post.isValidCategoryId(post.getCategory_id())) {
             if (post.getPost_enabled() == null) {
                 post.setPost_enabled(null);
             }
@@ -33,6 +32,8 @@ public class PostResource {
             }
 
             return PostService.createPost(post);
+        } else {
+            throw new BadRequestException();
         }
     }
 
@@ -40,11 +41,11 @@ public class PostResource {
     @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updatePost(Post post) {
-        if (post.getPost_id() == null) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    public boolean updatePost(@PathParam("postId") Integer postId, Post post) {
+        if (postId != null && !post.checkAllFieldsIsNullExceptPK()) {
+            return PostService.updatePost(post);
         } else {
-            return PostService.updatePost(post.getPost_id(), post);
+            throw new BadRequestException();
         }
     }
 
@@ -52,23 +53,85 @@ public class PostResource {
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPostById(@PathParam("postId") Integer postId) {
-        if (postId != null) {
+        if (Post.isValidPostId(postId)) {
             return PostService.getPostById(postId);
         } else {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new BadRequestException();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Pagination getPostList(@QueryParam("limit") int limit,
+    public List<Post> getPosts(@QueryParam("user_id") Integer userId,
+                               @QueryParam("category_id") Integer categoryId,
+                               @QueryParam("post_title") String postTitle,
+                               @QueryParam("duration_begin") String durationBegin,
+                               @QueryParam("duration_end") String durationEnd,
+                               @QueryParam("post_published") Boolean postPublished,
+                               @QueryParam("post_enabled") Boolean postEnabled) {
+        Post post = new Post();
+        post.setPost_title(postTitle);
+        if (Post.isValidUserId(userId)) {
+            post.setUser_id(userId);
+        }
+        if (Post.isValidCategoryId(categoryId)) {
+            post.setCategory_id(categoryId);
+        }
+        if (Post.isValidDurationBegin(durationBegin)) {
+            post.setUser_id(userId);
+        }
+        if (Post.isValidDurationEnd(durationEnd)) {
+            post.setDuration_end(durationEnd);
+        }
+        if (Post.isValidPostPublished(postPublished)) {
+            post.setPost_published(postPublished);
+        }
+        if (Post.isValidPostEnabled(postEnabled)) {
+            post.setPost_enabled(postEnabled);
+        }
+
+        return PostService.getPosts(post);
+    }
+
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Pagination getPostList(@QueryParam("user_id") Integer userId,
+                                  @QueryParam("category_id") Integer categoryId,
+                                  @QueryParam("post_title") String postTitle,
+                                  @QueryParam("duration_begin") String durationBegin,
+                                  @QueryParam("duration_end") String durationEnd,
+                                  @QueryParam("post_published") Boolean postPublished,
+                                  @QueryParam("post_enabled") Boolean postEnabled,
+                                  @QueryParam("limit") int limit,
                                   @QueryParam("offset") int offset,
                                   @QueryParam("order_by") String orderBy,
                                   @QueryParam("order_type") String orderType) {
+
+        Post post = new Post();
+        post.setPost_title(postTitle);
+        if (Post.isValidUserId(userId)) {
+            post.setUser_id(userId);
+        }
+        if (Post.isValidCategoryId(categoryId)) {
+            post.setCategory_id(categoryId);
+        }
+        if (Post.isValidDurationBegin(durationBegin)) {
+            post.setUser_id(userId);
+        }
+        if (Post.isValidDurationEnd(durationEnd)) {
+            post.setDuration_end(durationEnd);
+        }
+        if (Post.isValidPostPublished(postPublished)) {
+            post.setPost_published(postPublished);
+        }
+        if (Post.isValidPostEnabled(postEnabled)) {
+            post.setPost_enabled(postEnabled);
+        }
         Pagination<Post> page = new Pagination<Post>(limit, offset);
         Order<Post> order = new Order<Post>(orderBy, orderType, Post.class);
 
-        return PostService.getPostList(page, order);
+        return PostService.getPostList(post, page, order);
     }
 
 }

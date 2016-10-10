@@ -55,22 +55,22 @@ public class MyBatisDaoFactory extends DaoFactory {
     }
 
     @Override
-    public MyBatisPostDao getPostDao() {
-        return new MyBatisPostDao(this);
+    public PostDaoMyBatisImpl getPostDao() {
+        return new PostDaoMyBatisImpl(this);
     }
 
     @Override
-    public MyBatisCommentDao getCommentDao() {
-        return new MyBatisCommentDao();
+    public CommentDaoMyBatisImpl getCommentDao() {
+        return new CommentDaoMyBatisImpl();
     }
 
     @Override
-    public MyBatisUserDao getUserDao() {
-        return new MyBatisUserDao();
+    public UserDaoMyBatisImpl getUserDao() {
+        return new UserDaoMyBatisImpl();
     }
 
     @Override
-    public MyBatisCategoryDao getCategoryDao() {
-        return new MyBatisCategoryDao(this);
+    public CategoryDaoMyBatisImpl getCategoryDao() {
+        return new CategoryDaoMyBatisImpl(this);
     }
 }

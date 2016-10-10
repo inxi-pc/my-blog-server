@@ -1,4 +1,4 @@
-package myblog.model.persistence;
+package myblog.domain;
 
 import java.util.ArrayList;
 import java.util.List;
