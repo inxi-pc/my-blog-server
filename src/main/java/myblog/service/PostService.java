@@ -2,7 +2,7 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.PostDaoMyBatisImpl;
-import myblog.domain.Order;
+import myblog.domain.Sort;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 
@@ -79,7 +79,7 @@ public class PostService {
      * @param order
      * @return
      */
-    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Order order) {
+    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort order) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
         HashMap<String, Object> params = post.convertToHashMap();

@@ -5,23 +5,22 @@ import myblog.annotation.PrimaryKey;
 import java.lang.reflect.Field;
 
 /**
- * Sql Order statement
+ * Sql Sort statement
  *
  */
-public class Order<T> extends Domain {
+public class Sort<T> extends Domain {
 
     /**
-     * Order By any column
+     * Sort By any column
      */
     private String order_by;
 
     /**
-     * Order by Desc or ASC
-     *
+     * Sort by Desc or ASC
      */
     private String order_type;
 
-    public Order(String orderBy, String orderType, Class<T> cls) {
+    public Sort(String orderBy, String orderType, Class<T> cls) {
         this.setOrder_by(orderBy, cls);
         this.setOrder_type(orderType);
     }
@@ -32,14 +31,14 @@ public class Order<T> extends Domain {
      * @param orderBy
      */
     public void setOrder_by(String orderBy, Class<T> cls) {
-        if (orderBy == null) {
+        if (orderBy != null) {
+            this.order_by = orderBy;
+        } else {
             for (Field field : cls.getFields()) {
                 if (field.isAnnotationPresent(PrimaryKey.class)) {
                     this.order_by = field.getName();
                 }
             }
-        } else {
-            this.order_by = orderBy;
         }
     }
 
@@ -49,10 +48,12 @@ public class Order<T> extends Domain {
      * @param orderType
      */
     public void setOrder_type(String orderType) {
-        if (orderType != null && orderType.equals("DESC")) {
-            this.order_type = orderType;
-        } else if (orderType != null && orderType.equals("ASC")) {
-            this.order_type = orderType;
+        if (orderType != null) {
+            if (orderType.equals("DESC")) {
+                this.order_type = "DESC";
+            } else {
+                this.order_type = "ASC";
+            }
         } else {
             this.order_type = "DESC";
         }

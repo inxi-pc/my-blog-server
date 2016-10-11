@@ -188,7 +188,7 @@ public class Post extends Domain {
     }
 
     /**
-     * todo: add more rule validation
+     * todo: add more validation rule
      * @param postTitle
      */
     public void setPost_title(String postTitle) {
@@ -200,7 +200,7 @@ public class Post extends Domain {
     }
 
     /**
-     * todo: add more rule validation
+     * todo: add more validation rule
      * @param postContent
      */
     public void setPost_content(String postContent) {

@@ -1,5 +1,7 @@
 package myblog.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.PrimaryKey;
 
@@ -24,6 +26,23 @@ public class Category {
         this.category_created_at = null;
         this.category_updated_at = null;
         this.category_enabled = null;
+    }
+
+    @JsonCreator
+    public Category(@JsonProperty("category_id") Integer categoryId,
+                    @JsonProperty("category_name_en") String categoryNameEn,
+                    @JsonProperty("category_name_cn") String categoryNameCn,
+                    @JsonProperty("categoryLevel") Integer categoryLevel,
+                    @JsonProperty("categoryCreatedAt") String categoryCreatedAt,
+                    @JsonProperty("categoryUpdatedAt") String categoryUpdatedAt,
+                    @JsonProperty("categoryEnabled") Boolean categoryEnabled) {
+        this.category_id = categoryId;
+        this.category_name_en = categoryNameEn;
+        this.category_name_cn = categoryNameCn;
+        this.category_level = categoryLevel;
+        this.category_created_at = categoryCreatedAt;
+        this.category_updated_at = categoryUpdatedAt;
+        this.category_enabled = categoryEnabled;
     }
 
     public Integer getCategory_id() {
@@ -54,36 +73,79 @@ public class Category {
         return category_enabled;
     }
 
+    public Boolean isValidCategoryId(Integer categoryId) {
+        return categoryId != null && categoryId > 0;
+    }
+
+    public Boolean isValidCategoryNameEn(String categoryNameEn) {
+        return true;
+    }
+
+    public Boolean isValidCategoryNameCn(String categoryNameCn) {
+        return true;
+    }
+
+    public Boolean isValidCategoryLevel(Integer categoryLevel) {
+        return categoryLevel != null && categoryLevel > 0;
+    }
+
+    public Boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
+        return categoryCreatedAt != null;
+    }
+
+    public Boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
+        return categoryUpdatedAt != null;
+    }
+
+    public Boolean isValidCategoryEnabled(Boolean categoryEnabled) {
+        return categoryEnabled != null;
+    }
+
     /**
      * Not null
      *
-     * @param category_id
-     * @throws Exception
+     * @param categoryId
      */
-    public void setCategory_id(Integer category_id) throws Exception {
-        if (category_id != null && category_id > 0) {
-            this.category_id = category_id;
+    public void setCategory_id(Integer categoryId) {
+        if (isValidCategoryId(categoryId)) {
+            this.category_id = categoryId;
         } else {
-            throw new Exception("Set a invalid value in category.category_id");
+            throw new IllegalArgumentException();
         }
     }
 
-    public void setCategory_name_en(String category_name_en) {
-        this.category_name_en = category_name_en;
+    /**
+     * todo: add more validation rule
+     * @param categoryNameEn
+     */
+    public void setCategory_name_en(String categoryNameEn) {
+        if (isValidCategoryNameEn(categoryNameEn)) {
+            this.category_name_en = categoryNameEn;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public void setCategory_name_cn(String category_name_cn) {
-        this.category_name_cn = category_name_cn;
+    /**
+     *
+     * @param categoryNameCn
+     */
+    public void setCategory_name_cn(String categoryNameCn) {
+        if (isValidCategoryNameCn(categoryNameCn)) {
+            this.category_name_cn = categoryNameCn;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
      * Not null, has default value
      *
-     * @param category_level
+     * @param categoryLevel
      */
-    public void setCategory_level(Integer category_level) {
-        if (category_level != null && category_level > 0) {
-            this.category_level = category_level;
+    public void setCategory_level(Integer categoryLevel) {
+        if (isValidCategoryLevel(categoryLevel)) {
+            this.category_level = categoryLevel;
         } else {
             this.category_level = 1;
         }
@@ -92,11 +154,11 @@ public class Category {
     /**
      * Not null, has default value
      *
-     * @param category_enabled
+     * @param categoryEnabled
      */
-    public void setCategory_enabled(Boolean category_enabled) {
-        if (category_enabled != null) {
-            this.category_enabled = category_enabled;
+    public void setCategory_enabled(Boolean categoryEnabled) {
+        if (isValidCategoryEnabled(categoryEnabled)) {
+            this.category_enabled = categoryEnabled;
         } else {
             this.category_enabled = false;
         }
@@ -105,24 +167,24 @@ public class Category {
     /**
      * Not null, has default value
      *
-     * @param category_created_at
+     * @param categoryCreatedAt
      */
-    public void setCategory_created_at(String category_created_at) {
-        if (category_created_at != null) {
-            this.category_created_at = category_created_at;
+    public void setCategory_created_at(String categoryCreatedAt) {
+        if (isValidCategoryCreatedAt(categoryCreatedAt)) {
+            this.category_created_at = categoryCreatedAt;
         } else {
             this.category_created_at = Helper.formatDatetimeUTC(new Date());
         }
     }
 
-    /**
+    /*
      * Not null, has default value
      *
-     * @param category_updated_at
+     * @param categoryUpdatedAt
      */
-    public void setCategory_updated_at(String category_updated_at) {
-        if (category_updated_at != null) {
-            this.category_updated_at = category_updated_at;
+    public void setCategory_updated_at(String categoryUpdatedAt) {
+        if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
+            this.category_updated_at = categoryUpdatedAt;
         } else {
             this.category_updated_at = Helper.formatDatetimeUTC(new Date());
         }

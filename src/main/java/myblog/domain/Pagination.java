@@ -12,18 +12,18 @@ public class Pagination<T> extends Domain {
     /**
      * Pagination length
      */
-    private int limit;
+    private Integer limit;
 
     /**
      * Start Position of Pagination
      */
-    private int offset;
+    private Integer offset;
 
     /**
      * Number of records
      *
      */
-    private int total;
+    private Integer total;
 
     /**
      * Records
@@ -31,7 +31,7 @@ public class Pagination<T> extends Domain {
      */
     private List<T> data;
 
-    public Pagination(int limit, int offset) {
+    public Pagination(Integer limit, Integer offset) {
         this.setLimit(limit);
         this.setOffset(offset);
         this.setTotal(0);
@@ -43,8 +43,12 @@ public class Pagination<T> extends Domain {
      *
      * @param limit
      */
-    public void setLimit(int limit) {
-        this.limit = limit <= 0 ? 1 : limit;
+    public void setLimit(Integer limit) {
+        if (limit != null && limit >= 0) {
+            this.limit = limit;
+        } else {
+            this.limit = 1;
+        }
     }
 
     /**
@@ -52,8 +56,12 @@ public class Pagination<T> extends Domain {
      *
      * @param offset
      */
-    public void setOffset(int offset) {
-        this.offset = offset < 0 ? 0 : offset;
+    public void setOffset(Integer offset) {
+        if (offset != null && offset >= 0) {
+            this.offset = offset;
+        } else {
+            this.offset = 0;
+        }
     }
 
     /**
@@ -61,8 +69,12 @@ public class Pagination<T> extends Domain {
      *
      * @param total
      */
-    public void setTotal(int total) {
-        this.total = total;
+    public void setTotal(Integer total) {
+        if (total != null && total >= 0) {
+            this.total = total;
+        } else {
+            this.total = 0;
+        }
     }
 
     /**
@@ -71,7 +83,11 @@ public class Pagination<T> extends Domain {
      * @param data
      */
     public void setData(List<T> data) {
-        this.data = data;
+        if (data != null) {
+            this.data = data;
+        } else {
+            this.data = new ArrayList<T>();
+        }
     }
 
     public int getLimit() {

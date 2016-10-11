@@ -1,7 +1,7 @@
 package myblog.resource;
 
 import myblog.domain.Category;
-import myblog.domain.Order;
+import myblog.domain.Sort;
 import myblog.domain.Pagination;
 import myblog.service.CategoryService;
 
@@ -21,7 +21,7 @@ public class CategoryResource {
                                                 @QueryParam("order_by") String orderBy,
                                                 @QueryParam("order_type") String orderType) {
         Pagination<Category> page = new Pagination<Category>(limit, offset);
-        Order<Category> order = new Order<Category>(orderBy, orderType, Category.class);
+        Sort<Category> order = new Sort<Category>(orderBy, orderType, Category.class);
 
         return CategoryService.getCategoryList(page, order);
     }

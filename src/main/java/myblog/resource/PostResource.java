@@ -1,6 +1,6 @@
 package myblog.resource;
 
-import myblog.domain.Order;
+import myblog.domain.Sort;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.service.PostService;
@@ -185,7 +185,7 @@ public class PostResource {
         }
 
         Pagination<Post> page = new Pagination<Post>(limit, offset);
-        Order<Post> order = new Order<Post>(orderBy, orderType, Post.class);
+        Sort<Post> order = new Sort<Post>(orderBy, orderType, Post.class);
         page = PostService.getPostList(post, page, order);
 
         if (page != null) {
