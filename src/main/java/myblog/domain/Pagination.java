@@ -7,7 +7,7 @@ import java.util.List;
  * Sql pagination statement
  *
  */
-public class Pagination<T> {
+public class Pagination<T> extends Domain {
 
     /**
      * Pagination length

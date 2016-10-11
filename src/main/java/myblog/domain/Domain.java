@@ -2,7 +2,6 @@ package myblog.domain;
 
 import myblog.annotation.PrimaryKey;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public abstract class Domain {
                 Object value = field.get(this);
                 isNull = isNull && (value == null);
             } catch (Exception e) {
-                throw new InternalServerErrorException(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -43,7 +42,7 @@ public abstract class Domain {
                     isNull = isNull && (value == null);
                 }
             } catch (Exception e) {
-                throw new InternalServerErrorException(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -63,7 +62,7 @@ public abstract class Domain {
                 Object value = field.get(this);
                 params.put(field.getName(), value);
             } catch (Exception e) {
-                throw new InternalServerErrorException(e);
+                throw new RuntimeException(e);
             }
         }
 

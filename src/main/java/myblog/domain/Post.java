@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.PrimaryKey;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.util.Date;
 
 public class Post extends Domain {
@@ -117,6 +116,14 @@ public class Post extends Domain {
         return userId != null && userId > 0;
     }
 
+    public static boolean isValidPostTitle(String postTitle) {
+        return true;
+    }
+
+    public static boolean isValidPostContent(String postContent) {
+        return true;
+    }
+
     public static boolean isValidPostPublished(Boolean postPublished) {
         return postPublished != null;
     }
@@ -144,58 +151,74 @@ public class Post extends Domain {
     /**
      * Not null
      *
-     * @param post_id
+     * @param postId
      */
-    public void setPost_id(Integer post_id) {
-        if (isValidPostId(post_id)) {
-            this.post_id = post_id;
+    public void setPost_id(Integer postId) {
+        if (isValidPostId(postId)) {
+            this.post_id = postId;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
     }
 
     /**
      * Not null
      *
-     * @param category_id
+     * @param categoryId
      */
-    public void setCategory_id(Integer category_id) {
-        if (isValidCategoryId(category_id)) {
-            this.category_id = category_id;
+    public void setCategory_id(Integer categoryId) {
+        if (isValidCategoryId(categoryId)) {
+            this.category_id = categoryId;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
     }
 
     /**
      * Not null
      *
-     * @param user_id
+     * @param userId
      */
-    public void setUser_id(Integer user_id) {
-        if (isValidUserId(user_id)) {
-            this.user_id = user_id;
+    public void setUser_id(Integer userId) {
+        if (isValidUserId(userId)) {
+            this.user_id = userId;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
     }
 
-    public void setPost_title(String post_title) {
-        this.post_title = post_title;
+    /**
+     * todo: add more rule validation
+     * @param postTitle
+     */
+    public void setPost_title(String postTitle) {
+        if (isValidPostTitle(postTitle)) {
+            this.post_title = postTitle;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public void setPost_content(String post_content) {
-        this.post_content = post_content;
+    /**
+     * todo: add more rule validation
+     * @param postContent
+     */
+    public void setPost_content(String postContent) {
+        if (isValidPostContent(postContent)) {
+            this.post_content = postContent;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
      * Not null, has default value
      *
-     * @param post_published
+     * @param postPublished
      */
-    public void setPost_published(Boolean post_published) {
-        if (isValidPostPublished(post_published)) {
-            this.post_published = post_published;
+    public void setPost_published(Boolean postPublished) {
+        if (isValidPostPublished(postPublished)) {
+            this.post_published = postPublished;
         } else {
             this.post_published = false;
         }
@@ -204,11 +227,11 @@ public class Post extends Domain {
     /**
      * Not null, has default value
      *
-     * @param post_enabled
+     * @param postEnabled
      */
-    public void setPost_enabled(Boolean post_enabled) {
-        if (isValidPostEnabled(post_enabled)) {
-            this.post_enabled = post_enabled;
+    public void setPost_enabled(Boolean postEnabled) {
+        if (isValidPostEnabled(postEnabled)) {
+            this.post_enabled = postEnabled;
         } else {
             this.post_enabled = false;
         }
@@ -217,11 +240,11 @@ public class Post extends Domain {
     /**
      * Not null, has default value
      *
-     * @param post_created_at
+     * @param postCreatedAt
      */
-    public void setPost_created_at(String post_created_at) {
-        if (isValidPostCreatedAt(post_created_at)) {
-            this.post_created_at = post_created_at;
+    public void setPost_created_at(String postCreatedAt) {
+        if (isValidPostCreatedAt(postCreatedAt)) {
+            this.post_created_at = postCreatedAt;
         } else {
             this.post_created_at = Helper.formatDatetimeUTC(new Date());
         }
@@ -230,29 +253,29 @@ public class Post extends Domain {
     /**
      * Not null, has default value
      *
-     * @param post_updated_at
+     * @param postUpdatedAt
      */
-    public void setPost_updated_at(String post_updated_at) {
-        if (isValidPostUpdatedAt(post_updated_at)) {
-            this.post_updated_at = post_updated_at;
+    public void setPost_updated_at(String postUpdatedAt) {
+        if (isValidPostUpdatedAt(postUpdatedAt)) {
+            this.post_updated_at = postUpdatedAt;
         } else {
             this.post_updated_at = Helper.formatDatetimeUTC(new Date());
         }
     }
 
     @JsonIgnore
-    public void setDuration_begin(String duration_begin) {
-        if (isValidDurationBegin(duration_begin)) {
-            this.duration_begin = duration_begin;
+    public void setDuration_begin(String durationBegin) {
+        if (isValidDurationBegin(durationBegin)) {
+            this.duration_begin = durationBegin;
         } else {
             this.duration_begin = Helper.formatDatetimeUTC(new Date());
         }
     }
 
     @JsonIgnore
-    public void setDuration_end(String duration_end) {
-        if (isValidDurationBegin(duration_end)) {
-            this.duration_end = duration_end;
+    public void setDuration_end(String durationEnd) {
+        if (isValidDurationBegin(durationEnd)) {
+            this.duration_end = durationEnd;
         } else {
             this.duration_end = Helper.formatDatetimeUTC(new Date());
         }

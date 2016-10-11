@@ -11,6 +11,11 @@ import java.util.List;
 
 public class PostService {
 
+    /**
+     *
+     * @param insert
+     * @return
+     */
     public static int createPost(Post insert) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -18,6 +23,11 @@ public class PostService {
         return myBatisPostDao.createPost(insert);
     }
 
+    /**
+     *
+     * @param update
+     * @return
+     */
     public static boolean updatePost(Post update) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -25,6 +35,23 @@ public class PostService {
         return myBatisPostDao.updatePost(update);
     }
 
+    /**
+     *
+     * @param postId
+     * @return
+     */
+    public static boolean deletePost(int postId) {
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
+        return myBatisPostDao.deletePost(postId);
+    }
+
+    /**
+     *
+     * @param postId
+     * @return
+     */
     public static Post getPostById(int postId) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -32,6 +59,11 @@ public class PostService {
         return myBatisPostDao.getPostById(postId);
     }
 
+    /**
+     *
+     * @param post
+     * @return
+     */
     public static List<Post> getPosts(Post post) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -40,6 +72,13 @@ public class PostService {
         return myBatisPostDao.getPostsByCondition(params);
     }
 
+    /**
+     *
+     * @param post
+     * @param page
+     * @param order
+     * @return
+     */
     public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Order order) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();

@@ -100,7 +100,7 @@
             </if>
         </where>
         <if test="orderBy != null and orderType != null">
-            ORDER BY #{orderBy} #{orderType}
+            ORDER BY ${orderBy} ${orderType}
         </if>
         <if test="offset != null and limit != null">
             LIMIT #{limit} OFFSET #{offset}

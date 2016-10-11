@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
  * Sql Order statement
  *
  */
-public class Order<T> {
+public class Order<T> extends Domain {
 
     /**
      * Order By any column

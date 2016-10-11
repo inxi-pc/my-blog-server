@@ -5,7 +5,6 @@ import myblog.dao.PostDao;
 import myblog.domain.Post;
 import org.apache.ibatis.session.SqlSession;
 
-import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 import java.util.Map;
 
@@ -40,23 +39,8 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return insert.getPost_id();
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
-    }
-
-    /**
-     *
-     * @param postId
-     * @return
-     */
-    public boolean deletePostById(int postId) {
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-        PostMapper postMapper = session.getMapper(PostMapper.class);
-        boolean isSucceed = postMapper.deletePostById(postId);
-        session.commit();
-        session.close();
-
-        return isSucceed;
     }
 
     /**
@@ -74,7 +58,29 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return isSucceed;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     *
+     * @param postId
+     * @return
+     */
+    public boolean deletePost(int postId) {
+        if (Post.isValidPostId(postId)) {
+            Post post = new Post();
+            post.setPost_id(postId);
+            post.setPost_enabled(false);
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+            PostMapper postMapper = session.getMapper(PostMapper.class);
+            boolean isSucceed = postMapper.updatePost(post);
+            session.commit();
+            session.close();
+
+            return isSucceed;
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -84,13 +90,17 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @return
      */
     public Post getPostById(int postId) {
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-        PostMapper postMapper = session.getMapper(PostMapper.class);
-        Post post = postMapper.getPostById(postId);
-        session.commit();
-        session.close();
+        if (Post.isValidPostId(postId)) {
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+            PostMapper postMapper = session.getMapper(PostMapper.class);
+            Post post = postMapper.getPostById(postId);
+            session.commit();
+            session.close();
 
-        return post;
+            return post;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -108,7 +118,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return posts;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
     }
 
@@ -127,7 +137,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return posts;
         } else {
-            throw new InternalServerErrorException();
+            throw new IllegalArgumentException();
         }
     }
 }

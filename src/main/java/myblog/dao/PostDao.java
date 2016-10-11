@@ -18,7 +18,7 @@ public interface PostDao {
      * @param postId
      * @return
      */
-    boolean deletePostById(int postId);
+    boolean deletePost(int postId);
 
     /**
      *
