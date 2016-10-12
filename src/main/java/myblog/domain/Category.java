@@ -1,13 +1,14 @@
 package myblog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.PrimaryKey;
 
 import java.util.Date;
 
-public class Category {
+public class Category extends Domain {
 
     @PrimaryKey
     private Integer category_id;
@@ -17,6 +18,9 @@ public class Category {
     private String category_created_at;
     private String category_updated_at;
     private Boolean category_enabled;
+
+    private String duration_begin;
+    private String duration_end;
 
     public Category() {
         this.category_id = null;
@@ -73,34 +77,47 @@ public class Category {
         return category_enabled;
     }
 
-    public Boolean isValidCategoryId(Integer categoryId) {
+    @JsonIgnore
+    public String getDuration_begin() {
+        return duration_begin;
+    }
+
+    @JsonIgnore
+    public String getDuration_end() {
+        return duration_end;
+    }
+
+    public static boolean isValidCategoryId(Integer categoryId) {
         return categoryId != null && categoryId > 0;
     }
 
-    public Boolean isValidCategoryNameEn(String categoryNameEn) {
+    public static boolean isValidCategoryName(String categoryName) {
         return true;
     }
 
-    public Boolean isValidCategoryNameCn(String categoryNameCn) {
-        return true;
-    }
-
-    public Boolean isValidCategoryLevel(Integer categoryLevel) {
+    public static boolean isValidCategoryLevel(Integer categoryLevel) {
         return categoryLevel != null && categoryLevel > 0;
     }
 
-    public Boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
+    public static boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
         return categoryCreatedAt != null;
     }
 
-    public Boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
+    public static boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
         return categoryUpdatedAt != null;
     }
 
-    public Boolean isValidCategoryEnabled(Boolean categoryEnabled) {
+    public static boolean isValidCategoryEnabled(Boolean categoryEnabled) {
         return categoryEnabled != null;
     }
 
+    public static boolean isValidDurationBegin(String durationBegin) {
+        return durationBegin != null;
+    }
+
+    public static Boolean isValidDurationEnd(String durationEnd) {
+        return durationEnd != null;
+    }
     /**
      * Not null
      *
@@ -119,7 +136,7 @@ public class Category {
      * @param categoryNameEn
      */
     public void setCategory_name_en(String categoryNameEn) {
-        if (isValidCategoryNameEn(categoryNameEn)) {
+        if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
             throw new IllegalArgumentException();
@@ -131,7 +148,7 @@ public class Category {
      * @param categoryNameCn
      */
     public void setCategory_name_cn(String categoryNameCn) {
-        if (isValidCategoryNameCn(categoryNameCn)) {
+        if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
             throw new IllegalArgumentException();
@@ -187,6 +204,24 @@ public class Category {
             this.category_updated_at = categoryUpdatedAt;
         } else {
             this.category_updated_at = Helper.formatDatetimeUTC(new Date());
+        }
+    }
+
+    @JsonIgnore
+    public void setDuration_start(String durationBegin) {
+        if (isValidDurationBegin(durationBegin)) {
+            this.duration_begin = durationBegin;
+        } else {
+            this.duration_begin = Helper.formatDatetimeUTC(new Date());
+        }
+    }
+
+    @JsonIgnore
+    public void setDuration_end(String durationEnd) {
+        if (isValidDurationEnd(durationEnd)) {
+            this.duration_end = durationEnd;
+        } else {
+            this.duration_end = Helper.formatDatetimeUTC(new Date());
         }
     }
 }

@@ -2,9 +2,9 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.PostDaoMyBatisImpl;
-import myblog.domain.Sort;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
+import myblog.domain.Sort;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +91,7 @@ public class PostService {
 
         List<Post> posts = myBatisPostDao.getPostsByCondition(params);
         page.setData(posts);
+        page.setTotal(posts.size());
 
         return page;
     }

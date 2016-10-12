@@ -5,7 +5,6 @@ import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
 import org.apache.ibatis.session.SqlSession;
 
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +21,16 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     }
 
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
-        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-        List<Category> categories = categoryMapper.getCategoriesByCondition(params);
-        session.commit();
-        session.close();
+        if (params.size() > 0) {
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession();
+            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+            List<Category> categories = categoryMapper.getCategoriesByCondition(params);
+            session.commit();
+            session.close();
 
-        if (categories == null || categories.isEmpty()) {
-            throw new NotFoundException("Categories not found");
-        } else {
             return categories;
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 }

@@ -1,8 +1,8 @@
 package myblog.resource;
 
-import myblog.domain.Sort;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
+import myblog.domain.Sort;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
@@ -18,7 +18,7 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post post) {
-        if (Post.isValidUserId(post.getUser_id())
+        if (post != null && Post.isValidUserId(post.getUser_id())
                 && Post.isValidCategoryId(post.getCategory_id())) {
             if (post.getPost_enabled() == null) {
                 post.setPost_enabled(null);
@@ -49,8 +49,10 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post post) {
-        if (Post.isValidPostId(postId) && !post.checkAllFieldsIsNullExceptPK()) {
+        if (Post.isValidPostId(postId) && post != null
+                && !post.checkAllFieldsIsNullExceptPK()) {
             if (PostService.getPostById(postId) != null) {
+                post.setPost_id(postId);
                 if (PostService.updatePost(post)) {
                     return Response.noContent().build();
                 } else {
@@ -157,8 +159,8 @@ public class PostResource {
                                 @QueryParam("duration_end") String durationEnd,
                                 @QueryParam("post_published") Boolean postPublished,
                                 @QueryParam("post_enabled") Boolean postEnabled,
-                                @QueryParam("limit") int limit,
-                                @QueryParam("offset") int offset,
+                                @QueryParam("limit") Integer limit,
+                                @QueryParam("offset") Integer offset,
                                 @QueryParam("order_by") String orderBy,
                                 @QueryParam("order_type") String orderType) {
         Post post = new Post();

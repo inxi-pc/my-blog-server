@@ -4,6 +4,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.provider.CORSFilter;
 import myblog.provider.ErrorMapper;
 import myblog.provider.ExceptionMapper;
+import org.apache.logging.log4j.LogManager;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -31,7 +32,7 @@ public class App extends ResourceConfig {
      * Server config file name
      *
      */
-    private static final String CONFIG_NAME = "myblog/config.properties";
+    private static final String CONFIG_NAME = "config.properties";
 
     /**
      * App config
@@ -53,7 +54,6 @@ public class App extends ResourceConfig {
 
     public static void main(String[] args) {
         System.out.println("Hello World!Blog server");
-
         loadApplicationConfig();
 
         try {

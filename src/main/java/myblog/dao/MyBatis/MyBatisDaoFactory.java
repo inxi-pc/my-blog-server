@@ -22,7 +22,7 @@ public class MyBatisDaoFactory extends DaoFactory {
      * mybatis-config file name
      *
      */
-    private static final String resource = "myblog/mybatis-config.xml";
+    private static final String resource = "mybatis-config.xml";
 
     private MyBatisDaoFactory() {
         try {

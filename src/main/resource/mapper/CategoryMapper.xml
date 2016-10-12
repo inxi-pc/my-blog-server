@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myblog.dao.MyBatis.Mapper.CategoryMapper">
+    <insert id="createCategory" useGeneratedKeys="true" keyProperty="category_id">
+        INSERT INTO category(
+            category_id,
+            category_name_en,
+            category_name_cn,
+            category_level,
+            category_enabled,
+            category_created_at,
+            category_updated_at
+        )
+        VALUES(
+            #{category_id},
+            #{category_name_en},
+            #{category_name_cn},
+            #{category_level},
+            #{category_enabled},
+            #{category_created_at},
+            #{category_updated_at}
+        )
+    </insert>
+
+    <update id="updateCategory">
+        UPDATE category
+        <set>
+            <if test="category_level != null">
+                category_level = #{category_level},
+            </if>
+            <if test="category_name_en != null">
+                category_name_en = #{category_name_en},
+            </if>
+            <if test="category_name_cn != null">
+                category_name_cn = #{category_name_cn},
+            </if>
+            <if test="category_enabled != null">
+                category_enabled = #{category_enabled},
+            </if>
+            <if test="category_updated_at != null">
+                category_updated_at = #{category_updated_at}
+            </if>
+        </set>
+        WHERE category_id = #{category_id}
+    </update>
+
+    <select id="getCategoryById" resultType="Category">
+        SELECT * FROM category WHERE category_id = #{category_id}
+    </select>
+
+    <!-- Basic way to find list -->
+    <select id="getCategoriesByIds" resultType="Category">
+        SELECT * FROM category WHERE category_id IN
+        <foreach collection="list" item="category_id" index="index"
+                 open="(" separator="," close=")">
+            #{category_id}
+        </foreach>
+    </select>
+
+    <select id="getCategoriesByCondition" resultType="Category">
+        SELECT * FROM category
+        <where>
+            <if test="duration_begin != null">
+                category_created_at &gt; #{duration_begin}
+            </if>
+            <if test="duration_end != null">
+                AND category_updated_at &lt; #{duration_end}
+            </if>
+            <if test="category_name_en != null">
+                <bind name="nameEnPattern" value="'%' + category_name_en + '%'"/>
+                AND category_name_en LIKE #{nameEnPattern}
+                OR category_name_cn LIKE #{nameEnPattern}
+            </if>
+            <if test="category_name_cn != null">
+                <bind name="nameCnPattern" value="'%' + category_name_cn + '%'"/>
+                AND category_name_cn LIKE #{nameCnPattern}
+                OR category_name_en LIKE #{nameCnPattern}
+            </if>
+            <if test="category_level != null">
+                AND category_level = #{category_level}
+            </if>
+            <if test="category_enabled != null">
+                AND category_enabled = #{category_enabled}
+            </if>
+        </where>
+        <if test="orderBy != null and orderType != null">
+            ORDER BY ${orderBy} ${orderType}
+        </if>
+        <if test="offset != null and limit != null">
+            LIMIT #{limit} OFFSET #{offset}
+        </if>
+    </select>
+</mapper>

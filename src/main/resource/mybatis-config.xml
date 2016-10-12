@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <properties resource="myblog/database.properties"/>
+    <properties resource="database.properties"/>
 
     <typeAliases>
         <typeAlias type="myblog.domain.Post" alias="Post"/>
@@ -23,7 +23,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="myblog/mapper/PostMapper.xml"/>
-        <mapper resource="myblog/mapper/CategoryMapper.xml"/>
+        <mapper resource="mapper/PostMapper.xml"/>
+        <mapper resource="mapper/CategoryMapper.xml"/>
     </mappers>
 </configuration>
