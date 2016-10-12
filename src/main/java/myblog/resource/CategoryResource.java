@@ -5,16 +5,25 @@ import myblog.domain.Pagination;
 import myblog.domain.Sort;
 import myblog.service.CategoryService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/categories/list")
+@Path("/categories")
 public class CategoryResource {
 
+//    @POST
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public int createCategory(Category category) {
+//        if (category != null && !category.checkAllFieldsIsNullExceptPK()) {
+//
+//        } else {
+//            throw new BadRequestException();
+//        }
+//    }
+
     @GET
+    @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
     public Pagination<Category> getCategoryList(@QueryParam("category_name") String categoryName,
                                                 @QueryParam("category_level") Integer categoryLevel,
@@ -43,7 +52,16 @@ public class CategoryResource {
         }
         Pagination<Category> page = new Pagination<Category>(limit, offset);
         Sort<Category> order = new Sort<Category>(orderBy, orderType, Category.class);
+        page = CategoryService.getCategoryList(category, page, order);
 
-        return CategoryService.getCategoryList(category, page, order);
+        if (page != null) {
+            if (page.getData().size() > 0) {
+                return page;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new InternalServerErrorException();
+        }
     }
 }

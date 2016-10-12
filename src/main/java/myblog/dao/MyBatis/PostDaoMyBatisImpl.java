@@ -30,12 +30,32 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @return
      */
     public int createPost(Post insert) {
-        if (insert != null && !insert.checkAllFieldsIsNull()) {
+        if (insert != null && !insert.checkAllFieldsIsNullExceptPK()) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             PostMapper postMapper = session.getMapper(PostMapper.class);
             postMapper.createPost(insert);
 
             return insert.getPost_id();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     *
+     * @param postId
+     * @return
+     */
+    public boolean deletePost(int postId) {
+        if (Post.isValidPostId(postId)) {
+            Post post = new Post();
+            post.setPost_id(postId);
+            post.setPost_enabled(false);
+
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+            PostMapper postMapper = session.getMapper(PostMapper.class);
+
+            return postMapper.updatePost(post);
         } else {
             throw new IllegalArgumentException();
         }
@@ -52,25 +72,6 @@ public class PostDaoMyBatisImpl implements PostDao {
             PostMapper postMapper = session.getMapper(PostMapper.class);
 
             return postMapper.updatePost(update);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     *
-     * @param postId
-     * @return
-     */
-    public boolean deletePost(int postId) {
-        if (Post.isValidPostId(postId)) {
-            Post post = new Post();
-            post.setPost_id(postId);
-            post.setPost_enabled(false);
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.updatePost(post);
         } else {
             throw new IllegalArgumentException();
         }

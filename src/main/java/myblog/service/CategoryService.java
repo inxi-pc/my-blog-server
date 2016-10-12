@@ -11,6 +11,74 @@ import java.util.List;
 
 public class CategoryService {
 
+    /**
+     *
+     * @param category
+     * @return
+     */
+    public static int createCategory(Category category) {
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
+
+        return myBatisCategoryDao.createCategory(category);
+    }
+
+    /**
+     *
+     * @param categoryId
+     * @return
+     */
+    public static boolean deleteCategory(int categoryId) {
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
+
+        return myBatisCategoryDao.deleteCategory(categoryId);
+    }
+
+    /**
+     *
+     * @param category
+     * @return
+     */
+    public static boolean updateCategory(Category category) {
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
+
+        return myBatisCategoryDao.updateCategory(category);
+    }
+
+    /**
+     *
+     * @param categoryId
+     * @return
+     */
+    public static Category getCategoryById(int categoryId) {
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
+
+        return myBatisCategoryDao.getCategoryById(categoryId);
+    }
+
+    /**
+     *
+     * @param category
+     * @return
+     */
+    public static List<Category> getCategories(Category category) {
+        CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
+        HashMap<String, Object> params = category.convertToHashMap();
+
+        return myBatisCategoryDao.getCategoriesByCondition(params);
+    }
+
+    /**
+     *
+     * @param category
+     * @param page
+     * @param order
+     * @return
+     */
     public static Pagination<Category> getCategoryList(Category category, Pagination<Category> page, Sort order) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();

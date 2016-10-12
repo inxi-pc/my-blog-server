@@ -118,6 +118,7 @@ public class Category extends Domain {
     public static Boolean isValidDurationEnd(String durationEnd) {
         return durationEnd != null;
     }
+
     /**
      * Not null
      *
@@ -144,7 +145,7 @@ public class Category extends Domain {
     }
 
     /**
-     *
+     * todo: add more validation rule
      * @param categoryNameCn
      */
     public void setCategory_name_cn(String categoryNameCn) {

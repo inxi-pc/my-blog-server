@@ -44,16 +44,13 @@ public class PostResource {
         }
     }
 
-    @PUT
+    @DELETE
     @Path("/{postId}")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePost(@PathParam("postId") Integer postId, Post post) {
-        if (Post.isValidPostId(postId) && post != null
-                && !post.checkAllFieldsIsNullExceptPK()) {
+    public Response deletePost(@PathParam("postId") Integer postId) {
+        if (Post.isValidPostId(postId)) {
             if (PostService.getPostById(postId) != null) {
-                post.setPost_id(postId);
-                if (PostService.updatePost(post)) {
+                if (PostService.deletePost(postId)) {
                     return Response.noContent().build();
                 } else {
                     throw new InternalServerErrorException();
@@ -66,13 +63,16 @@ public class PostResource {
         }
     }
 
-    @DELETE
+    @PUT
     @Path("/{postId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePost(@PathParam("postId") Integer postId) {
-        if (Post.isValidPostId(postId)) {
+    public Response updatePost(@PathParam("postId") Integer postId, Post post) {
+        if (Post.isValidPostId(postId) && post != null
+                && !post.checkAllFieldsIsNullExceptPK()) {
             if (PostService.getPostById(postId) != null) {
-                if (PostService.deletePost(postId)) {
+                post.setPost_id(postId);
+                if (PostService.updatePost(post)) {
                     return Response.noContent().build();
                 } else {
                     throw new InternalServerErrorException();
