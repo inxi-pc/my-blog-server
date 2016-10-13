@@ -1,8 +1,6 @@
 package myblog.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.PrimaryKey;
 
@@ -30,23 +28,6 @@ public class Category extends Domain {
         this.category_created_at = null;
         this.category_updated_at = null;
         this.category_enabled = null;
-    }
-
-    @JsonCreator
-    public Category(@JsonProperty("category_id") Integer categoryId,
-                    @JsonProperty("category_name_en") String categoryNameEn,
-                    @JsonProperty("category_name_cn") String categoryNameCn,
-                    @JsonProperty("categoryLevel") Integer categoryLevel,
-                    @JsonProperty("categoryCreatedAt") String categoryCreatedAt,
-                    @JsonProperty("categoryUpdatedAt") String categoryUpdatedAt,
-                    @JsonProperty("categoryEnabled") Boolean categoryEnabled) {
-        this.category_id = categoryId;
-        this.category_name_en = categoryNameEn;
-        this.category_name_cn = categoryNameCn;
-        this.category_level = categoryLevel;
-        this.category_created_at = categoryCreatedAt;
-        this.category_updated_at = categoryUpdatedAt;
-        this.category_enabled = categoryEnabled;
     }
 
     public Integer getCategory_id() {

@@ -2,9 +2,8 @@ package myblog;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.provider.CORSFilter;
-import myblog.provider.ErrorMapper;
-import myblog.provider.ExceptionMapper;
-import org.apache.logging.log4j.LogManager;
+import myblog.provider.MyErrorMapper;
+import myblog.provider.MyExceptionMapper;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -46,9 +45,10 @@ public class App extends ResourceConfig {
      */
     private App() {
         packages("myblog.resource");
+
         register(JacksonJsonProvider.class);
-        register(ExceptionMapper.class);
-        register(ErrorMapper.class);
+        register(MyExceptionMapper.class);
+        register(MyErrorMapper.class);
         register(CORSFilter.class);
     }
 

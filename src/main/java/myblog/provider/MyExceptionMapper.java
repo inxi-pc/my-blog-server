@@ -6,13 +6,13 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
+public class MyExceptionMapper implements ExceptionMapper<Exception> {
 
     public Response toResponse(Exception e) {
-        // Convert all exception to WebApplicationException
         WebApplicationException ex;
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
