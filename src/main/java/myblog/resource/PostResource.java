@@ -18,29 +18,30 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post post) {
-        if (post != null && Post.isValidUserId(post.getUser_id())
-                && Post.isValidCategoryId(post.getCategory_id())) {
-            if (post.getPost_enabled() == null) {
-                post.setPost_enabled(null);
-            }
-            if (post.getPost_published() == null) {
-                post.setPost_published(null);
-            }
-            if (post.getPost_created_at() == null) {
-                post.setPost_created_at(null);
-            }
-            if (post.getPost_updated_at() == null) {
-                post.setPost_updated_at(null);
-            }
-            int postId = PostService.createPost(post);
+        if (!Post.isValidCategoryId(post.getCategory_id())) {
+            throw new BadRequestException("Unexpected category id");
+        }
+        if (!Post.isValidUserId(post.getUser_id())) {
+            throw new BadRequestException("Unexpected user id");
+        }
+        if (!Post.isValidPostTitle(post.getPost_title())) {
+            throw new BadRequestException("Unexpected post title");
+        }
+        if (!Post.isValidPostContent(post.getPost_content())) {
+            throw new BadRequestException("Unexpected post content");
+        }
+        if (!Post.isValidPostPublished(post.getPost_published())) {
+            throw new BadRequestException("Unexpected post published");
+        }
+        post.setPost_enabled(true);
+        post.setPost_created_at(null);
+        post.setPost_updated_at(null);
 
-            if (Post.isValidPostId(postId)) {
-                return Response.created(URI.create("/posts/" + postId)).build();
-            } else {
-                throw new InternalServerErrorException();
-            }
+        int postId = PostService.createPost(post);
+        if (Post.isValidPostId(postId)) {
+            return Response.created(URI.create("/posts/" + postId)).build();
         } else {
-            throw new BadRequestException();
+            throw new InternalServerErrorException();
         }
     }
 
@@ -68,20 +69,45 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post post) {
-        if (Post.isValidPostId(postId) && post != null
-                && !post.checkAllFieldsIsNullExceptPK()) {
-            if (PostService.getPostById(postId) != null) {
-                post.setPost_id(postId);
-                if (PostService.updatePost(post)) {
-                    return Response.noContent().build();
-                } else {
-                    throw new InternalServerErrorException();
-                }
+        if (!Post.isValidPostId(postId)) {
+            throw new BadRequestException();
+        }
+        if (post.getUser_id() != null) {
+            if (!Post.isValidUserId(post.getUser_id())) {
+                throw new BadRequestException();
+            }
+        }
+        if (post.getCategory_id() != null) {
+            if (!Post.isValidCategoryId(post.getCategory_id())) {
+                throw new BadRequestException();
+            }
+        }
+        if (post.getPost_title() != null) {
+            if (!Post.isValidPostTitle(post.getPost_title())) {
+                throw new BadRequestException();
+            }
+        }
+        if (post.getPost_content() != null) {
+            if (!Post.isValidPostContent(post.getPost_content())) {
+                throw new BadRequestException();
+            }
+        }
+        if (post.getPost_published() != null) {
+            if (!Post.isValidPostPublished(post.getPost_published())) {
+                throw new BadRequestException();
+            }
+        }
+        post.setPost_updated_at(null);
+
+        if (PostService.getPostById(postId) != null) {
+            post.setPost_id(postId);
+            if (PostService.updatePost(post)) {
+                return Response.noContent().build();
             } else {
-                throw new NotFoundException();
+                throw new InternalServerErrorException();
             }
         } else {
-            throw new BadRequestException();
+            throw new NotFoundException();
         }
     }
 

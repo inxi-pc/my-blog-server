@@ -117,11 +117,11 @@ public class Post extends Domain {
     }
 
     public static boolean isValidPostTitle(String postTitle) {
-        return true;
+        return postTitle == null || true;
     }
 
     public static boolean isValidPostContent(String postContent) {
-        return true;
+        return postContent == null || true;
     }
 
     public static boolean isValidPostPublished(Boolean postPublished) {

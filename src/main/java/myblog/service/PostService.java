@@ -25,18 +25,6 @@ public class PostService {
 
     /**
      *
-     * @param update
-     * @return
-     */
-    public static boolean updatePost(Post update) {
-        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
-                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
-
-        return myBatisPostDao.updatePost(update);
-    }
-
-    /**
-     *
      * @param postId
      * @return
      */
@@ -45,6 +33,18 @@ public class PostService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         return myBatisPostDao.deletePost(postId);
+    }
+
+    /**
+     *
+     * @param update
+     * @return
+     */
+    public static boolean updatePost(Post update) {
+        PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
+        return myBatisPostDao.updatePost(update);
     }
 
     /**
