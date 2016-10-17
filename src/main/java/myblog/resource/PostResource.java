@@ -41,7 +41,7 @@ public class PostResource {
         if (Post.isValidPostId(postId)) {
             return Response.created(URI.create("/posts/" + postId)).build();
         } else {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Unexpected error");
         }
     }
 
@@ -49,18 +49,18 @@ public class PostResource {
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePost(@PathParam("postId") Integer postId) {
-        if (Post.isValidPostId(postId)) {
+        if (postId != null && Post.isValidPostId(postId)) {
             if (PostService.getPostById(postId) != null) {
                 if (PostService.deletePost(postId)) {
                     return Response.noContent().build();
                 } else {
-                    throw new InternalServerErrorException();
+                    throw new InternalServerErrorException("Unexpected error");
                 }
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException("Not found post");
             }
         } else {
-            throw new BadRequestException();
+            throw new BadRequestException("Unexpected post id");
         }
     }
 
@@ -69,32 +69,32 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post post) {
-        if (!Post.isValidPostId(postId)) {
-            throw new BadRequestException();
+        if (postId == null || !Post.isValidPostId(postId)) {
+            throw new BadRequestException("Unexpected post id");
         }
         if (post.getUser_id() != null) {
             if (!Post.isValidUserId(post.getUser_id())) {
-                throw new BadRequestException();
+                throw new BadRequestException("Unexpected user id");
             }
         }
         if (post.getCategory_id() != null) {
             if (!Post.isValidCategoryId(post.getCategory_id())) {
-                throw new BadRequestException();
+                throw new BadRequestException("Unexpected category id");
             }
         }
         if (post.getPost_title() != null) {
             if (!Post.isValidPostTitle(post.getPost_title())) {
-                throw new BadRequestException();
+                throw new BadRequestException("Unexpected post title");
             }
         }
         if (post.getPost_content() != null) {
             if (!Post.isValidPostContent(post.getPost_content())) {
-                throw new BadRequestException();
+                throw new BadRequestException("Unexpected post content");
             }
         }
         if (post.getPost_published() != null) {
             if (!Post.isValidPostPublished(post.getPost_published())) {
-                throw new BadRequestException();
+                throw new BadRequestException("Unexpected post published");
             }
         }
         post.setPost_updated_at(null);
@@ -104,10 +104,10 @@ public class PostResource {
             if (PostService.updatePost(post)) {
                 return Response.noContent().build();
             } else {
-                throw new InternalServerErrorException();
+                throw new InternalServerErrorException("Unexpected error");
             }
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Not found post");
         }
     }
 
@@ -115,15 +115,15 @@ public class PostResource {
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPostById(@PathParam("postId") Integer postId) {
-        if (Post.isValidPostId(postId)) {
+        if (postId != null && Post.isValidPostId(postId)) {
             Post post = PostService.getPostById(postId);
             if (post != null) {
                 return post;
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException("Not found post");
             }
         } else {
-            throw new BadRequestException();
+            throw new BadRequestException("Unexpected post id");
         }
     }
 
@@ -137,25 +137,25 @@ public class PostResource {
                                @QueryParam("post_published") Boolean postPublished,
                                @QueryParam("post_enabled") Boolean postEnabled) {
         Post post = new Post();
-        if (Post.isValidUserId(userId)) {
+        if (userId != null) {
             post.setUser_id(userId);
         }
-        if (Post.isValidCategoryId(categoryId)) {
+        if (categoryId != null) {
             post.setCategory_id(categoryId);
         }
-        if (Post.isValidPostTitle(postTitle)) {
+        if (postTitle != null) {
             post.setPost_title(postTitle);
         }
-        if (Post.isValidDurationBegin(durationBegin)) {
+        if (durationBegin != null) {
             post.setDuration_begin(durationBegin);
         }
-        if (Post.isValidDurationEnd(durationEnd)) {
+        if (durationEnd != null) {
             post.setDuration_end(durationEnd);
         }
-        if (Post.isValidPostPublished(postPublished)) {
+        if (postPublished != null) {
             post.setPost_published(postPublished);
         }
-        if (Post.isValidPostEnabled(postEnabled)) {
+        if (postEnabled != null) {
             post.setPost_enabled(postEnabled);
         }
 
@@ -165,13 +165,13 @@ public class PostResource {
                 if (posts.size() > 0) {
                     return posts;
                 } else {
-                    throw new NotFoundException();
+                    throw new NotFoundException("Not found posts");
                 }
             } else {
-                throw new InternalServerErrorException();
+                throw new InternalServerErrorException("Unexpected error");
             }
         } else {
-            throw new BadRequestException();
+            throw new BadRequestException("Unexpected post");
         }
     }
 
@@ -190,25 +190,25 @@ public class PostResource {
                                 @QueryParam("order_by") String orderBy,
                                 @QueryParam("order_type") String orderType) {
         Post post = new Post();
-        if (Post.isValidUserId(userId)) {
+        if (userId != null) {
             post.setUser_id(userId);
         }
-        if (Post.isValidCategoryId(categoryId)) {
+        if (categoryId != null) {
             post.setCategory_id(categoryId);
         }
-        if (Post.isValidPostTitle(postTitle)) {
+        if (postTitle != null) {
             post.setPost_title(postTitle);
         }
-        if (Post.isValidDurationBegin(durationBegin)) {
+        if (durationBegin != null) {
             post.setDuration_begin(durationBegin);
         }
-        if (Post.isValidDurationEnd(durationEnd)) {
+        if (durationEnd != null) {
             post.setDuration_end(durationEnd);
         }
-        if (Post.isValidPostPublished(postPublished)) {
+        if (postPublished != null) {
             post.setPost_published(postPublished);
         }
-        if (Post.isValidPostEnabled(postEnabled)) {
+        if (postEnabled != null) {
             post.setPost_enabled(postEnabled);
         }
 
@@ -220,10 +220,10 @@ public class PostResource {
             if (page.getData().size() > 0) {
                 return Response.ok(page).build();
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException("Not found posts");
             }
         } else {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Unexpected error");
         }
     }
 }

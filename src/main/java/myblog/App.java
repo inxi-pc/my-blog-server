@@ -4,6 +4,9 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.provider.CORSFilter;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -12,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * My blog main class
@@ -39,6 +40,9 @@ public class App extends ResourceConfig {
      */
     private static Properties config;
 
+
+    private static Logger logger = LogManager.getLogger(App.class);
+
     /**
      * Register component
      *
@@ -53,14 +57,15 @@ public class App extends ResourceConfig {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello World!Blog server");
+        logger.log(Level.INFO, "Hello World!Blog server");
+
         loadApplicationConfig();
 
         try {
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, new App(), false);
             server.start();
         } catch (Exception e) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
+            logger.log(Level.ERROR, e);
         }
     }
 
@@ -76,7 +81,7 @@ public class App extends ResourceConfig {
             config.load(in);
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, e);
         }
     }
 

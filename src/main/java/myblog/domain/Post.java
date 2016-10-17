@@ -116,10 +116,12 @@ public class Post extends Domain {
         return userId != null && userId > 0;
     }
 
+    // todo: add needed condition
     public static boolean isValidPostTitle(String postTitle) {
         return postTitle == null || true;
     }
 
+    // todo: add needed condition
     public static boolean isValidPostContent(String postContent) {
         return postContent == null || true;
     }
@@ -157,7 +159,7 @@ public class Post extends Domain {
         if (isValidPostId(postId)) {
             this.post_id = postId;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post id");
         }
     }
 
@@ -170,7 +172,7 @@ public class Post extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected category id");
         }
     }
 
@@ -183,31 +185,33 @@ public class Post extends Domain {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected user id");
         }
     }
 
     /**
-     * todo: add more validation rule
+     * Nullable
+     *
      * @param postTitle
      */
     public void setPost_title(String postTitle) {
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post title");
         }
     }
 
     /**
-     * todo: add more validation rule
+     * Nullable
+     *
      * @param postContent
      */
     public void setPost_content(String postContent) {
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post content");
         }
     }
 
