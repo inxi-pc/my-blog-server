@@ -1,12 +1,39 @@
 package myblog.domain;
 
+import myblog.annotation.Default;
+import myblog.annotation.NotNull;
 import myblog.annotation.PrimaryKey;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
 public abstract class Domain {
 
+    /**
+     * Check field's constraint
+     *
+     * @return
+     */
+    public boolean checkFieldsConstraint() {
+        boolean valid = true;
+        for (Field field : this.getClass().getDeclaredFields()) {
+            Object value;
+            try {
+                field.setAccessible(true);
+                value = field.get(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            if (field.isAnnotationPresent(NotNull.class)
+                    || field.isAnnotationPresent(Default.class)) {
+                valid = valid && value != null;
+            }
+        }
+
+        return valid;
+    }
     /**
      * Check if all field is null
      *

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
+import myblog.annotation.Default;
+import myblog.annotation.NotNull;
 import myblog.annotation.PrimaryKey;
 
 import java.util.Date;
@@ -12,17 +14,32 @@ public class Post extends Domain {
 
     @PrimaryKey
     private Integer post_id;
+
+    @NotNull
     private Integer category_id;
+
+    @NotNull
     private Integer user_id;
+
     private String post_title;
+
     private String post_content;
+
+    @Default
     private Boolean post_published;
+
+    @Default
     private Boolean post_enabled;
+
+    @Default
     private String post_created_at;
+
+    @Default
     private String post_updated_at;
 
     // Additional fields
     private String duration_begin;
+
     private String duration_end;
 
     public Post() {

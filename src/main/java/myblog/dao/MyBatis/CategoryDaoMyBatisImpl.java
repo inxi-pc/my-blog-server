@@ -26,7 +26,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @return
      */
     public int createCategory(Category insert) {
-        if (insert != null && !insert.checkAllFieldsIsNullExceptPK()) {
+        if (insert != null && insert.checkFieldsConstraint()) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
             categoryMapper.createCategory(insert);
