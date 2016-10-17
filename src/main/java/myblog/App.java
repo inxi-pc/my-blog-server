@@ -32,14 +32,12 @@ public class App extends ResourceConfig {
      *
      */
     private static final String SERVER_CONFIG_FILENAME = "config.properties";
-    private static final String LANG_FILENAME = "lang.properties";
 
     /**
      * App config
      *
      */
     private static Properties config;
-    private static Properties lang;
 
     /**
      * Register component
@@ -73,7 +71,6 @@ public class App extends ResourceConfig {
      */
     private static void loadApplicationConfig() {
         config = new Properties();
-        lang = new Properties();
         try {
             InputStream in = App.class.getClassLoader().getResourceAsStream(SERVER_CONFIG_FILENAME);
             config.load(in);
