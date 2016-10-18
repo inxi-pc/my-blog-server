@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
+import myblog.annotation.NotNull;
 import myblog.annotation.PrimaryKey;
 
 import java.util.Date;
@@ -12,17 +13,28 @@ public class Category extends Domain {
 
     @PrimaryKey
     private Integer category_id;
+
     private Integer category_parent_id;
+
     private Integer category_root_id;
+
     private String category_name_en;
+
     private String category_name_cn;
+
     private Integer category_level;
+
+    @NotNull
     private String category_created_at;
+
+    @NotNull
     private String category_updated_at;
+
+    @NotNull
     private Boolean category_enabled;
 
-    // Additional fields
     private String duration_begin;
+
     private String duration_end;
 
     public Category() {
@@ -109,16 +121,16 @@ public class Category extends Domain {
     }
 
     public static boolean isValidCategoryParentId(Integer categoryParentId) {
-        return categoryParentId == null || categoryParentId > 0;
+        return isValidCategoryId(categoryParentId);
     }
 
     public static boolean isValidCategoryRootId(Integer categoryRootId) {
-        return categoryRootId == null || categoryRootId > 0;
+        return isValidCategoryId(categoryRootId);
     }
 
-    // todo: add needed condition, like length, like sql injection, etc.
+    // todo: add more condition, like sql injection, etc.
     public static boolean isValidCategoryName(String categoryName) {
-        return categoryName == null || true;
+        return categoryName != null;
     }
 
     public static boolean isValidCategoryLevel(Integer categoryLevel) {
@@ -154,7 +166,7 @@ public class Category extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException("Unexpected category id");
+            throw new IllegalArgumentException("Unexpected category id: Invalid value");
         }
     }
 
@@ -167,7 +179,7 @@ public class Category extends Domain {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
         } else {
-            throw new IllegalArgumentException("Unexpected category parent id");
+            throw new IllegalArgumentException("Unexpected category parent id: Invalid value");
         }
     }
 
@@ -180,7 +192,7 @@ public class Category extends Domain {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
         } else {
-            throw new IllegalArgumentException("Unexpected category root id");
+            throw new IllegalArgumentException("Unexpected category root id: Invalid value");
         }
     }
 
@@ -193,7 +205,7 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
-            throw new IllegalArgumentException("Unexpected category name en");
+            throw new IllegalArgumentException("Unexpected category name en: Invalid value");
         }
     }
 
@@ -206,12 +218,12 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
-            throw new IllegalArgumentException("Unexpected category name cn");
+            throw new IllegalArgumentException("Unexpected category name cn: Invalid value");
         }
     }
 
     /**
-     * Not null, has default value
+     * Not null
      *
      * @param categoryLevel
      */
@@ -219,12 +231,12 @@ public class Category extends Domain {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
         } else {
-            throw new IllegalArgumentException("Unexpected category level");
+            throw new IllegalArgumentException("Unexpected category level: Invalid value");
         }
     }
 
     /**
-     * Not null, has default value
+     * Not null
      *
      * @param categoryEnabled
      */
@@ -237,7 +249,7 @@ public class Category extends Domain {
     }
 
     /**
-     * Not null, has default value
+     * Not null
      *
      * @param categoryCreatedAt
      */
@@ -249,8 +261,8 @@ public class Category extends Domain {
         }
     }
 
-    /*
-     * Not null, has default value
+    /**
+     * Not null
      *
      * @param categoryUpdatedAt
      */

@@ -3,6 +3,7 @@
 <mapper namespace="myblog.dao.MyBatis.Mapper.CategoryMapper">
     <insert id="createCategory" useGeneratedKeys="true" keyProperty="category_id">
         INSERT INTO category(
+            category_parent_id,
             category_name_en,
             category_name_cn,
             category_level,
@@ -11,6 +12,7 @@
             category_updated_at
         )
         VALUES(
+            #{category_parent_id},
             #{category_name_en},
             #{category_name_cn},
             #{category_level},

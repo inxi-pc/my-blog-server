@@ -18,19 +18,36 @@ public class CategoryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category category) {
-        if (category.getCategory_name_cn() != null) {
-            if (!Category.isValidCategoryName(category.getCategory_name_cn())) {
-                throw new BadRequestException("Unexpected category name cn");
-            }
+        // check not allowed value
+        if (category.getCategory_id() != null) {
+            throw new BadRequestException("Unexpected category id: Not allowed value");
         }
-        if (category.getCategory_name_en() != null) {
-            if (!Category.isValidCategoryName(category.getCategory_name_en())) {
-                throw new BadRequestException("Unexpected category name en");
-            }
+        if (category.getCategory_root_id() != null) {
+            throw new BadRequestException("Unexpected category root id: Not allowed value");
         }
-        category.setCategory_enabled(true);
-        category.setCategory_created_at(null);
-        category.setCategory_updated_at(null);
+        if (category.getCategory_level() != null) {
+            throw new BadRequestException("Unexpected category level: Not allowed value");
+        }
+        if (category.getCategory_created_at() != null) {
+            throw new BadRequestException("Unexpected category created at: Not allowed value");
+        }
+        if (category.getCategory_updated_at() != null) {
+            throw new BadRequestException("Unexpected category updated at: Not allowed value");
+        }
+        if (category.getCategory_enabled() != null) {
+            throw new BadRequestException("Unexpected category enabled: Not allowed value");
+        }
+
+        // Check allowed value
+        if (!Category.isValidCategoryParentId(category.getCategory_parent_id())) {
+            throw new BadRequestException("Unexpected category parent id: Invalid value");
+        }
+        if (!Category.isValidCategoryName(category.getCategory_name_cn())) {
+            throw new BadRequestException("Unexpected category name cn: Invalid value");
+        }
+        if (!Category.isValidCategoryName(category.getCategory_name_en())) {
+            throw new BadRequestException("Unexpected category name en: Invalid value");
+        }
 
         int categoryId = CategoryService.createCategory(category);
         if (Category.isValidCategoryId(categoryId)) {
@@ -44,18 +61,19 @@ public class CategoryResource {
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@PathParam("categoryId") Integer categoryId) {
-        if (categoryId != null && Category.isValidCategoryId(categoryId)) {
-            if (CategoryService.getCategoryById(categoryId) != null) {
-                if (CategoryService.deleteCategory(categoryId)) {
-                    return Response.noContent().build();
-                } else {
-                    throw new InternalServerErrorException();
-                }
+        // Check required value
+        if (categoryId == null) {
+            throw new BadRequestException("Unexpected category id: Absence value");
+        }
+
+        if (Category.isValidCategoryId(categoryId)) {
+            if (CategoryService.deleteCategory(categoryId)) {
+                return Response.noContent().build();
             } else {
-                throw new NotFoundException("Not found category");
+                throw new InternalServerErrorException("Unexpected error");
             }
         } else {
-            throw new BadRequestException("Unexpected category id");
+            throw new BadRequestException("Unexpected category id: Invalid value");
         }
     }
 
@@ -64,30 +82,48 @@ public class CategoryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category category) {
-        if (categoryId == null || !Category.isValidCategoryId(categoryId)) {
-            throw new BadRequestException("Unexpected category id");
+        // Check required value
+        if (categoryId == null) {
+            throw new BadRequestException("Unexpected category id: Absence value");
+        }
+        // Check not allowed value
+        if (category.getCategory_id() != null) {
+            throw new BadRequestException("Unexpected category id: Not allowed value");
+        }
+        if (category.getCategory_root_id() != null) {
+            throw new BadRequestException("Unexpected category root id: Not allowed value");
+        }
+        if (category.getCategory_level() != null) {
+            throw new BadRequestException("Unexpected category level: Not allowed value");
+        }
+        if (category.getCategory_created_at() != null) {
+            throw new BadRequestException("Unexpected category created at: Not allowed value");
+        }
+        if (category.getCategory_enabled() != null) {
+            throw new BadRequestException("Unexpected category enabled: Not allowed value");
+        }
+
+        // Check allowed value
+        if (category.getCategory_parent_id() != null) {
+            if (!Category.isValidCategoryParentId(category.getCategory_parent_id())) {
+                throw new BadRequestException("Unexpected category parent id: Invalid value");
+            }
         }
         if (category.getCategory_name_cn() != null) {
             if (!Category.isValidCategoryName(category.getCategory_name_cn())) {
-                throw new BadRequestException("Unexpected category name cn");
+                throw new BadRequestException("Unexpected category name cn: Invalid value");
             }
         }
         if (category.getCategory_name_en() != null) {
             if (!Category.isValidCategoryName(category.getCategory_name_en())) {
-                throw new BadRequestException("Unexpected category name en");
+                throw new BadRequestException("Unexpected category name en: Invalid value");
             }
         }
-        category.setCategory_updated_at(null);
 
-        if (CategoryService.getCategoryById(categoryId) != null) {
-            category.setCategory_id(categoryId);
-            if (CategoryService.updateCategory(category)) {
-                return Response.noContent().build();
-            } else {
-                throw new InternalServerErrorException();
-            }
+        if (CategoryService.updateCategory(categoryId, category)) {
+            return Response.noContent().build();
         } else {
-            throw new NotFoundException("Not found category");
+            throw new InternalServerErrorException("Unexpected error");
         }
     }
 
@@ -95,16 +131,20 @@ public class CategoryResource {
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Category getCategoryById(@PathParam("categoryId") Integer categoryId) {
-        if (categoryId != null && Category.isValidCategoryId(categoryId)) {
+        if (categoryId == null) {
+            throw new BadRequestException("Unexpected category id: Absence value");
+        }
+
+        if (Category.isValidCategoryId(categoryId)) {
             Category category = CategoryService.getCategoryById(categoryId);
 
             if (category != null) {
                 return category;
             } else {
-                throw new NotFoundException("Not found category");
+                throw new NotFoundException("Not found category: Id = " + categoryId);
             }
         } else {
-            throw new BadRequestException("Unexpected category id");
+            throw new BadRequestException("Unexpected category id: Invalid value");
         }
     }
 
@@ -145,10 +185,10 @@ public class CategoryResource {
                     throw new NotFoundException("Not found categories");
                 }
             } else {
-                throw new InternalServerErrorException();
+                throw new InternalServerErrorException("Unexpected error");
             }
         } else {
-            throw new BadRequestException("Unexpected category");
+            throw new BadRequestException("Unexpected category query parameter");
         }
     }
 
@@ -196,7 +236,7 @@ public class CategoryResource {
                 throw new NotFoundException("Not found categories");
             }
         } else {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("Unexpected error");
         }
     }
 }

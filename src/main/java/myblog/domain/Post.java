@@ -25,19 +25,18 @@ public class Post extends Domain {
 
     private String post_content;
 
-    @Default
+    @NotNull
     private Boolean post_published;
 
-    @Default
+    @NotNull
     private Boolean post_enabled;
 
-    @Default
+    @NotNull
     private String post_created_at;
 
-    @Default
+    @NotNull
     private String post_updated_at;
 
-    // Additional fields
     private String duration_begin;
 
     private String duration_end;
@@ -122,11 +121,11 @@ public class Post extends Domain {
     }
 
     public static boolean isValidPostId(Integer postId) {
-        return postId != null && postId > 0;
+        return postId == null || postId > 0;
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
-        return categoryId != null && categoryId > 0;
+        return categoryId == null && categoryId > 0;
     }
 
     public static boolean isValidUserId(Integer userId) {

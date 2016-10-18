@@ -1,12 +1,3 @@
-# This my first blog
-
-
-# Naming Rule:
-
-1. Folder name must be singular, like `model`, `resource`
-
-2. Class name must be singular, and came-case, the first letter must be capitals, like `PostResource`, `Post`
-
 # Myblog Server架构考虑问题列表
 ```
 * 系统分为哪几个层次?
@@ -16,18 +7,19 @@
 ```
 * 每个层次的职责和边界在哪？
 ```
-Resource: 1. 接受Http请求，定义请求格式，返回格式。2. 验证参数合法性并组装下层调用参数，调用下层服务。   
-Service: 1. 使用Dao层的服务，并添加必要的逻辑完成一次业务。  
-Dao: 1.为上层提供数据库的CURD服务。  
-Domain: 1. 关联数据库表对象，使用setter getter对应表对象的字段约束，比如Not NULL，Default，等。
+Resource: 1. 接受Http请求，定义请求格式，返回格式。2. 验证参数合法和有效性(null判断 + invalid函数)并组装下层调用参数，调用下层服务。
+Service: 1. 使用Dao层的服务，并添加必要的逻辑完成一次业务。
+Dao: 1.为上层提供数据库的CURD服务。
+Domain: 1. 关联数据库表对象，表达业务对象的含义。
+从resource层开始，参数的验证复杂度递减，resource考虑参数的合法和有效性，而到了dao只考虑参数的null性质。因为resource层和client交互，存在非常多的产生异常的诱因，因此入口要紧。而进入了系统内部，产生异常的因子会逐级递减。
 
 ```
 * 定义函数的时候是否做输入参数的异常判断？输入参数的异常判断是放在调用方还是函数本身？
 ```
 做不做输入参数的异常判断是依据需求来的，但可以从参数是否会造成性能和系统严重错误的角度考虑。依照这个原则，Dao层的参数异常会导致数据同样打开连接，浪费资源，消耗性能，这种情况是应该被阻止的，所以Dao层强制做参数判断。
-  Service层暂时没考虑清楚。
-  Resource层需要做参数判断，同样是考虑无效参数将调用下层服务会浪费资源，消耗性能。
-  参数判断放在函数本身。
+Service层暂时没考虑清楚。
+Resource层需要做参数判断，同样是考虑无效参数将调用下层服务会浪费资源，消耗性能。
+参数判断放在函数本身。
 
 ```
 * 定义函数的时候返回参数的异常判断是放在调用方还是函数本身？
@@ -37,8 +29,16 @@ Domain: 1. 关联数据库表对象，使用setter getter对应表对象的字�
 
 # 遇到的问题列表
 1. mybatis工作在事务模式下，事务失败没有自动提交导致死锁
+2. mysql触发器获得自增主键值
+可用方案：
 
+```sql
+  SELECT AUTO_INCREMENT INTO self_id
+  FROM information_schema.TABLES
+  WHERE TABLE_NAME = 'category' AND TABLE_SCHEMA = database();
+```
 
-
+不可用方案：
+LAST_INSERT_ID()，该函数要在insert语句成功后才触发
 
 
