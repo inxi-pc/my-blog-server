@@ -22,10 +22,11 @@ public interface PostDao {
 
     /**
      *
+     * @param postId
      * @param update
      * @return
      */
-    boolean updatePost(Post update);
+    boolean updatePost(int postId, Post update);
 
     /**
      *

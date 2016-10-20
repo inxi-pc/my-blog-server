@@ -4,42 +4,45 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
-import myblog.annotation.Default;
-import myblog.annotation.NotNull;
-import myblog.annotation.PrimaryKey;
+import myblog.annotation.Insertable;
+import myblog.annotation.Updateable;
 
 import java.util.Date;
 
 public class Post extends Domain {
 
-    @PrimaryKey
     private Integer post_id;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private Integer category_id;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private Integer user_id;
 
+    @Insertable(nullable = true)
+    @Updateable
     private String post_title;
 
+    @Insertable(nullable = true)
+    @Updateable
     private String post_content;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private Boolean post_published;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private Boolean post_enabled;
 
-    @NotNull
+    @Insertable(nullable = false)
     private String post_created_at;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private String post_updated_at;
-
-    private String duration_begin;
-
-    private String duration_end;
 
     public Post() {
         this.post_id = null;
@@ -54,24 +57,26 @@ public class Post extends Domain {
     }
 
     @JsonCreator
-    public Post(@JsonProperty("post_id") Integer postId,
-                @JsonProperty("category_id") Integer categoryId,
+    public Post(@JsonProperty("category_id") Integer categoryId,
                 @JsonProperty("user_id") Integer userId,
                 @JsonProperty("post_title") String postTitle,
                 @JsonProperty("post_content") String postContent,
-                @JsonProperty("post_published") Boolean postPublished,
-                @JsonProperty("post_enabled") Boolean postEnabled,
-                @JsonProperty("post_created_at") String postCreatedAt,
-                @JsonProperty("post_updated_at") String postUpdatedAt) {
-        this.post_id = postId;
-        this.category_id = categoryId;
-        this.user_id = userId;
-        this.post_title = postTitle;
-        this.post_content = postContent;
-        this.post_published = postPublished;
-        this.post_enabled = postEnabled;
-        this.post_created_at = postCreatedAt;
-        this.post_updated_at = postUpdatedAt;
+                @JsonProperty("post_published") Boolean postPublished) {
+        if (isValidCategoryId(categoryId)) {
+            this.category_id = categoryId;
+        }
+        if (isValidUserId(userId)) {
+            this.user_id = userId;
+        }
+        if (isValidPostTitle(postTitle)) {
+            this.post_title = postTitle;
+        }
+        if (isValidPostContent(postContent)) {
+            this.post_content = postContent;
+        }
+        if (isValidPostPublished(postPublished)) {
+            this.post_published = postPublished;
+        }
     }
 
     public Integer getPost_id() {
@@ -110,34 +115,22 @@ public class Post extends Domain {
         return post_updated_at;
     }
 
-    @JsonIgnore
-    public String getDuration_begin() {
-        return duration_begin;
-    }
-
-    @JsonIgnore
-    public String getDuration_end() {
-        return duration_end;
-    }
-
     public static boolean isValidPostId(Integer postId) {
-        return postId == null || postId > 0;
+        return postId != null && postId > 0;
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
-        return categoryId == null && categoryId > 0;
+        return categoryId != null && categoryId > 0;
     }
 
     public static boolean isValidUserId(Integer userId) {
         return userId != null && userId > 0;
     }
 
-    // todo: add needed condition
     public static boolean isValidPostTitle(String postTitle) {
         return postTitle == null || true;
     }
 
-    // todo: add needed condition
     public static boolean isValidPostContent(String postContent) {
         return postContent == null || true;
     }
@@ -158,84 +151,46 @@ public class Post extends Domain {
         return postUpdatedAt != null;
     }
 
-    public static boolean isValidDurationBegin(String durationBegin) {
-        return durationBegin != null;
-    }
-
-    public static boolean isValidDurationEnd(String durationEnd) {
-        return durationEnd != null;
-    }
-
-    /**
-     * Not null
-     *
-     * @param postId
-     */
     public void setPost_id(Integer postId) {
         if (isValidPostId(postId)) {
             this.post_id = postId;
         } else {
-            throw new IllegalArgumentException("Unexpected post id");
+            throw new IllegalArgumentException("Unexpected post id: Invalid value");
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryId
-     */
     public void setCategory_id(Integer categoryId) {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException("Unexpected category id");
+            throw new IllegalArgumentException("Unexpected category id: Invalid value");
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param userId
-     */
     public void setUser_id(Integer userId) {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new IllegalArgumentException("Unexpected user id");
+            throw new IllegalArgumentException("Unexpected user id: Invalid value");
         }
     }
 
-    /**
-     * Nullable
-     *
-     * @param postTitle
-     */
     public void setPost_title(String postTitle) {
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
         } else {
-            throw new IllegalArgumentException("Unexpected post title");
+            throw new IllegalArgumentException("Unexpected post title: Invalid value");
         }
     }
 
-    /**
-     * Nullable
-     *
-     * @param postContent
-     */
     public void setPost_content(String postContent) {
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
         } else {
-            throw new IllegalArgumentException("Unexpected post content");
+            throw new IllegalArgumentException("Unexpected post content: Invalid value");
         }
     }
 
-    /**
-     * Not null, has default value
-     *
-     * @param postPublished
-     */
     public void setPost_published(Boolean postPublished) {
         if (isValidPostPublished(postPublished)) {
             this.post_published = postPublished;
@@ -244,24 +199,14 @@ public class Post extends Domain {
         }
     }
 
-    /**
-     * Not null, has default value
-     *
-     * @param postEnabled
-     */
     public void setPost_enabled(Boolean postEnabled) {
         if (isValidPostEnabled(postEnabled)) {
             this.post_enabled = postEnabled;
         } else {
-            this.post_enabled = false;
+            this.post_enabled = true;
         }
     }
 
-    /**
-     * Not null, has default value
-     *
-     * @param postCreatedAt
-     */
     public void setPost_created_at(String postCreatedAt) {
         if (isValidPostCreatedAt(postCreatedAt)) {
             this.post_created_at = postCreatedAt;
@@ -270,34 +215,11 @@ public class Post extends Domain {
         }
     }
 
-    /**
-     * Not null, has default value
-     *
-     * @param postUpdatedAt
-     */
     public void setPost_updated_at(String postUpdatedAt) {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
             this.post_updated_at = postUpdatedAt;
         } else {
             this.post_updated_at = Helper.formatDatetimeUTC(new Date());
-        }
-    }
-
-    @JsonIgnore
-    public void setDuration_begin(String durationBegin) {
-        if (isValidDurationBegin(durationBegin)) {
-            this.duration_begin = durationBegin;
-        } else {
-            this.duration_begin = Helper.formatDatetimeUTC(new Date());
-        }
-    }
-
-    @JsonIgnore
-    public void setDuration_end(String durationEnd) {
-        if (isValidDurationBegin(durationEnd)) {
-            this.duration_end = durationEnd;
-        } else {
-            this.duration_end = Helper.formatDatetimeUTC(new Date());
         }
     }
 }

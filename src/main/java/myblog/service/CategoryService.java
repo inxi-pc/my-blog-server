@@ -24,13 +24,15 @@ public class CategoryService {
         if (category.getCategory_parent_id() != null) {
             Category parent = myBatisCategoryDao.getCategoryById(category.getCategory_parent_id());
             if (parent != null) {
+                category.setCategory_level(parent.getCategory_level() + 1);
                 category.setCategory_root_id(parent.getCategory_root_id());
-                category.setCategory_level(parent.getCategory_level());
             } else {
                 throw new NotFoundException("Not found parent category: Id = " + category.getCategory_parent_id());
             }
         } else {
             category.setCategory_level(1);
+            category.setCategory_root_id(0);
+            category.setCategory_parent_id(0);
         }
 
         category.setCategory_enabled(true);
@@ -58,6 +60,7 @@ public class CategoryService {
 
     /**
      *
+     * @param categoryId
      * @param category
      * @return
      */
@@ -66,10 +69,23 @@ public class CategoryService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
+            if (category.getCategory_parent_id() != null) {
+                Category parent = myBatisCategoryDao.getCategoryById(category.getCategory_parent_id());
+                if (parent != null) {
+                    category.setCategory_level(parent.getCategory_level() + 1);
+                    category.setCategory_root_id(parent.getCategory_root_id());
+                } else {
+                    throw new NotFoundException("Not found parent category: Id = " + category.getCategory_parent_id());
+                }
+            } else {
+                category.setCategory_level(1);
+                category.setCategory_root_id(0);
+                category.setCategory_parent_id(0);
+            }
             category.setCategory_id(categoryId);
             category.setCategory_updated_at(null);
 
-            return myBatisCategoryDao.updateCategory(category);
+            return myBatisCategoryDao.updateCategory(categoryId, category);
         } else {
             throw new NotFoundException("Not found category: Id = " + categoryId);
         }

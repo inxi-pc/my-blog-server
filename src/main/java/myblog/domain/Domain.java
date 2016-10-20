@@ -1,23 +1,19 @@
 package myblog.domain;
 
-import myblog.annotation.Default;
-import myblog.annotation.NotNull;
-import myblog.annotation.PrimaryKey;
+import myblog.annotation.Insertable;
+import myblog.annotation.Updateable;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
 public abstract class Domain {
 
     /**
-     * Check field's constraint
      *
      * @return
      */
-    public boolean checkFieldsConstraint() {
-        boolean valid = true;
-        for (Field field : this.getClass().getDeclaredFields()) {
+    public Field checkInsertConstraint() {
+        for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
                 field.setAccessible(true);
@@ -26,54 +22,43 @@ public abstract class Domain {
                 throw new RuntimeException(e);
             }
 
-            if (field.isAnnotationPresent(NotNull.class)
-                    || field.isAnnotationPresent(Default.class)) {
-                valid = valid && value != null;
+            if (field.isAnnotationPresent(Insertable.class)) {
+                Insertable insertable = field.getDeclaredAnnotation(Insertable.class);
+                if (!insertable.nullable() && value == null) {
+                    return field;
+                }
+            } else {
+                if (value != null) {
+                    return field;
+                }
             }
         }
 
-        return valid;
+        return null;
     }
+
     /**
-     * Check if all field is null
      *
      * @return
      */
-    public boolean checkAllFieldsIsNull() {
-        boolean isNull = true;
-        for (Field field : this.getClass().getDeclaredFields()) {
+    public Field checkUpdateConstraint() {
+        for (Field field : getClass().getDeclaredFields()) {
+            Object value;
             try {
                 field.setAccessible(true);
-                Object value = field.get(this);
-                isNull = isNull && (value == null);
+                value = field.get(this);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
 
-        return isNull;
-    }
-
-    /**
-     * Check if all field is null except primary key
-     *
-     * @return
-     */
-    public boolean checkAllFieldsIsNullExceptPK() {
-        boolean isNull = true;
-        for (Field field : this.getClass().getDeclaredFields()) {
-            try {
-                if (!field.isAnnotationPresent(PrimaryKey.class)) {
-                    field.setAccessible(true);
-                    Object value = field.get(this);
-                    isNull = isNull && (value == null);
+            if (!field.isAnnotationPresent(Updateable.class)) {
+                if (value != null) {
+                    return field;
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         }
 
-        return isNull;
+        return null;
     }
 
     /**
@@ -83,7 +68,7 @@ public abstract class Domain {
      */
     public HashMap<String, Object> convertToHashMap() {
         HashMap<String, Object> params = new HashMap<String, Object>();
-        for (Field field : this.getClass().getDeclaredFields()) {
+        for (Field field : getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
                 Object value = field.get(this);

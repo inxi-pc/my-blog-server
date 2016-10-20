@@ -1,6 +1,7 @@
 package myblog.dao.MyBatis.Mapper;
 
 import myblog.domain.Post;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,11 @@ public interface PostMapper {
 
     /**
      *
+     * @param postId
+     * @param update
      * @return
      */
-    boolean updatePost(Post update);
+    boolean updatePost(@Param("postId") int postId, @Param("update") Post update);
 
     /**
      *

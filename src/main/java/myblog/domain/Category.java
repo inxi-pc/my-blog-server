@@ -1,41 +1,47 @@
 package myblog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
-import myblog.annotation.NotNull;
-import myblog.annotation.PrimaryKey;
+import myblog.annotation.Insertable;
+import myblog.annotation.Updateable;
 
 import java.util.Date;
 
 public class Category extends Domain {
 
-    @PrimaryKey
     private Integer category_id;
 
+    @Insertable(nullable = false)
+    @Updateable
     private Integer category_parent_id;
 
+    @Insertable(nullable = false)
+    @Updateable
     private Integer category_root_id;
 
+    @Insertable(nullable = true)
+    @Updateable
     private String category_name_en;
 
+    @Insertable(nullable = true)
+    @Updateable
     private String category_name_cn;
 
+    @Insertable(nullable = false)
+    @Updateable
     private Integer category_level;
 
-    @NotNull
+    @Insertable(nullable = false)
     private String category_created_at;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private String category_updated_at;
 
-    @NotNull
+    @Insertable(nullable = false)
+    @Updateable
     private Boolean category_enabled;
-
-    private String duration_begin;
-
-    private String duration_end;
 
     public Category() {
         this.category_id = null;
@@ -50,24 +56,18 @@ public class Category extends Domain {
     }
 
     @JsonCreator
-    public Category(@JsonProperty("category_id") Integer categoryId,
-                    @JsonProperty("category_parent_id") Integer categoryParentId,
-                    @JsonProperty("category_root_id") Integer categoryRootId,
+    public Category(@JsonProperty("category_parent_id") Integer categoryParentId,
                     @JsonProperty("category_name_en") String categoryNameEn,
-                    @JsonProperty("category_name_cn") String categoryNameCn,
-                    @JsonProperty("categoryLevel") Integer categoryLevel,
-                    @JsonProperty("categoryCreatedAt") String categoryCreatedAt,
-                    @JsonProperty("categoryUpdatedAt") String categoryUpdatedAt,
-                    @JsonProperty("categoryEnabled") Boolean categoryEnabled) {
-        this.category_id = categoryId;
-        this.category_parent_id = categoryParentId;
-        this.category_root_id = categoryRootId;
-        this.category_name_cn = categoryNameCn;
-        this.category_name_en = categoryNameEn;
-        this.category_level = categoryLevel;
-        this.category_created_at = categoryCreatedAt;
-        this.category_updated_at = categoryUpdatedAt;
-        this.category_enabled = categoryEnabled;
+                    @JsonProperty("category_name_cn") String categoryNameCn) {
+        if (isValidCategoryParentId(categoryParentId)) {
+            this.category_parent_id = categoryParentId;
+        }
+        if (isValidCategoryName(categoryNameEn)) {
+            this.category_name_en = categoryNameEn;
+        }
+        if (isValidCategoryName(categoryNameCn)) {
+            this.category_name_cn = categoryNameCn;
+        }
     }
 
     public Integer getCategory_id() {
@@ -106,35 +106,24 @@ public class Category extends Domain {
         return category_enabled;
     }
 
-    @JsonIgnore
-    public String getDuration_begin() {
-        return duration_begin;
-    }
-
-    @JsonIgnore
-    public String getDuration_end() {
-        return duration_end;
-    }
-
     public static boolean isValidCategoryId(Integer categoryId) {
         return categoryId != null && categoryId > 0;
     }
 
     public static boolean isValidCategoryParentId(Integer categoryParentId) {
-        return isValidCategoryId(categoryParentId);
+        return categoryParentId != null && categoryParentId >= 0;
     }
 
     public static boolean isValidCategoryRootId(Integer categoryRootId) {
         return isValidCategoryId(categoryRootId);
     }
 
-    // todo: add more condition, like sql injection, etc.
     public static boolean isValidCategoryName(String categoryName) {
-        return categoryName != null;
+        return categoryName == null || true;
     }
 
     public static boolean isValidCategoryLevel(Integer categoryLevel) {
-        return categoryLevel != null && categoryLevel > 0;
+        return categoryLevel != null && categoryLevel >= 1;
     }
 
     public static boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
@@ -149,19 +138,6 @@ public class Category extends Domain {
         return categoryEnabled != null;
     }
 
-    public static boolean isValidDurationBegin(String durationBegin) {
-        return durationBegin != null;
-    }
-
-    public static Boolean isValidDurationEnd(String durationEnd) {
-        return durationEnd != null;
-    }
-
-    /**
-     * Not null
-     *
-     * @param categoryId
-     */
     public void setCategory_id(Integer categoryId) {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
@@ -170,11 +146,6 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryParentId
-     */
     public void setCategory_parent_id(Integer categoryParentId) {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
@@ -183,11 +154,6 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryRootId
-     */
     public void setCategory_root_id(Integer categoryRootId) {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
@@ -196,11 +162,6 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Nullable
-     *
-     * @param categoryNameEn
-     */
     public void setCategory_name_en(String categoryNameEn) {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
@@ -209,11 +170,6 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Nullable
-     *
-     * @param categoryNameCn
-     */
     public void setCategory_name_cn(String categoryNameCn) {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
@@ -222,11 +178,6 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryLevel
-     */
     public void setCategory_level(Integer categoryLevel) {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
@@ -235,24 +186,14 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryEnabled
-     */
     public void setCategory_enabled(Boolean categoryEnabled) {
         if (isValidCategoryEnabled(categoryEnabled)) {
             this.category_enabled = categoryEnabled;
         } else {
-            this.category_enabled = false;
+            this.category_enabled = true;
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryCreatedAt
-     */
     public void setCategory_created_at(String categoryCreatedAt) {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
             this.category_created_at = categoryCreatedAt;
@@ -261,34 +202,11 @@ public class Category extends Domain {
         }
     }
 
-    /**
-     * Not null
-     *
-     * @param categoryUpdatedAt
-     */
     public void setCategory_updated_at(String categoryUpdatedAt) {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
             this.category_updated_at = categoryUpdatedAt;
         } else {
             this.category_updated_at = Helper.formatDatetimeUTC(new Date());
-        }
-    }
-
-    @JsonIgnore
-    public void setDuration_begin(String durationBegin) {
-        if (isValidDurationBegin(durationBegin)) {
-            this.duration_begin = durationBegin;
-        } else {
-            this.duration_begin = Helper.formatDatetimeUTC(new Date());
-        }
-    }
-
-    @JsonIgnore
-    public void setDuration_end(String durationEnd) {
-        if (isValidDurationEnd(durationEnd)) {
-            this.duration_end = durationEnd;
-        } else {
-            this.duration_end = Helper.formatDatetimeUTC(new Date());
         }
     }
 }

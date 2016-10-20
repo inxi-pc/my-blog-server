@@ -27,29 +27,29 @@
     <update id="updatePost">
         UPDATE post
         <set>
-            <if test="user_id != null">
-                user_id = #{user_id},
+            <if test="update.user_id != null">
+                user_id = #{update.user_id},
             </if>
-            <if test="category_id != null">
-                category_id = #{category_id},
+            <if test="update.category_id != null">
+                category_id = #{update.category_id},
             </if>
-            <if test="post_title != null">
-                post_title = #{post_title},
+            <if test="update.post_title != null">
+                post_title = #{update.post_title},
             </if>
-            <if test="post_content != null">
-                post_content = #{post_content},
+            <if test="update.post_content != null">
+                post_content = #{update.post_content},
             </if>
-            <if test="post_published != null">
-                post_published = #{post_published},
+            <if test="update.post_published != null">
+                post_published = #{update.post_published},
             </if>
-            <if test="post_enabled != null">
-                post_enabled = #{post_enabled},
+            <if test="update.post_enabled != null">
+                post_enabled = #{update.post_enabled},
             </if>
-            <if test="post_updated_at != null">
-                post_updated_at = #{post_updated_at}
+            <if test="update.post_updated_at != null">
+                post_updated_at = #{update.post_updated_at}
             </if>
         </set>
-        WHERE post_id = #{post_id}
+        WHERE post_id = #{postId}
     </update>
 
     <select id="getPostById" resultType="Post">

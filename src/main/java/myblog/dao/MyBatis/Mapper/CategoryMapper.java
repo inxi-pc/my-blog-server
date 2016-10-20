@@ -1,6 +1,7 @@
 package myblog.dao.MyBatis.Mapper;
 
 import myblog.domain.Category;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,11 @@ public interface CategoryMapper {
 
     /**
      *
+     * @param categoryId
      * @param update
      * @return
      */
-    boolean updateCategory(Category update);
+    boolean updateCategory(@Param("categoryId") int categoryId, @Param("update") Category update);
 
     /**
      *

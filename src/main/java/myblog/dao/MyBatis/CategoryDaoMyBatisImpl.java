@@ -5,6 +5,7 @@ import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +27,20 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @return
      */
     public int createCategory(Category insert) {
-        if (insert != null && insert.checkFieldsConstraint()) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-            categoryMapper.createCategory(insert);
-
-            return insert.getCategory_id();
-        } else {
-            throw new IllegalArgumentException();
+        if (insert == null) {
+            throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
+
+        Field field;
+        if ((field = insert.checkInsertConstraint()) != null) {
+            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+        }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+        categoryMapper.createCategory(insert);
+
+        return insert.getCategory_id();
     }
 
     /**
@@ -45,32 +51,37 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     public boolean deleteCategory(int categoryId) {
         if (Category.isValidCategoryId(categoryId)) {
             Category category = new Category();
-            category.setCategory_id(categoryId);
             category.setCategory_enabled(false);
 
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-            return categoryMapper.updateCategory(category);
+            return categoryMapper.updateCategory(categoryId, category);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected category id: Invalid value");
         }
     }
 
     /**
      *
+     * @param categoryId
      * @param update
      * @return
      */
-    public boolean updateCategory(Category update) {
-        if (update != null && !update.checkAllFieldsIsNullExceptPK()) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-
-            return categoryMapper.updateCategory(update);
-        } else {
-            throw new IllegalArgumentException();
+    public boolean updateCategory(int categoryId, Category update) {
+        if (update == null) {
+            throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
+
+        Field field;
+        if ((field = update.checkUpdateConstraint()) != null) {
+            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+        }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.updateCategory(categoryId, update);
     }
 
     /**
@@ -95,13 +106,17 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @return
      */
     public List<Category> getCategoriesByIds(int[] categoryIds) {
-        if (categoryIds != null && categoryIds.length > 0) {
+        if (categoryIds == null) {
+            throw new NullPointerException("Unexpected category ids: " + "Null pointer");
+        }
+
+        if (categoryIds.length > 0) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
             return categoryMapper.getCategoriesByIds(categoryIds);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected category ids: Invalid value");
         }
     }
 
@@ -111,13 +126,17 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @return
      */
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
-        if (params != null && params.size() > 0) {
+        if (params == null) {
+            throw new NullPointerException("Unexpected params: " + "Null pointer");
+        }
+
+        if (params.size() > 0) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
             return categoryMapper.getCategoriesByCondition(params);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected params: Empty value");
         }
     }
 }

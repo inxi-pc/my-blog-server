@@ -6,6 +6,7 @@ import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
 
+import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class PostService {
     public static int createPost(Post insert) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+        insert.setPost_enabled(true);
+        insert.setPost_created_at(null);
+        insert.setPost_updated_at(null);
 
         return myBatisPostDao.createPost(insert);
     }
@@ -32,19 +36,30 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        return myBatisPostDao.deletePost(postId);
+        if (PostService.getPostById(postId) != null) {
+            return myBatisPostDao.deletePost(postId);
+        } else {
+            throw new NotFoundException("Not found post: Id = " + postId);
+        }
     }
 
     /**
      *
+     * @param postId
      * @param update
      * @return
      */
-    public static boolean updatePost(Post update) {
+    public static boolean updatePost(int postId, Post update) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+        if (PostService.getPostById(postId) != null) {
+            update.setPost_id(postId);
+            update.setPost_updated_at(null);
 
-        return myBatisPostDao.updatePost(update);
+            return myBatisPostDao.updatePost(postId, update);
+        } else {
+            throw new NotFoundException("Not found post: Id = " + postId);
+        }
     }
 
     /**
@@ -67,6 +82,7 @@ public class PostService {
     public static List<Post> getPosts(Post post) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
         HashMap<String, Object> params = post.convertToHashMap();
 
         return myBatisPostDao.getPostsByCondition(params);
@@ -82,8 +98,8 @@ public class PostService {
     public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort order) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
-        HashMap<String, Object> params = post.convertToHashMap();
 
+        HashMap<String, Object> params = post.convertToHashMap();
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
         params.put("orderBy", order.getOrder_by());

@@ -25,23 +25,23 @@
     <update id="updateCategory">
         UPDATE category
         <set>
-            <if test="category_level != null">
-                category_level = #{category_level},
+            <if test="update.category_parent_id != null">
+                category_parent_id = #{update.category_parent_id}
             </if>
-            <if test="category_name_en != null">
-                category_name_en = #{category_name_en},
+            <if test="update.category_name_en != null">
+                category_name_en = #{update.category_name_en},
             </if>
-            <if test="category_name_cn != null">
-                category_name_cn = #{category_name_cn},
+            <if test="update.category_name_cn != null">
+                category_name_cn = #{update.category_name_cn},
             </if>
-            <if test="category_enabled != null">
-                category_enabled = #{category_enabled},
+            <if test="update.category_enabled != null">
+                category_enabled = #{update.category_enabled},
             </if>
-            <if test="category_updated_at != null">
-                category_updated_at = #{category_updated_at}
+            <if test="update.category_updated_at != null">
+                category_updated_at = #{update.category_updated_at}
             </if>
         </set>
-        WHERE category_id = #{category_id}
+        WHERE category_id = #{categoryId}
     </update>
 
     <select id="getCategoryById" resultType="Category">

@@ -23,10 +23,11 @@ public interface CategoryDao {
 
     /**
      *
+     * @param categoryId
      * @param update
      * @return
      */
-    boolean updateCategory(Category update);
+    boolean updateCategory(int categoryId, Category update);
 
     /**
      *

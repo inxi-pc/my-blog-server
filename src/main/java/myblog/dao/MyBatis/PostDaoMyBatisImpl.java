@@ -5,6 +5,7 @@ import myblog.dao.PostDao;
 import myblog.domain.Post;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +31,20 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @return
      */
     public int createPost(Post insert) {
-        if (insert != null && !insert.checkAllFieldsIsNullExceptPK()) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-            postMapper.createPost(insert);
-
-            return insert.getPost_id();
-        } else {
-            throw new IllegalArgumentException();
+        if (insert == null) {
+            throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
+
+        Field field;
+        if ((field = insert.checkInsertConstraint()) != null) {
+            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+        }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+        postMapper.createPost(insert);
+
+        return insert.getPost_id();
     }
 
     /**
@@ -49,32 +55,37 @@ public class PostDaoMyBatisImpl implements PostDao {
     public boolean deletePost(int postId) {
         if (Post.isValidPostId(postId)) {
             Post post = new Post();
-            post.setPost_id(postId);
             post.setPost_enabled(false);
 
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             PostMapper postMapper = session.getMapper(PostMapper.class);
 
-            return postMapper.updatePost(post);
+            return postMapper.updatePost(postId, post);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post id: Invalid value");
         }
     }
 
     /**
      *
+     * @param postId
      * @param update
      * @return
      */
-    public boolean updatePost(Post update) {
-        if (update != null && !update.checkAllFieldsIsNullExceptPK()) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.updatePost(update);
-        } else {
-            throw new IllegalArgumentException();
+    public boolean updatePost(int postId, Post update) {
+        if (update == null) {
+            throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
+
+        Field field;
+        if ((field = update.checkUpdateConstraint()) != null) {
+            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+        }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.updatePost(postId, update);
     }
 
     /**
@@ -89,7 +100,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return postMapper.getPostById(postId);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post id: Invalid value");
         }
     }
 
@@ -99,13 +110,17 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @return
      */
     public List<Post> getPostsByIds(int[] postIds) {
-        if (postIds != null && postIds.length > 0) {
+        if (postIds == null) {
+            throw new NullPointerException("Unexpected post ids: " + "Null pointer");
+        }
+
+        if (postIds.length > 0) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             PostMapper postMapper = session.getMapper(PostMapper.class);
 
             return postMapper.getPostsByIds(postIds);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected post ids: Empty value");
         }
     }
 
@@ -115,13 +130,17 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @return
      */
     public List<Post> getPostsByCondition(Map<String, Object> params) {
-        if (params != null && params.size() > 0) {
+        if (params == null) {
+            throw new NullPointerException("Unexpected params: " + "Null pointer");
+        }
+
+        if (params.size() > 0) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             PostMapper postMapper = session.getMapper(PostMapper.class);
 
             return postMapper.getPostsByCondition(params);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected params: Empty value");
         }
     }
 }
