@@ -22,12 +22,20 @@
         )
     </insert>
 
+    <update id="deleteCategory">
+        UPDATE category
+        SET category_enabled = FALSE
+        <if test="delete.category_updated_at != null">
+            , category_updated_at = #{delete.category_updated_at}
+        </if>
+        WHERE category_id = #{categoryId}
+        OR category_parent_id = #{categoryId}
+        OR category_root_id = #{categoryId}
+    </update>
+
     <update id="updateCategory">
         UPDATE category
         <set>
-            <if test="update.category_parent_id != null">
-                category_parent_id = #{update.category_parent_id}
-            </if>
             <if test="update.category_name_en != null">
                 category_name_en = #{update.category_name_en},
             </if>
@@ -60,11 +68,11 @@
     <select id="getCategoriesByCondition" resultType="Category">
         SELECT * FROM category
         <where>
-            <if test="duration_begin != null">
-                category_created_at &gt; #{duration_begin}
+            <if test="category_parent_id != null">
+                AND category_parent_id = #{category_parent_id}
             </if>
-            <if test="duration_end != null">
-                AND category_updated_at &lt; #{duration_end}
+            <if test="category_root_id != null">
+                AND category_root_id = #{category_root_id}
             </if>
             <if test="category_name_en != null">
                 <bind name="nameEnPattern" value="'%' + category_name_en + '%'"/>

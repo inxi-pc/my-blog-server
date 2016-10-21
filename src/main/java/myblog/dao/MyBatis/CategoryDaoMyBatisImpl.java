@@ -17,6 +17,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      */
     private MyBatisDaoFactory myBatisDaoFactory;
 
+    /**
+     *
+     * @param factory
+     */
     CategoryDaoMyBatisImpl(MyBatisDaoFactory factory) {
         this.myBatisDaoFactory = factory;
     }
@@ -33,7 +37,9 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
         Field field;
         if ((field = insert.checkInsertConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+            throw new IllegalArgumentException("Unexpected "
+                    + field.getName().replace("_", " ")
+                    + ": " + "Cant be inserted");
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -50,13 +56,14 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      */
     public boolean deleteCategory(int categoryId) {
         if (Category.isValidCategoryId(categoryId)) {
-            Category category = new Category();
-            category.setCategory_enabled(false);
+            Category delete = new Category();
+            delete.setCategory_enabled(false);
+            delete.setCategory_updated_at(null);
 
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-            return categoryMapper.updateCategory(categoryId, category);
+            return categoryMapper.deleteCategory(categoryId, delete);
         } else {
             throw new IllegalArgumentException("Unexpected category id: Invalid value");
         }
@@ -75,7 +82,9 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
         Field field;
         if ((field = update.checkUpdateConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+            throw new IllegalArgumentException("Unexpected "
+                    + field.getName().replace("_", " ")
+                    + ": " + "Cant be updated");
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -96,7 +105,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
             return categoryMapper.getCategoryById(categoryId);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unexpected category id: Invalid value");
         }
     }
 

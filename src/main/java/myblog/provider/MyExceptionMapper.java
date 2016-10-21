@@ -17,7 +17,7 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
         } else {
-            ex = new InternalServerErrorException(e);
+            ex = new InternalServerErrorException(e.getMessage(), e);
         }
 
         if (App.isDebug()) {

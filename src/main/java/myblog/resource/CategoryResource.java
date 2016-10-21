@@ -19,6 +19,7 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category category) {
         int categoryId = CategoryService.createCategory(category);
+
         if (Category.isValidCategoryId(categoryId)) {
             return Response.created(URI.create("/categories/" + categoryId)).build();
         } else {
@@ -54,10 +55,14 @@ public class CategoryResource {
             throw new BadRequestException("Unexpected category id: Absence value");
         }
 
-        if (CategoryService.updateCategory(categoryId, category)) {
-            return Response.noContent().build();
+        if (Category.isValidCategoryId(categoryId)) {
+            if (CategoryService.updateCategory(categoryId, category)) {
+                return Response.noContent().build();
+            } else {
+                throw new InternalServerErrorException("Unexpected error");
+            }
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw new BadRequestException("Unexpected category id: Invalid value");
         }
     }
 
@@ -85,23 +90,54 @@ public class CategoryResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getCategories(@QueryParam("category_parent_id") Integer categoryParentId,
+                                        @QueryParam("category_root_id") Integer categoryRootId,
                                         @QueryParam("category_name") String categoryName,
                                         @QueryParam("category_level") Integer categoryLevel,
-                                        @QueryParam("duration_begin") String durationBegin,
-                                        @QueryParam("duration_end") String durationEnd,
                                         @QueryParam("category_enabled") Boolean categoryEnabled) {
+        boolean noQueryParam = true;
         Category category = new Category();
         if (categoryParentId != null) {
-            category.setCategory_parent_id(categoryParentId);
+            if (Category.isValidCategoryParentId(categoryParentId)) {
+                noQueryParam = false;
+                category.setCategory_parent_id(categoryParentId);
+            } else {
+                throw new BadRequestException("Unexpected category parent id: Invalid value");
+            }
+        }
+        if (categoryRootId != null) {
+            if (Category.isValidCategoryRootId(categoryRootId)) {
+                noQueryParam = false;
+                category.setCategory_root_id(categoryRootId);
+            } else {
+                throw new BadRequestException("Unexpected category root id: Invalid value");
+            }
         }
         if (categoryName != null) {
-            category.setCategory_name_en(categoryName);
+            if (Category.isValidCategoryName(categoryName)) {
+                noQueryParam = false;
+                category.setCategory_name_en(categoryName);
+            } else {
+                throw new BadRequestException("Unexpected category name: Invalid value");
+            }
         }
         if (categoryLevel != null) {
-            category.setCategory_level(categoryLevel);
+            if (Category.isValidCategoryLevel(categoryLevel)) {
+                noQueryParam = false;
+                category.setCategory_level(categoryLevel);
+            } else {
+                throw new BadRequestException("Unexpected category level: Invalid value");
+            }
         }
         if (categoryEnabled != null) {
-            category.setCategory_enabled(categoryEnabled);
+            if (Category.isValidCategoryEnabled(categoryEnabled)) {
+                noQueryParam = false;
+                category.setCategory_enabled(categoryEnabled);
+            } else {
+                throw new BadRequestException("Unexpected category enabled: Invalid value");
+            }
+        }
+        if (noQueryParam) {
+            throw new BadRequestException("Unexpected query parameter: No query parameter");
         }
 
         List<Category> categories = CategoryService.getCategories(category);
@@ -120,10 +156,9 @@ public class CategoryResource {
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
     public Pagination<Category> getCategoryList(@QueryParam("category_parent_id") Integer categoryParentId,
+                                                @QueryParam("category_root_id") Integer categoryRootId,
                                                 @QueryParam("category_name") String categoryName,
                                                 @QueryParam("category_level") Integer categoryLevel,
-                                                @QueryParam("duration_begin") String durationBegin,
-                                                @QueryParam("duration_end") String durationEnd,
                                                 @QueryParam("category_enabled") Boolean categoryEnabled,
                                                 @QueryParam("limit") Integer limit,
                                                 @QueryParam("offset") Integer offset,
@@ -131,16 +166,39 @@ public class CategoryResource {
                                                 @QueryParam("order_type") String orderType) {
         Category category = new Category();
         if (categoryParentId != null) {
-            category.setCategory_parent_id(categoryParentId);
+            if (Category.isValidCategoryParentId(categoryParentId)) {
+                category.setCategory_parent_id(categoryParentId);
+            } else {
+                throw new BadRequestException("Unexpected category parent id: Invalid value");
+            }
+        }
+        if (categoryRootId != null) {
+            if (Category.isValidCategoryRootId(categoryRootId)) {
+                category.setCategory_root_id(categoryRootId);
+            } else {
+                throw new BadRequestException("Unexpected category root id: Invalid value");
+            }
         }
         if (categoryName != null) {
-            category.setCategory_name_en(categoryName);
+            if (Category.isValidCategoryName(categoryName)) {
+                category.setCategory_name_en(categoryName);
+            } else {
+                throw new BadRequestException("Unexpected category name: Invalid value");
+            }
         }
         if (categoryLevel != null) {
-            category.setCategory_level(categoryLevel);
+            if (Category.isValidCategoryLevel(categoryLevel)) {
+                category.setCategory_level(categoryLevel);
+            } else {
+                throw new BadRequestException("Unexpected category level: Invalid value");
+            }
         }
         if (categoryEnabled != null) {
-            category.setCategory_enabled(categoryEnabled);
+            if (Category.isValidCategoryEnabled(categoryEnabled)) {
+                category.setCategory_enabled(categoryEnabled);
+            } else {
+                throw new BadRequestException("Unexpected category enabled: Invalid value");
+            }
         }
 
         Pagination<Category> page = new Pagination<Category>(limit, offset);

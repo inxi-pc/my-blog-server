@@ -31,10 +31,9 @@ public class CategoryService {
             }
         } else {
             category.setCategory_level(1);
-            category.setCategory_root_id(0);
-            category.setCategory_parent_id(0);
+            category.setCategory_root_id(null);
+            category.setCategory_parent_id(null);
         }
-
         category.setCategory_enabled(true);
         category.setCategory_created_at(null);
         category.setCategory_updated_at(null);
@@ -69,20 +68,6 @@ public class CategoryService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
-            if (category.getCategory_parent_id() != null) {
-                Category parent = myBatisCategoryDao.getCategoryById(category.getCategory_parent_id());
-                if (parent != null) {
-                    category.setCategory_level(parent.getCategory_level() + 1);
-                    category.setCategory_root_id(parent.getCategory_root_id());
-                } else {
-                    throw new NotFoundException("Not found parent category: Id = " + category.getCategory_parent_id());
-                }
-            } else {
-                category.setCategory_level(1);
-                category.setCategory_root_id(0);
-                category.setCategory_parent_id(0);
-            }
-            category.setCategory_id(categoryId);
             category.setCategory_updated_at(null);
 
             return myBatisCategoryDao.updateCategory(categoryId, category);
@@ -131,8 +116,8 @@ public class CategoryService {
         HashMap<String, Object> params = category.convertToHashMap();
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
-        params.put("order_by", order.getOrder_by());
-        params.put("order_type", order.getOrder_type());
+        params.put("orderBy", order.getOrder_by());
+        params.put("orderType", order.getOrder_type());
 
         List<Category> categories = myBatisCategoryDao.getCategoriesByCondition(params);
         page.setData(categories);

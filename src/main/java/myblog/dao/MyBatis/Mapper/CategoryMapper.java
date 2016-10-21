@@ -18,9 +18,10 @@ public interface CategoryMapper {
     /**
      *
      * @param categoryId
+     * @param delete
      * @return
      */
-    boolean deleteCategory(int categoryId);
+    boolean deleteCategory(@Param("categoryId")int categoryId, @Param("delete") Category delete);
 
     /**
      *

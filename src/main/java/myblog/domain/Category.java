@@ -4,20 +4,21 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.Insertable;
+import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updateable;
 
+import javax.ws.rs.BadRequestException;
 import java.util.Date;
 
 public class Category extends Domain {
 
+    @PrimaryKey
     private Integer category_id;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = true)
     private Integer category_parent_id;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = true)
     private Integer category_root_id;
 
     @Insertable(nullable = true)
@@ -28,8 +29,7 @@ public class Category extends Domain {
     @Updateable
     private String category_name_cn;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = true)
     private Integer category_level;
 
     @Insertable(nullable = false)
@@ -59,14 +59,20 @@ public class Category extends Domain {
     public Category(@JsonProperty("category_parent_id") Integer categoryParentId,
                     @JsonProperty("category_name_en") String categoryNameEn,
                     @JsonProperty("category_name_cn") String categoryNameCn) {
-        if (isValidCategoryParentId(categoryParentId)) {
+        if (Category.isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
+        } else {
+            throw new BadRequestException("Unexpected category parent id: Invalid value");
         }
-        if (isValidCategoryName(categoryNameEn)) {
+        if (Category.isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
+        } else {
+            throw new BadRequestException("Unexpected category name en: Invalid value");
         }
-        if (isValidCategoryName(categoryNameCn)) {
+        if (Category.isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
+        } else {
+            throw new BadRequestException("Unexpected category name cn: Invalid value");
         }
     }
 
@@ -107,35 +113,67 @@ public class Category extends Domain {
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
-        return categoryId != null && categoryId > 0;
+        if (categoryId == null) {
+            return true;
+        } else {
+            return categoryId > 0;
+        }
     }
 
     public static boolean isValidCategoryParentId(Integer categoryParentId) {
-        return categoryParentId != null && categoryParentId >= 0;
+        if (categoryParentId == null) {
+            return true;
+        } else {
+            return categoryParentId > 0;
+        }
     }
 
     public static boolean isValidCategoryRootId(Integer categoryRootId) {
-        return isValidCategoryId(categoryRootId);
+        if (categoryRootId == null) {
+            return true;
+        } else {
+            return categoryRootId > 0;
+        }
     }
 
     public static boolean isValidCategoryName(String categoryName) {
-        return categoryName == null || true;
+        if (categoryName == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidCategoryLevel(Integer categoryLevel) {
-        return categoryLevel != null && categoryLevel >= 1;
+        if (categoryLevel == null) {
+            return true;
+        } else {
+            return categoryLevel >= 1;
+        }
     }
 
     public static boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
-        return categoryCreatedAt != null;
+        if (categoryCreatedAt == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
-        return categoryUpdatedAt != null;
+        if (categoryUpdatedAt == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidCategoryEnabled(Boolean categoryEnabled) {
-        return categoryEnabled != null;
+        if (categoryEnabled == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public void setCategory_id(Integer categoryId) {
@@ -180,7 +218,11 @@ public class Category extends Domain {
 
     public void setCategory_level(Integer categoryLevel) {
         if (isValidCategoryLevel(categoryLevel)) {
-            this.category_level = categoryLevel;
+            if (categoryLevel == null) {
+                this.category_level = 1;
+            } else {
+                this.category_level = categoryLevel;
+            }
         } else {
             throw new IllegalArgumentException("Unexpected category level: Invalid value");
         }
@@ -188,25 +230,37 @@ public class Category extends Domain {
 
     public void setCategory_enabled(Boolean categoryEnabled) {
         if (isValidCategoryEnabled(categoryEnabled)) {
-            this.category_enabled = categoryEnabled;
+            if (categoryEnabled == null) {
+                categoryEnabled = true;
+            } else {
+                this.category_enabled = categoryEnabled;
+            }
         } else {
-            this.category_enabled = true;
+            throw new IllegalArgumentException("Unexpected category enabled: Invalid value");
         }
     }
 
     public void setCategory_created_at(String categoryCreatedAt) {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
-            this.category_created_at = categoryCreatedAt;
+            if (categoryCreatedAt == null) {
+                this.category_created_at = Helper.formatDatetimeUTC(new Date());
+            } else {
+                this.category_created_at = categoryCreatedAt;
+            }
         } else {
-            this.category_created_at = Helper.formatDatetimeUTC(new Date());
+            throw new IllegalArgumentException("Unexpected category created at: Invalid value");
         }
     }
 
     public void setCategory_updated_at(String categoryUpdatedAt) {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
-            this.category_updated_at = categoryUpdatedAt;
+            if (categoryUpdatedAt == null) {
+                this.category_updated_at = Helper.formatDatetimeUTC(new Date());
+            } else {
+                this.category_updated_at = categoryUpdatedAt;
+            }
         } else {
-            this.category_updated_at = Helper.formatDatetimeUTC(new Date());
+            throw new IllegalArgumentException("Unexpected category updated at: Invalid value");
         }
     }
 }
