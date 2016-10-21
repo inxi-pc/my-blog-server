@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.Insertable;
+import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updateable;
 
+import javax.ws.rs.BadRequestException;
 import java.util.Date;
 
 public class Post extends Domain {
 
+    @PrimaryKey
     private Integer post_id;
 
     @Insertable(nullable = false)
@@ -64,18 +67,28 @@ public class Post extends Domain {
                 @JsonProperty("post_published") Boolean postPublished) {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
+        } else {
+            throw new BadRequestException("Unexpected category id: Invalid value");
         }
         if (isValidUserId(userId)) {
             this.user_id = userId;
+        } else {
+            throw new BadRequestException("Unexpected user id: Invalid value");
         }
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
+        } else {
+            throw new BadRequestException("Unexpected post title: Invalid value");
         }
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
+        } else {
+            throw new BadRequestException("Unexpected post content: Invalid value");
         }
         if (isValidPostPublished(postPublished)) {
             this.post_published = postPublished;
+        } else {
+            throw new BadRequestException("Unexpected post published: Invalid value");
         }
     }
 
@@ -116,39 +129,75 @@ public class Post extends Domain {
     }
 
     public static boolean isValidPostId(Integer postId) {
-        return postId != null && postId > 0;
+        if (postId == null) {
+            return true;
+        } else {
+            return postId > 0;
+        }
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
-        return categoryId != null && categoryId > 0;
+        if (categoryId == null) {
+            return true;
+        } else {
+            return categoryId > 0;
+        }
     }
 
     public static boolean isValidUserId(Integer userId) {
-        return userId != null && userId > 0;
+        if (userId == null) {
+            return true;
+        } else {
+            return userId > 0;
+        }
     }
 
     public static boolean isValidPostTitle(String postTitle) {
-        return postTitle == null || true;
+        if (postTitle == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidPostContent(String postContent) {
-        return postContent == null || true;
+        if (postContent == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidPostPublished(Boolean postPublished) {
-        return postPublished != null;
+        if (postPublished == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidPostEnabled(Boolean postEnabled) {
-        return postEnabled != null;
+        if (postEnabled == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidPostCreatedAt(String postCreatedAt) {
-        return postCreatedAt != null;
+        if (postCreatedAt == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isValidPostUpdatedAt(String postUpdatedAt) {
-        return postUpdatedAt != null;
+        if (postUpdatedAt == null) {
+            return true;
+        } else {
+            return true;
+        }
     }
 
     public void setPost_id(Integer postId) {
@@ -193,33 +242,49 @@ public class Post extends Domain {
 
     public void setPost_published(Boolean postPublished) {
         if (isValidPostPublished(postPublished)) {
-            this.post_published = postPublished;
+            if (postPublished == null) {
+                this.post_published = false;
+            } else {
+                this.post_published = postPublished;
+            }
         } else {
-            this.post_published = false;
+            throw new IllegalArgumentException("Unexpected post published: Invalid value");
         }
     }
 
     public void setPost_enabled(Boolean postEnabled) {
         if (isValidPostEnabled(postEnabled)) {
-            this.post_enabled = postEnabled;
+            if (postEnabled == null) {
+                this.post_enabled = true;
+            } else {
+                this.post_enabled = postEnabled;
+            }
         } else {
-            this.post_enabled = true;
+            throw new IllegalArgumentException("Unexpected post enabled: Invalid value");
         }
     }
 
     public void setPost_created_at(String postCreatedAt) {
         if (isValidPostCreatedAt(postCreatedAt)) {
-            this.post_created_at = postCreatedAt;
+            if (postCreatedAt == null) {
+                this.post_created_at = Helper.formatDatetimeUTC(new Date());
+            } else {
+                this.post_created_at = postCreatedAt;
+            }
         } else {
-            this.post_created_at = Helper.formatDatetimeUTC(new Date());
+            throw new IllegalArgumentException("Unexpected post created at: Invalid value");
         }
     }
 
     public void setPost_updated_at(String postUpdatedAt) {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
-            this.post_updated_at = postUpdatedAt;
+            if (postUpdatedAt == null) {
+                this.post_updated_at = Helper.formatDatetimeUTC(new Date());
+            } else {
+                this.post_updated_at = postUpdatedAt;
+            }
         } else {
-            this.post_updated_at = Helper.formatDatetimeUTC(new Date());
+            throw new IllegalArgumentException("Unexpected post updated at: Invalid value");
         }
     }
 }

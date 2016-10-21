@@ -19,6 +19,7 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post post) {
         int postId = PostService.createPost(post);
+
         if (Post.isValidPostId(postId)) {
             return Response.created(URI.create("/posts/" + postId)).build();
         } else {
