@@ -87,25 +87,52 @@ public class PostResource {
     public List<Post> getPosts(@QueryParam("user_id") Integer userId,
                                @QueryParam("category_id") Integer categoryId,
                                @QueryParam("post_title") String postTitle,
-                               @QueryParam("duration_begin") String durationBegin,
-                               @QueryParam("duration_end") String durationEnd,
                                @QueryParam("post_published") Boolean postPublished,
                                @QueryParam("post_enabled") Boolean postEnabled) {
         Post post = new Post();
+        boolean noQueryParam = true;
         if (userId != null) {
-            post.setUser_id(userId);
+            if (Post.isValidUserId(userId)) {
+                post.setUser_id(userId);
+                noQueryParam = false;
+            } else {
+                throw new BadRequestException("Unexpected user id: Not valid value");
+            }
         }
         if (categoryId != null) {
-            post.setCategory_id(categoryId);
+            if (Post.isValidCategoryId(categoryId)) {
+                post.setCategory_id(categoryId);
+                noQueryParam = false;
+            } else {
+                throw new BadRequestException("Unexpected category id: Not valid value");
+            }
         }
         if (postTitle != null) {
-            post.setPost_title(postTitle);
+            if (Post.isValidPostTitle(postTitle)) {
+                post.setPost_title(postTitle);
+                noQueryParam = false;
+            } else {
+                throw new BadRequestException("Unexpected post title: Not valid value");
+            }
         }
         if (postPublished != null) {
-            post.setPost_published(postPublished);
+            if (Post.isValidPostPublished(postPublished)) {
+                post.setPost_published(postPublished);
+                noQueryParam = false;
+            } else {
+                throw new BadRequestException("Unexpected post published: Not valid value");
+            }
         }
         if (postEnabled != null) {
-            post.setPost_enabled(postEnabled);
+            if (Post.isValidPostEnabled(postEnabled)) {
+                post.setPost_enabled(postEnabled);
+                noQueryParam = false;
+            } else {
+                throw new BadRequestException("Unexpected post enabled: Not valid value");
+            }
+        }
+        if (noQueryParam) {
+            throw new BadRequestException("Unexpected post query parameter: No parameters");
         }
 
         List<Post> posts = PostService.getPosts(post);
@@ -126,8 +153,6 @@ public class PostResource {
     public Response getPostList(@QueryParam("user_id") Integer userId,
                                 @QueryParam("category_id") Integer categoryId,
                                 @QueryParam("post_title") String postTitle,
-                                @QueryParam("duration_begin") String durationBegin,
-                                @QueryParam("duration_end") String durationEnd,
                                 @QueryParam("post_published") Boolean postPublished,
                                 @QueryParam("post_enabled") Boolean postEnabled,
                                 @QueryParam("limit") Integer limit,
@@ -136,19 +161,39 @@ public class PostResource {
                                 @QueryParam("order_type") String orderType) {
         Post post = new Post();
         if (userId != null) {
-            post.setUser_id(userId);
+            if (Post.isValidUserId(userId)) {
+                post.setUser_id(userId);
+            } else {
+                throw new BadRequestException("Unexpected user id: Not valid value");
+            }
         }
         if (categoryId != null) {
-            post.setCategory_id(categoryId);
+            if (Post.isValidCategoryId(categoryId)) {
+                post.setCategory_id(categoryId);
+            } else {
+                throw new BadRequestException("Unexpected category id: Not valid value");
+            }
         }
         if (postTitle != null) {
-            post.setPost_title(postTitle);
+            if (Post.isValidPostTitle(postTitle)) {
+                post.setPost_title(postTitle);
+            } else {
+                throw new BadRequestException("Unexpected post title: Not valid value");
+            }
         }
         if (postPublished != null) {
-            post.setPost_published(postPublished);
+            if (Post.isValidPostPublished(postPublished)) {
+                post.setPost_published(postPublished);
+            } else {
+                throw new BadRequestException("Unexpected post published: Not valid value");
+            }
         }
         if (postEnabled != null) {
-            post.setPost_enabled(postEnabled);
+            if (Post.isValidPostEnabled(postEnabled)) {
+                post.setPost_enabled(postEnabled);
+            } else {
+                throw new BadRequestException("Unexpected post enabled: Not valid value");
+            }
         }
 
         Pagination<Post> page = new Pagination<Post>(limit, offset);

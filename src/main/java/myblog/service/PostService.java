@@ -20,6 +20,7 @@ public class PostService {
     public static int createPost(Post insert) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
+
         insert.setPost_enabled(true);
         insert.setPost_created_at(null);
         insert.setPost_updated_at(null);
@@ -53,7 +54,6 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
         if (PostService.getPostById(postId) != null) {
-            update.setPost_id(postId);
             update.setPost_updated_at(null);
 
             return myBatisPostDao.updatePost(postId, update);

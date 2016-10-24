@@ -69,13 +69,7 @@
     <select id="getPostsByCondition" resultType="Post">
         SELECT * FROM post
         <where>
-            <!-- find by time period -->
-            <if test="duration_begin != null">
-                post_created_at &gt; #{duration_begin}
-            </if>
-            <if test="duration_end != null">
-                AND post_created_at &lt; #{duration_end}
-            </if>
+            <!-- find by post title -->
             <if test="post_title != null">
                 <bind name="titlePattern" value="'%' + post_title + '%'"/>
                 AND post_title LIKE #{titlePattern}
@@ -84,15 +78,15 @@
             <if test="user_id != null">
                 AND user_id = #{user_id}
             </if>
-            <!-- find if published-->
+            <!-- find by published-->
             <if test="post_published != null">
                 AND post_published = #{post_published}
             </if>
-            <!-- find if enabled-->
+            <!-- find by enabled-->
             <if test="post_enabled != null">
                 AND post_enabled = #{post_enabled}
             </if>
-            <!-- find if category-->
+            <!-- find by category-->
             <if test="category_id != null">
                 AND category_id = #{category_id}
             </if>

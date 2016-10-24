@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.Insertable;
 import myblog.annotation.PrimaryKey;
-import myblog.annotation.Updateable;
+import myblog.annotation.Updatable;
 
 import javax.ws.rs.BadRequestException;
 import java.util.Date;
@@ -22,11 +22,11 @@ public class Category extends Domain {
     private Integer category_root_id;
 
     @Insertable(nullable = true)
-    @Updateable
+    @Updatable
     private String category_name_en;
 
     @Insertable(nullable = true)
-    @Updateable
+    @Updatable
     private String category_name_cn;
 
     @Insertable(nullable = true)
@@ -36,11 +36,11 @@ public class Category extends Domain {
     private String category_created_at;
 
     @Insertable(nullable = false)
-    @Updateable
+    @Updatable
     private String category_updated_at;
 
     @Insertable(nullable = false)
-    @Updateable
+    @Updatable
     private Boolean category_enabled;
 
     public Category() {

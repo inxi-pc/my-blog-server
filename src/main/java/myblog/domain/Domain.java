@@ -1,12 +1,83 @@
 package myblog.domain;
 
 import myblog.annotation.Insertable;
-import myblog.annotation.Updateable;
+import myblog.annotation.Updatable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public abstract class Domain {
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isUpdatable(Field field) {
+        return field.isAnnotationPresent(Updatable.class);
+    }
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isInsertable(Field field) {
+        return field.isAnnotationPresent(Insertable.class);
+    }
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isNullable(Field field) {
+        if (isInsertable(field)) {
+            return field.getDeclaredAnnotation(Insertable.class).nullable();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isDefaultable(Field field) {
+        if (isInsertable(field)) {
+            return field.getDeclaredAnnotation(Insertable.class).defaultable();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static String getSetterMethodName(Field field) {
+        String fieldName = field.getName();
+
+        return  "set" + fieldName.substring(0, 1).toUpperCase()
+                + fieldName.substring(1, fieldName.length());
+    }
+
+    /**
+     *
+     * @param field
+     */
+    public void setDefaultValue(Field field) {
+        String setterName = getSetterMethodName(field);
+        try {
+            Method method = getClass().getDeclaredMethod(setterName, field.getType());
+            method.invoke(this, new Object[]{ null });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      *
@@ -22,10 +93,13 @@ public abstract class Domain {
                 throw new RuntimeException(e);
             }
 
-            if (field.isAnnotationPresent(Insertable.class)) {
-                Insertable insertable = field.getDeclaredAnnotation(Insertable.class);
-                if (!insertable.nullable() && value == null) {
-                    return field;
+            if (isInsertable(field)) {
+                if (value == null) {
+                    if (isDefaultable(field)) {
+                        setDefaultValue(field);
+                    } else if (!isNullable(field)) {
+                        return field;
+                    }
                 }
             } else {
                 if (value != null) {
@@ -51,10 +125,8 @@ public abstract class Domain {
                 throw new RuntimeException(e);
             }
 
-            if (!field.isAnnotationPresent(Updateable.class)) {
-                if (value != null) {
-                    return field;
-                }
+            if (!isUpdatable(field) && value != null) {
+                return field;
             }
         }
 

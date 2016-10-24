@@ -1,12 +1,11 @@
 package myblog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import myblog.Helper;
 import myblog.annotation.Insertable;
 import myblog.annotation.PrimaryKey;
-import myblog.annotation.Updateable;
+import myblog.annotation.Updatable;
 
 import javax.ws.rs.BadRequestException;
 import java.util.Date;
@@ -17,34 +16,34 @@ public class Post extends Domain {
     private Integer post_id;
 
     @Insertable(nullable = false)
-    @Updateable
+    @Updatable
     private Integer category_id;
 
     @Insertable(nullable = false)
-    @Updateable
+    @Updatable
     private Integer user_id;
 
     @Insertable(nullable = true)
-    @Updateable
+    @Updatable
     private String post_title;
 
     @Insertable(nullable = true)
-    @Updateable
+    @Updatable
     private String post_content;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = false, defaultable = true)
+    @Updatable
     private Boolean post_published;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = false, defaultable = true)
+    @Updatable
     private Boolean post_enabled;
 
-    @Insertable(nullable = false)
+    @Insertable(nullable = false, defaultable = true)
     private String post_created_at;
 
-    @Insertable(nullable = false)
-    @Updateable
+    @Insertable(nullable = false, defaultable = true)
+    @Updatable
     private String post_updated_at;
 
     public Post() {
@@ -242,10 +241,10 @@ public class Post extends Domain {
 
     public void setPost_published(Boolean postPublished) {
         if (isValidPostPublished(postPublished)) {
-            if (postPublished == null) {
-                this.post_published = false;
-            } else {
+            if (postPublished != null) {
                 this.post_published = postPublished;
+            } else {
+                this.post_published = false;
             }
         } else {
             throw new IllegalArgumentException("Unexpected post published: Invalid value");
@@ -254,10 +253,10 @@ public class Post extends Domain {
 
     public void setPost_enabled(Boolean postEnabled) {
         if (isValidPostEnabled(postEnabled)) {
-            if (postEnabled == null) {
-                this.post_enabled = true;
-            } else {
+            if (postEnabled != null) {
                 this.post_enabled = postEnabled;
+            } else {
+                this.post_enabled = true;
             }
         } else {
             throw new IllegalArgumentException("Unexpected post enabled: Invalid value");
@@ -266,10 +265,10 @@ public class Post extends Domain {
 
     public void setPost_created_at(String postCreatedAt) {
         if (isValidPostCreatedAt(postCreatedAt)) {
-            if (postCreatedAt == null) {
-                this.post_created_at = Helper.formatDatetimeUTC(new Date());
-            } else {
+            if (postCreatedAt != null) {
                 this.post_created_at = postCreatedAt;
+            } else {
+                this.post_created_at = Helper.formatDatetimeUTC(new Date());
             }
         } else {
             throw new IllegalArgumentException("Unexpected post created at: Invalid value");
@@ -278,10 +277,10 @@ public class Post extends Domain {
 
     public void setPost_updated_at(String postUpdatedAt) {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
-            if (postUpdatedAt == null) {
-                this.post_updated_at = Helper.formatDatetimeUTC(new Date());
-            } else {
+            if (postUpdatedAt != null) {
                 this.post_updated_at = postUpdatedAt;
+            } else {
+                this.post_updated_at = Helper.formatDatetimeUTC(new Date());
             }
         } else {
             throw new IllegalArgumentException("Unexpected post updated at: Invalid value");

@@ -37,7 +37,9 @@ public class PostDaoMyBatisImpl implements PostDao {
 
         Field field;
         if ((field = insert.checkInsertConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+            throw new IllegalArgumentException("Unexpected "
+                    + field.getName().replace("_", " ")
+                    + ": " + "Cannot be inserted");
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -79,7 +81,9 @@ public class PostDaoMyBatisImpl implements PostDao {
 
         Field field;
         if ((field = update.checkUpdateConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected " + field.getName() + ": " + "Invalid value");
+            throw new IllegalArgumentException("Unexpected "
+                    + field.getName().replace("_", " ")
+                    + ": " + "Cannot be updated");
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
