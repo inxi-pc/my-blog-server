@@ -98,4 +98,8 @@
             LIMIT #{limit} OFFSET #{offset}
         </if>
     </select>
+
+    <select id="countAllPost" resultType="int">
+        SELECT COUNT(*) FROM post
+    </select>
 </mapper>

@@ -65,7 +65,7 @@ public class CategoryResource {
         try {
             category.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw new BadRequestException(e);
         }
 
         if (Category.isValidCategoryId(categoryId)) {

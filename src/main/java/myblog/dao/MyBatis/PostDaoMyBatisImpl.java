@@ -150,4 +150,15 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new IllegalArgumentException("Unexpected params: Empty value");
         }
     }
+
+    /**
+     *
+     * @return
+     */
+    public int countAllPost() {
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.countAllPost();
+    }
 }

@@ -20,10 +20,10 @@ public class Pagination<T> extends Domain {
     private Integer offset;
 
     /**
-     * Number of records
+     * total of records
      *
      */
-    private Integer total;
+    private Integer recordsTotal;
 
     /**
      * Records
@@ -34,7 +34,7 @@ public class Pagination<T> extends Domain {
     public Pagination(Integer limit, Integer offset) {
         this.setLimit(limit);
         this.setOffset(offset);
-        this.setTotal(0);
+        this.setRecordsTotal(0);
         this.setData(new ArrayList<T>());
     }
 
@@ -69,11 +69,11 @@ public class Pagination<T> extends Domain {
      *
      * @param total
      */
-    public void setTotal(Integer total) {
+    public void setRecordsTotal(Integer total) {
         if (total != null && total >= 0) {
-            this.total = total;
+            this.recordsTotal = total;
         } else {
-            this.total = 0;
+            this.recordsTotal = 0;
         }
     }
 
@@ -98,8 +98,8 @@ public class Pagination<T> extends Domain {
         return offset;
     }
 
-    public int getTotal() {
-        return this.total;
+    public int getRecordsTotal() {
+        return this.recordsTotal;
     }
 
     public List<T> getData() {

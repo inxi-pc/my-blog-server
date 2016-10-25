@@ -98,4 +98,8 @@
             LIMIT #{limit} OFFSET #{offset}
         </if>
     </select>
+
+    <select id="countAllCategory" resultType="int">
+        SELECT COUNT(*) FROM category
+    </select>
 </mapper>

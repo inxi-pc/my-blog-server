@@ -121,7 +121,7 @@ public class CategoryService {
 
         List<Category> categories = myBatisCategoryDao.getCategoriesByCondition(params);
         page.setData(categories);
-        page.setTotal(categories.size());
+        page.setRecordsTotal(myBatisCategoryDao.countAllCategory());
 
         return page;
     }

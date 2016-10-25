@@ -3,6 +3,8 @@ package myblog.domain;
 import myblog.annotation.PrimaryKey;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Sql Sort statement
@@ -67,3 +69,5 @@ public class Sort<T> extends Domain {
         return this.order_type;
     }
 }
+
+

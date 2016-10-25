@@ -149,4 +149,15 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
             throw new IllegalArgumentException("Unexpected params: Empty value");
         }
     }
+
+    /**
+     *
+     * @return
+     */
+    public int countAllCategory() {
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.countAllCategory();
+    }
 }

@@ -10,8 +10,7 @@ import myblog.exception.FieldNotUpdatableException;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
@@ -217,7 +216,7 @@ public class PostResource {
         Sort<Post> order = new Sort<Post>(orderBy, orderType, Post.class);
         page = PostService.getPostList(post, page, order);
 
-            if (page != null) {
+        if (page != null) {
             if (page.getData().size() > 0) {
                 return Response.ok(page).build();
             } else {

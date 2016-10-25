@@ -48,4 +48,10 @@ public interface PostDao {
      * @return
      */
     List<Post> getPostsByCondition(Map<String, Object> params);
+
+    /**
+     *
+     * @return
+     */
+    int countAllPost();
 }
