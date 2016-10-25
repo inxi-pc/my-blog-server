@@ -3,6 +3,7 @@ package myblog.resource;
 import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Sort;
+import myblog.exception.FieldNotOuterSettableException;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.*;
@@ -18,6 +19,12 @@ public class CategoryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category category) {
+        try {
+            category.checkFieldOuterSettable();
+        } catch (FieldNotOuterSettableException e) {
+            throw new BadRequestException(e.getMessage(), e);
+        }
+
         int categoryId = CategoryService.createCategory(category);
 
         if (Category.isValidCategoryId(categoryId)) {
@@ -53,6 +60,12 @@ public class CategoryResource {
     public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category category) {
         if (categoryId == null) {
             throw new BadRequestException("Unexpected category id: Absence value");
+        }
+
+        try {
+            category.checkFieldOuterSettable();
+        } catch (FieldNotOuterSettableException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (Category.isValidCategoryId(categoryId)) {

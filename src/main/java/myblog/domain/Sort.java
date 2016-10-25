@@ -49,7 +49,7 @@ public class Sort<T> extends Domain {
      */
     public void setOrder_type(String orderType) {
         if (orderType != null) {
-            if (orderType.equals("DESC")) {
+            if (orderType.equalsIgnoreCase("DESC")) {
                 this.order_type = "DESC";
             } else {
                 this.order_type = "ASC";

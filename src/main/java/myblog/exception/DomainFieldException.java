@@ -6,8 +6,8 @@ public class DomainFieldException extends Exception {
 
     private Field field;
 
-    public DomainFieldException(Field field) {
-        super();
+    public DomainFieldException(String message, Field field) {
+        super(message);
         this.field = field;
     }
 

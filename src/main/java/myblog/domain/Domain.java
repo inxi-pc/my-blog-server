@@ -19,7 +19,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static boolean isUpdatable(Field field) {
+    private static boolean isUpdatable(Field field) {
         return field.isAnnotationPresent(Updatable.class);
     }
 
@@ -28,7 +28,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static boolean isInsertable(Field field) {
+    private static boolean isInsertable(Field field) {
         return field.isAnnotationPresent(Insertable.class);
     }
 
@@ -37,7 +37,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static boolean isOuterSettable(Field field) {
+    private static boolean isOuterSettable(Field field) {
         return field.isAnnotationPresent(OuterSettable.class);
     }
     /**
@@ -45,7 +45,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static boolean isNullable(Field field) {
+    private static boolean isNullable(Field field) {
         if (isInsertable(field)) {
             return field.getDeclaredAnnotation(Insertable.class).nullable();
         } else {
@@ -58,7 +58,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static boolean isDefaultable(Field field) {
+    private static boolean isDefaultable(Field field) {
         if (isInsertable(field)) {
             return field.getDeclaredAnnotation(Insertable.class).defaultable();
         } else {
@@ -71,7 +71,7 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static String getDefaultValueSetterName(Field field) {
+    private static String getDefaultValueSetterName(Field field) {
         String fieldName = field.getName();
         String prefix = "setDefault";
 

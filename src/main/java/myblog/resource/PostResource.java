@@ -26,7 +26,7 @@ public class PostResource {
         try {
             insert.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
-            throw new BadRequestException(e);
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         int postId = PostService.createPost(insert);
@@ -69,7 +69,7 @@ public class PostResource {
         try {
             update.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
-            throw new BadRequestException(e);
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (PostService.updatePost(postId, update)) {

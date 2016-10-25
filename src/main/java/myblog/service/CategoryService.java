@@ -34,9 +34,9 @@ public class CategoryService {
             category.setCategory_root_id(null);
             category.setCategory_parent_id(null);
         }
-        category.setCategory_enabled(true);
-        category.setCategory_created_at(null);
-        category.setCategory_updated_at(null);
+        category.setDefaultCategory_enabled();
+        category.setDefaultCategory_created_at();
+        category.setDefaultCategory_updated_at();
 
         return myBatisCategoryDao.createCategory(category);
     }
@@ -68,7 +68,7 @@ public class CategoryService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
-            category.setCategory_updated_at(null);
+            category.setDefaultCategory_updated_at();
 
             return myBatisCategoryDao.updateCategory(categoryId, category);
         } else {

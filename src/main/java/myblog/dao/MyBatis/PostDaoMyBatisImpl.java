@@ -43,7 +43,7 @@ public class PostDaoMyBatisImpl implements PostDao {
         try {
             insert.checkFieldInsertable();
         } catch (FieldNotInsertableException | FieldNotNullableException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -86,7 +86,7 @@ public class PostDaoMyBatisImpl implements PostDao {
         try {
             update.checkFieldUpdatable();
         } catch (FieldNotUpdatableException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

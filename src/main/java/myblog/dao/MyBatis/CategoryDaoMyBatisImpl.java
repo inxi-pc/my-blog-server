@@ -41,7 +41,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         try {
             insert.checkFieldInsertable();
         } catch (FieldNotInsertableException | FieldNotNullableException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -60,7 +60,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         if (Category.isValidCategoryId(categoryId)) {
             Category delete = new Category();
             delete.setCategory_enabled(false);
-            delete.setCategory_updated_at(null);
+            delete.setDefaultCategory_updated_at();
 
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
@@ -85,7 +85,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         try {
             update.checkFieldUpdatable();
         } catch (FieldNotUpdatableException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
