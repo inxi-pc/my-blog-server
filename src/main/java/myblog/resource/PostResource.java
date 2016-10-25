@@ -3,11 +3,16 @@ package myblog.resource;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
+import myblog.exception.FieldNotInsertableException;
+import myblog.exception.FieldNotNullableException;
+import myblog.exception.FieldNotOuterSettableException;
+import myblog.exception.FieldNotUpdatableException;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 
@@ -17,8 +22,14 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createPost(Post post) {
-        int postId = PostService.createPost(post);
+    public Response createPost(Post insert) {
+        try {
+            insert.checkFieldOuterSettable();
+        } catch (FieldNotOuterSettableException e) {
+            throw new BadRequestException(e);
+        }
+
+        int postId = PostService.createPost(insert);
 
         if (Post.isValidPostId(postId)) {
             return Response.created(URI.create("/posts/" + postId)).build();
@@ -50,12 +61,18 @@ public class PostResource {
     @Path("/{postId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePost(@PathParam("postId") Integer postId, Post post) {
+    public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
             throw new BadRequestException("Unexpected post id: Absence value");
         }
 
-        if (PostService.updatePost(postId, post)) {
+        try {
+            update.checkFieldOuterSettable();
+        } catch (FieldNotOuterSettableException e) {
+            throw new BadRequestException(e);
+        }
+
+        if (PostService.updatePost(postId, update)) {
             return Response.noContent().build();
         } else {
             throw new InternalServerErrorException("Unexpected error");
@@ -200,7 +217,7 @@ public class PostResource {
         Sort<Post> order = new Sort<Post>(orderBy, orderType, Post.class);
         page = PostService.getPostList(post, page, order);
 
-        if (page != null) {
+            if (page != null) {
             if (page.getData().size() > 0) {
                 return Response.ok(page).build();
             } else {

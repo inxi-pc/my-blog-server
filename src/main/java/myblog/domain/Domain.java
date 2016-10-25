@@ -1,7 +1,12 @@
 package myblog.domain;
 
 import myblog.annotation.Insertable;
+import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
+import myblog.exception.FieldNotInsertableException;
+import myblog.exception.FieldNotNullableException;
+import myblog.exception.FieldNotOuterSettableException;
+import myblog.exception.FieldNotUpdatableException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,6 +32,14 @@ public abstract class Domain {
         return field.isAnnotationPresent(Insertable.class);
     }
 
+    /**
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isOuterSettable(Field field) {
+        return field.isAnnotationPresent(OuterSettable.class);
+    }
     /**
      *
      * @param field
@@ -58,32 +71,40 @@ public abstract class Domain {
      * @param field
      * @return
      */
-    public static String getSetterMethodName(Field field) {
+    public static String getDefaultValueSetterName(Field field) {
         String fieldName = field.getName();
+        String prefix = "setDefault";
 
-        return  "set" + fieldName.substring(0, 1).toUpperCase()
+        return  prefix + fieldName.substring(0, 1).toUpperCase()
                 + fieldName.substring(1, fieldName.length());
     }
 
-    /**
-     *
-     * @param field
-     */
-    public void setDefaultValue(Field field) {
-        String setterName = getSetterMethodName(field);
-        try {
-            Method method = getClass().getDeclaredMethod(setterName, field.getType());
-            method.invoke(this, new Object[]{ null });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public void setDefaultableFieldValue() {
+        for (Field field : getClass().getDeclaredFields()) {
+            if (isDefaultable(field)) {
+                Object value;
+                try {
+                    field.setAccessible(true);
+                    value = field.get(this);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (value == null) {
+                    String setterName = getDefaultValueSetterName(field);
+                    try {
+                        Method method = getClass().getDeclaredMethod(setterName);
+                        method.invoke(this);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         }
     }
 
-    /**
-     *
-     * @return
-     */
-    public Field checkInsertConstraint() {
+    public void checkFieldInsertable() throws FieldNotInsertableException,
+            FieldNotNullableException {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
@@ -94,28 +115,18 @@ public abstract class Domain {
             }
 
             if (isInsertable(field)) {
-                if (value == null) {
-                    if (isDefaultable(field)) {
-                        setDefaultValue(field);
-                    } else if (!isNullable(field)) {
-                        return field;
+                if (!isDefaultable(field)) {
+                    if (!isNullable(field) && value == null) {
+                        throw new FieldNotInsertableException(field);
                     }
                 }
-            } else {
-                if (value != null) {
-                    return field;
-                }
+            } else if (value != null) {
+                throw new FieldNotInsertableException(field);
             }
         }
-
-        return null;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Field checkUpdateConstraint() {
+    public void checkFieldUpdatable() throws FieldNotUpdatableException {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
@@ -126,11 +137,25 @@ public abstract class Domain {
             }
 
             if (!isUpdatable(field) && value != null) {
-                return field;
+                throw new FieldNotUpdatableException(field);
             }
         }
+    }
 
-        return null;
+    public void checkFieldOuterSettable() throws FieldNotOuterSettableException {
+        for (Field field : getClass().getDeclaredFields()) {
+            Object value;
+            try {
+                field.setAccessible(true);
+                value = field.get(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            if (!isOuterSettable(field) && value != null) {
+                throw new FieldNotOuterSettableException(field);
+            }
+        }
     }
 
     /**

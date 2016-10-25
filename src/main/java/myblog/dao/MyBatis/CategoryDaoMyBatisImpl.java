@@ -3,6 +3,9 @@ package myblog.dao.MyBatis;
 import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
+import myblog.exception.FieldNotInsertableException;
+import myblog.exception.FieldNotNullableException;
+import myblog.exception.FieldNotUpdatableException;
 import org.apache.ibatis.session.SqlSession;
 
 import java.lang.reflect.Field;
@@ -35,11 +38,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
             throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
 
-        Field field;
-        if ((field = insert.checkInsertConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected "
-                    + field.getName().replace("_", " ")
-                    + ": " + "Cant be inserted");
+        try {
+            insert.checkFieldInsertable();
+        } catch (FieldNotInsertableException | FieldNotNullableException e) {
+            throw new IllegalArgumentException(e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -80,11 +82,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
             throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
 
-        Field field;
-        if ((field = update.checkUpdateConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected "
-                    + field.getName().replace("_", " ")
-                    + ": " + "Cant be updated");
+        try {
+            update.checkFieldUpdatable();
+        } catch (FieldNotUpdatableException e) {
+            throw new IllegalArgumentException(e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

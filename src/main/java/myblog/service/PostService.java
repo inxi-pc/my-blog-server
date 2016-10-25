@@ -21,9 +21,9 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        insert.setPost_enabled(true);
-        insert.setPost_created_at(null);
-        insert.setPost_updated_at(null);
+        insert.setDefaultPost_enabled();
+        insert.setDefaultPost_created_at();
+        insert.setDefaultPost_updated_at();
 
         return myBatisPostDao.createPost(insert);
     }
@@ -54,7 +54,7 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
         if (PostService.getPostById(postId) != null) {
-            update.setPost_updated_at(null);
+            update.setDefaultPost_updated_at();
 
             return myBatisPostDao.updatePost(postId, update);
         } else {

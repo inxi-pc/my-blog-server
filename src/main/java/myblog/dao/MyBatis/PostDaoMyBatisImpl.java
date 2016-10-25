@@ -3,6 +3,9 @@ package myblog.dao.MyBatis;
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
 import myblog.domain.Post;
+import myblog.exception.FieldNotInsertableException;
+import myblog.exception.FieldNotNullableException;
+import myblog.exception.FieldNotUpdatableException;
 import org.apache.ibatis.session.SqlSession;
 
 import java.lang.reflect.Field;
@@ -35,11 +38,12 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
 
-        Field field;
-        if ((field = insert.checkInsertConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected "
-                    + field.getName().replace("_", " ")
-                    + ": " + "Cannot be inserted");
+        insert.setDefaultableFieldValue();
+
+        try {
+            insert.checkFieldInsertable();
+        } catch (FieldNotInsertableException | FieldNotNullableException e) {
+            throw new IllegalArgumentException(e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -79,11 +83,10 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new NullPointerException("Unexpected category: " + "Null pointer");
         }
 
-        Field field;
-        if ((field = update.checkUpdateConstraint()) != null) {
-            throw new IllegalArgumentException("Unexpected "
-                    + field.getName().replace("_", " ")
-                    + ": " + "Cannot be updated");
+        try {
+            update.checkFieldUpdatable();
+        } catch (FieldNotUpdatableException e) {
+            throw new IllegalArgumentException(e);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
