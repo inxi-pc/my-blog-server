@@ -216,7 +216,7 @@ public class CategoryResource {
 
         Pagination<Category> page = new Pagination<Category>(limit, offset);
         Sort<Category> order = new Sort<Category>(orderBy, orderType, Category.class);
-        page = CategoryService.getCategoryList(category, page, order);
+        page = CategoryService.getCategoryListTree(category, page, order);
 
         if (page != null) {
             if (page.getData().size() > 0) {

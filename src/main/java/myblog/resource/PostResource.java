@@ -3,15 +3,12 @@ package myblog.resource;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.FieldNotInsertableException;
-import myblog.exception.FieldNotNullableException;
 import myblog.exception.FieldNotOuterSettableException;
-import myblog.exception.FieldNotUpdatableException;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.lang.reflect.Field;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 

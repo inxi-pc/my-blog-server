@@ -106,22 +106,47 @@ public class CategoryService {
      *
      * @param category
      * @param page
-     * @param order
+     * @param sort
      * @return
      */
-    public static Pagination<Category> getCategoryList(Category category, Pagination<Category> page, Sort order) {
+    public static Pagination<Category> getCategoryList(Category category, Pagination<Category> page, Sort sort) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         HashMap<String, Object> params = category.convertToHashMap();
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
-        params.put("orderBy", order.getOrder_by());
-        params.put("orderType", order.getOrder_type());
+        params.put("orderBy", sort.getOrder_by());
+        params.put("orderType", sort.getOrder_type());
 
         List<Category> categories = myBatisCategoryDao.getCategoriesByCondition(params);
         page.setData(categories);
         page.setRecordsTotal(myBatisCategoryDao.countAllCategory());
+
+        return page;
+    }
+
+    /**
+     *
+     * @param category
+     * @return
+     */
+    public static List<Category> getCategoriesTree(Category category) {
+        List<Category> categories = getCategories(category);
+        categories = Category.formatCategoryTree(categories);
+
+        return categories;
+    }
+    /**
+     *
+     * @param category
+     * @param page
+     * @param sort
+     * @return
+     */
+    public static Pagination<Category> getCategoryListTree(Category category, Pagination<Category> page, Sort sort) {
+        getCategoryList(category, page, sort);
+        page.setData(Category.formatCategoryTree(page.getData()));
 
         return page;
     }

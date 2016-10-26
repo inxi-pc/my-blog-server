@@ -14,6 +14,8 @@
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
+                <property name="poolMaximumActiveConnections" value="120"/>
+                <property name="poolMaximumIdleConnections" value="20"/>
                 <property name="driver" value="${driver}"/>
                 <property name="url" value="${url}"/>
                 <property name="username" value="${username}"/>

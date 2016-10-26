@@ -8,7 +8,6 @@ import myblog.exception.FieldNotNullableException;
 import myblog.exception.FieldNotUpdatableException;
 import org.apache.ibatis.session.SqlSession;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 

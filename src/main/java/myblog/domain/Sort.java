@@ -3,8 +3,6 @@ package myblog.domain;
 import myblog.annotation.PrimaryKey;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Sql Sort statement

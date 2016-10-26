@@ -1,15 +1,16 @@
 package myblog.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import myblog.Helper;
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
 
-import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class Category extends Domain {
 
@@ -47,6 +48,8 @@ public class Category extends Domain {
     @Updatable
     private Boolean category_enabled;
 
+    private List<Category> children;
+
     public Category() {
         this.category_id = null;
         this.category_parent_id = null;
@@ -57,6 +60,56 @@ public class Category extends Domain {
         this.category_created_at = null;
         this.category_updated_at = null;
         this.category_enabled = null;
+        this.children = new ArrayList<Category>();
+    }
+
+    public List getChildren() {
+        return this.children;
+    }
+
+    public void setChildren(List<Category> children) {
+        if (children != null) {
+            this.children = children;
+        } else {
+            this.children = new ArrayList<Category>();
+        }
+    }
+
+    public static List<Category> formatCategoryTree(List<Category> categories) {
+        List<Category> rootCategories = new ArrayList<Category>();
+        List<Category> childCategories = new ArrayList<Category>();
+        List<Category> grandChildCategories = new ArrayList<Category>();
+        for (Category category : categories) {
+            if (category.category_level == 1) {
+                rootCategories.add(category);
+            }
+            if (category.category_level == 2) {
+                childCategories.add(category);
+            }
+            if (category.category_level == 3) {
+                grandChildCategories.add(category);
+            }
+        }
+        attachChildrenToParent(childCategories, grandChildCategories.iterator());
+        attachChildrenToParent(rootCategories, childCategories.iterator());
+
+        return rootCategories;
+    }
+
+    private static void attachChildrenToParent(List<Category> parent, Iterator<Category> children) {
+        while (children.hasNext()) {
+            Category category = children.next();
+            for (Category categoryParent : parent) {
+                if (category.category_parent_id.equals(categoryParent.category_id)) {
+                    categoryParent.children.add(category);
+                    children.remove();
+                }
+            }
+        }
+
+        if (children.hasNext()) {
+            throw new RuntimeException("Lack some children");
+        }
     }
 
     public Integer getCategory_id() {

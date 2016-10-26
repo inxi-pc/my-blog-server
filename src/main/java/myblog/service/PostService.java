@@ -92,18 +92,18 @@ public class PostService {
      *
      * @param post
      * @param page
-     * @param order
+     * @param sort
      * @return
      */
-    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort order) {
+    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort sort) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         HashMap<String, Object> params = post.convertToHashMap();
         params.put("limit", page.getLimit());
         params.put("offset", page.getOffset());
-        params.put("orderBy", order.getOrder_by());
-        params.put("orderType", order.getOrder_type());
+        params.put("orderBy", sort.getOrder_by());
+        params.put("orderType", sort.getOrder_type());
 
         List<Post> posts = myBatisPostDao.getPostsByCondition(params);
         page.setData(posts);
