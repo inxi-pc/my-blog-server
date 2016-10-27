@@ -100,6 +100,6 @@
     </select>
 
     <select id="countAllPost" resultType="int">
-        SELECT COUNT(*) FROM post
+        SELECT COUNT(*) FROM post WHERE post_enabled = true
     </select>
 </mapper>

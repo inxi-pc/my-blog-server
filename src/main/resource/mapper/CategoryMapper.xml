@@ -100,6 +100,6 @@
     </select>
 
     <select id="countAllCategory" resultType="int">
-        SELECT COUNT(*) FROM category
+        SELECT COUNT(*) FROM category WHERE category_enabled = true
     </select>
 </mapper>

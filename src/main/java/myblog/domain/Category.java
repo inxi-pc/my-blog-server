@@ -1,6 +1,5 @@
 package myblog.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import myblog.Helper;
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
