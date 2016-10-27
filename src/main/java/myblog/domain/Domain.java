@@ -117,7 +117,7 @@ public abstract class Domain {
             if (isInsertable(field)) {
                 if (!isDefaultable(field)) {
                     if (!isNullable(field) && value == null) {
-                        throw new FieldNotInsertableException(field);
+                        throw new FieldNotNullableException(field);
                     }
                 }
             } else if (value != null) {

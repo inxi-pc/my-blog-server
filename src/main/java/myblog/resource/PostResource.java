@@ -210,8 +210,8 @@ public class PostResource {
         }
 
         Pagination<Post> page = new Pagination<Post>(limit, offset);
-        Sort<Post> order = new Sort<Post>(orderBy, orderType, Post.class);
-        page = PostService.getPostList(post, page, order);
+        Sort<Post> sort = new Sort<Post>(orderBy, orderType, Post.class);
+        page = PostService.getPostList(post, page, sort);
 
         if (page != null) {
             if (page.getData().size() > 0) {

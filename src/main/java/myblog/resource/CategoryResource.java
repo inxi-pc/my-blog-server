@@ -65,7 +65,7 @@ public class CategoryResource {
         try {
             category.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
-            throw new BadRequestException(e);
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (Category.isValidCategoryId(categoryId)) {
@@ -176,7 +176,8 @@ public class CategoryResource {
                                                 @QueryParam("limit") Integer limit,
                                                 @QueryParam("offset") Integer offset,
                                                 @QueryParam("order_by") String orderBy,
-                                                @QueryParam("order_type") String orderType) {
+                                                @QueryParam("order_type") String orderType,
+                                                @QueryParam("tree_enabled") Boolean treeEnabled) {
         Category category = new Category();
         if (categoryParentId != null) {
             if (Category.isValidCategoryParentId(categoryParentId)) {
@@ -215,8 +216,14 @@ public class CategoryResource {
         }
 
         Pagination<Category> page = new Pagination<Category>(limit, offset);
-        Sort<Category> order = new Sort<Category>(orderBy, orderType, Category.class);
-        page = CategoryService.getCategoryListTree(category, page, order);
+        Sort<Category> sort = new Sort<Category>(orderBy, orderType, Category.class);
+
+        if (treeEnabled != null && treeEnabled == true) {
+            page = CategoryService.getCategoryListTree(category, page, sort);
+        } else {
+            page = CategoryService.getCategoryList(category, page, sort);
+        }
+
 
         if (page != null) {
             if (page.getData().size() > 0) {

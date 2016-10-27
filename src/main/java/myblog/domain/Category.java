@@ -60,7 +60,7 @@ public class Category extends Domain {
         this.category_created_at = null;
         this.category_updated_at = null;
         this.category_enabled = null;
-        this.children = new ArrayList<Category>();
+        this.children = null;
     }
 
     public List getChildren() {
@@ -68,11 +68,7 @@ public class Category extends Domain {
     }
 
     public void setChildren(List<Category> children) {
-        if (children != null) {
-            this.children = children;
-        } else {
-            this.children = new ArrayList<Category>();
-        }
+        this.children = children;
     }
 
     public static List<Category> formatCategoryTree(List<Category> categories) {
@@ -101,6 +97,9 @@ public class Category extends Domain {
             Category category = children.next();
             for (Category categoryParent : parent) {
                 if (category.category_parent_id.equals(categoryParent.category_id)) {
+                    if (categoryParent.children == null) {
+                        categoryParent.children = new ArrayList<Category>();
+                    }
                     categoryParent.children.add(category);
                     children.remove();
                 }
