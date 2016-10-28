@@ -7,7 +7,7 @@ import myblog.domain.User;
 import myblog.provider.CORSFilter;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
-import myblog.provider.TestAuthenticator;
+import myblog.provider.BasicAuthenticator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +59,7 @@ public class App extends ResourceConfig {
         register(MyErrorMapper.class);
         register(CORSFilter.class);
         register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new TestAuthenticator())
+                .setAuthenticator(new BasicAuthenticator())
                 .setPrefix("BASIC")
                 .setRealm("SUPER SECRET STUFF")
                 .buildAuthFilter()));
