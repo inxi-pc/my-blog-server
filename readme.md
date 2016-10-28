@@ -1,11 +1,9 @@
 # Myblog Server技术栈
-* Resource:
-jesery (https://jersey.java.net/documentation/latest/index.html)
-* Authenticator & Authority：
-jaas  (http://docs.oracle.com/javase/7/docs/technotes/guides/security/jaas/JAASRefGuide.html)
+* Resource: jesery (https://jersey.java.net/documentation/latest/index.html)
+* Authenticator & Authority:
+JAAS  (http://docs.oracle.com/javase/7/docs/technotes/guides/security/  jaas/JAASRefGuide.html)
 JWT (https://jwt.io/introduction/)
-* Http server:
-GrizzlyHttpServer(JNIO)
+* Http server: GrizzlyHttpServer(JNIO)
 
 # Myblog Server架构考虑问题列表
 ```
