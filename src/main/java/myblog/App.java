@@ -1,9 +1,13 @@
 package myblog;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import myblog.auth.AuthDynamicFeature;
+import myblog.auth.basic.BasicCredentialAuthFilter;
+import myblog.domain.User;
 import myblog.provider.CORSFilter;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
+import myblog.provider.TestAuthenticator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +58,11 @@ public class App extends ResourceConfig {
         register(MyExceptionMapper.class);
         register(MyErrorMapper.class);
         register(CORSFilter.class);
+        register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
+                .setAuthenticator(new TestAuthenticator())
+                .setPrefix("BASIC")
+                .setRealm("SUPER SECRET STUFF")
+                .buildAuthFilter()));
     }
 
     public static void main(String[] args) {

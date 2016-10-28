@@ -6,6 +6,7 @@ import myblog.domain.Sort;
 import myblog.exception.FieldNotOuterSettableException;
 import myblog.service.PostService;
 
+import javax.annotation.security.DenyAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -162,6 +163,7 @@ public class PostResource {
 
     @GET
     @Path("/list")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPostList(@QueryParam("user_id") Integer userId,
                                 @QueryParam("category_id") Integer categoryId,
