@@ -39,7 +39,7 @@ public class BasicCredentialAuthFilter<P extends Principal> extends AuthFilter<B
         }
 
         final String method = header.substring(0, space);
-        if (!prefix.equalsIgnoreCase(method)) {
+        if (!this.prefix.equalsIgnoreCase(method)) {
             return Optional.empty();
         }
 
@@ -49,6 +49,7 @@ public class BasicCredentialAuthFilter<P extends Principal> extends AuthFilter<B
         } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
+
 
         // Decoded credentials is 'username:password'
         final int i = decoded.indexOf(':');

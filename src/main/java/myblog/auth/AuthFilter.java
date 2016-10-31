@@ -5,6 +5,7 @@ import org.glassfish.jersey.server.internal.LocalizationMessages;
 
 import javax.annotation.Priority;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -142,7 +143,7 @@ public abstract class AuthFilter<C, P extends Principal> implements ContainerReq
         try {
             principal = this.authenticator.authenticate(credentials);
         } catch (AuthenticationException e) {
-            throw new ForbiddenException(LocalizationMessages.USER_NOT_AUTHORIZED());
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
 
         if (!principal.isPresent()) {

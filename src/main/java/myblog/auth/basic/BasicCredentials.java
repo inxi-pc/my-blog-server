@@ -15,17 +15,12 @@ public class BasicCredentials {
      * @param password the password
      */
     public BasicCredentials(String username, String password) {
-        if (username != null) {
-            this.username = username;
-        } else {
-            throw new NullPointerException("Unexpected username: Null pointer");
+        if (username != null && password == null) {
+            throw new IllegalArgumentException();
         }
 
-        if (password != null) {
-            this.password = password;
-        } else {
-            throw new NullPointerException("Unexpected password: Null pointer");
-        }
+        this.username = username;
+        this.password = password;
     }
 
     /**

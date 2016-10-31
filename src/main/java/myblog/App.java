@@ -2,12 +2,12 @@ package myblog;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.auth.AuthDynamicFeature;
-import myblog.auth.basic.BasicCredentialAuthFilter;
+import myblog.auth.jwt.JwtAuthFilter;
 import myblog.domain.User;
 import myblog.provider.CORSFilter;
+import myblog.provider.JwtAuthenticator;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
-import myblog.provider.BasicAuthenticator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +33,7 @@ public class App extends ResourceConfig {
     private static URI BASE_URI = URI.create("http://localhost:8888/");
 
     /**
-     * Server config file name
+     * App config file name
      *
      */
     private static final String SERVER_CONFIG_FILENAME = "config.properties";
@@ -58,9 +58,9 @@ public class App extends ResourceConfig {
         register(MyExceptionMapper.class);
         register(MyErrorMapper.class);
         register(CORSFilter.class);
-        register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new BasicAuthenticator())
-                .setPrefix("BASIC")
+        register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
+                .setAuthenticator(new JwtAuthenticator())
+                .setPrefix("Bearer")
                 .setRealm("SUPER SECRET STUFF")
                 .buildAuthFilter()));
     }
@@ -92,6 +92,8 @@ public class App extends ResourceConfig {
         } catch (IOException e) {
             logger.log(Level.ERROR, e);
         }
+
+        logger.log(Level.INFO, config);
     }
 
     /**
@@ -101,10 +103,27 @@ public class App extends ResourceConfig {
      */
     public static boolean isDebug() {
         if (config != null) {
-           return Boolean.parseBoolean(config.getProperty("debug"));
+            String debug;
+            if ((debug = config.getProperty("debug")) != null) {
+                return Boolean.parseBoolean(debug);
+            } else {
+                throw new RuntimeException("No configuration value found: jwtKey");
+            }
         } else {
-            loadApplicationConfig();
-            return Boolean.parseBoolean(config.getProperty("debug"));
+            throw new RuntimeException("No configuration found");
+        }
+    }
+
+    public static String getJwtKey() {
+        if (config != null) {
+            String jwtKey;
+            if ((jwtKey = config.getProperty("jwtKey")) != null) {
+                return jwtKey;
+            } else {
+                throw new RuntimeException("No configuration value found: jwtKey");
+            }
+        } else {
+            throw new RuntimeException("No configuration found");
         }
     }
 }

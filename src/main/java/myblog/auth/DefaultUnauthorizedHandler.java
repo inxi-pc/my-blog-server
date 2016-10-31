@@ -13,7 +13,7 @@ public class DefaultUnauthorizedHandler implements UnauthorizedHandler {
         return Response.status(Response.Status.UNAUTHORIZED)
                 .header(HttpHeaders.WWW_AUTHENTICATE, String.format(CHALLENGE_FORMAT, prefix, realm))
                 .type(MediaType.TEXT_PLAIN_TYPE)
-                .entity("Credentials are required to access this resource.")
+                .entity("Correct credentials are required to access this resource.")
                 .build();
     }
 }
