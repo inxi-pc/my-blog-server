@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS category CASCADE;
 
 CREATE TABLE user (
   user_id         INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  user_username   VARCHAR(30),
+  user_name       VARCHAR(30) UNIQUE,
   user_telephone  CHAR(20),
   user_email      CHAR(30),
   user_password   VARCHAR(30) NOT NULL,

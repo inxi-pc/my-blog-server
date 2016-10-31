@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="myblog.dao.MyBatis.Mapper.UserMapper">
+    <insert id="createUser" useGeneratedKeys="true" keyProperty="user_id">
+        INSERT INTO user(
+            user_id,
+            user_name,
+            user_telephone,
+            user_email,
+            user_password,
+            user_enabled,
+            user_created_at,
+            user_updated_at
+        )
+        VALUES(
+            #{user_id},
+            #{user_name},
+            #{user_telephone},
+            #{user_email},
+            #{user_password},
+            #{user_enabled},
+            #{user_created_at},
+            #{user_updated_at}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE user
+        <set>
+            <if test="update.user_id != null">
+                user_id = #{update.user_id},
+            </if>
+            <if test="update.user_name != null">
+                user_name = #{update.user_name},
+            </if>
+            <if test="update.user_telephone != null">
+                user_telephone = #{update.user_telephone},
+            </if>
+            <if test="update.user_email != null">
+                user_email = #{update.user_email},
+            </if>
+            <if test="update.user_password != null">
+                user_password = #{update.user_password},
+            </if>
+            <if test="update.user_enabled != null">
+                user_enabled = #{update.user_enabled},
+            </if>
+            <if test="update.user_updated_at != null">
+                user_updated_at = #{update.user_updated_at}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="getUserById" resultType="User">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
+    <!-- Basic way to find list -->
+    <select id="getUsersByIds" resultType="User">
+        SELECT * FROM user WHERE user_id IN
+        <foreach collection="list" item="user_id" index="index"
+                 open="(" separator="," close=")">
+            #{user_id}
+        </foreach>
+    </select>
+
+    <!-- More ways to find list -->
+    <select id="getUsersByCondition" resultType="User">
+        SELECT * FROM user
+        <where>
+            <!-- find by enabled-->
+            <if test="user_enabled != null">
+                AND user_enabled = #{user_enabled}
+            </if>
+        </where>
+        <if test="orderBy != null and orderType != null">
+            ORDER BY ${orderBy} ${orderType}
+        </if>
+        <if test="offset != null and limit != null">
+            LIMIT #{limit} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="countAllUser" resultType="int">
+        SELECT COUNT(*) FROM user WHERE user_enabled = true
+    </select>
+</mapper>

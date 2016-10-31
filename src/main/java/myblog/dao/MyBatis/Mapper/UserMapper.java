@@ -1,24 +1,23 @@
-package myblog.dao;
+package myblog.dao.MyBatis.Mapper;
 
 import myblog.domain.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
-public interface UserDao {
+public interface UserMapper {
     /**
      *
-     * @param insert
      * @return
      */
     int createUser(User insert);
 
     /**
      *
-     * @param userId
      * @return
      */
-    boolean deleteUser(int userId);
+    boolean deleteUserById(int userId);
 
     /**
      *
@@ -26,18 +25,16 @@ public interface UserDao {
      * @param update
      * @return
      */
-    boolean updateUser(int userId, User update);
+    boolean updateUser(@Param("userId") int userId, @Param("update") User update);
 
     /**
      *
-     * @param userId
      * @return
      */
     User getUserById(int userId);
 
     /**
      *
-     * @param userIds
      * @return
      */
     List<User> getUsersByIds(int[] userIds);

@@ -32,10 +32,13 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param insert
      * @return
      */
+    @Override
     public int createCategory(Category insert) {
         if (insert == null) {
-            throw new NullPointerException("Unexpected category: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected category: " + "Null pointer");
         }
+
+        insert.setDefaultableFieldValue();
 
         try {
             insert.checkFieldInsertable();
@@ -55,6 +58,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param categoryId
      * @return
      */
+    @Override
     public boolean deleteCategory(int categoryId) {
         if (Category.isValidCategoryId(categoryId)) {
             Category delete = new Category();
@@ -76,9 +80,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param update
      * @return
      */
+    @Override
     public boolean updateCategory(int categoryId, Category update) {
         if (update == null) {
-            throw new NullPointerException("Unexpected category: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected category: " + "Null pointer");
         }
 
         try {
@@ -98,6 +103,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param categoryId
      * @return
      */
+    @Override
     public Category getCategoryById(int categoryId) {
         if (Category.isValidCategoryId(categoryId)) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -114,9 +120,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param categoryIds
      * @return
      */
+    @Override
     public List<Category> getCategoriesByIds(int[] categoryIds) {
         if (categoryIds == null) {
-            throw new NullPointerException("Unexpected category ids: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected category ids: " + "Null pointer");
         }
 
         if (categoryIds.length > 0) {
@@ -134,9 +141,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param params
      * @return
      */
+    @Override
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new NullPointerException("Unexpected params: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected params: " + "Null pointer");
         }
 
         if (params.size() > 0) {
@@ -153,6 +161,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @return
      */
+    @Override
     public int countAllCategory() {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);

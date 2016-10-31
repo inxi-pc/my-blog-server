@@ -32,6 +32,7 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param insert
      * @return
      */
+    @Override
     public int createPost(Post insert) {
         if (insert == null) {
             throw new NullPointerException("Unexpected category: " + "Null pointer");
@@ -57,6 +58,7 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param postId
      * @return
      */
+    @Override
     public boolean deletePost(int postId) {
         if (Post.isValidPostId(postId)) {
             Post post = new Post();
@@ -77,9 +79,10 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param update
      * @return
      */
+    @Override
     public boolean updatePost(int postId, Post update) {
         if (update == null) {
-            throw new NullPointerException("Unexpected category: " + "Null pointer");
+            throw new NullPointerException("Unexpected post: " + "Null pointer");
         }
 
         try {
@@ -99,6 +102,7 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param postId
      * @return
      */
+    @Override
     public Post getPostById(int postId) {
         if (Post.isValidPostId(postId)) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -115,9 +119,10 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param postIds
      * @return
      */
+    @Override
     public List<Post> getPostsByIds(int[] postIds) {
         if (postIds == null) {
-            throw new NullPointerException("Unexpected post ids: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected post ids: " + "Null pointer");
         }
 
         if (postIds.length > 0) {
@@ -135,9 +140,10 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param params
      * @return
      */
+    @Override
     public List<Post> getPostsByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new NullPointerException("Unexpected params: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected params: " + "Null pointer");
         }
 
         if (params.size() > 0) {
@@ -154,6 +160,7 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @return
      */
+    @Override
     public int countAllPost() {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
