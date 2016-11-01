@@ -27,5 +27,6 @@
     <mappers>
         <mapper resource="mapper/PostMapper.xml"/>
         <mapper resource="mapper/CategoryMapper.xml"/>
+        <mapper resource="mapper/UserMapper.xml"/>
     </mappers>
 </configuration>

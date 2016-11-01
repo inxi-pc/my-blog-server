@@ -8,9 +8,9 @@ DROP TABLE IF EXISTS category CASCADE;
 
 CREATE TABLE user (
   user_id         INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  user_name       VARCHAR(30) UNIQUE,
-  user_telephone  CHAR(20),
-  user_email      CHAR(30),
+  user_name       VARCHAR(30) NOT NULL UNIQUE,
+  user_telephone  CHAR(20) UNIQUE,
+  user_email      CHAR(30) UNIQUE,
   user_password   VARCHAR(30) NOT NULL,
   user_created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   user_updated_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

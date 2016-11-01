@@ -1,5 +1,6 @@
 package myblog.dao.MyBatis.Mapper;
 
+import myblog.domain.Credential;
 import myblog.domain.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,6 +33,13 @@ public interface UserMapper {
      * @return
      */
     User getUserById(int userId);
+
+    /**
+     *
+     * @param credential
+     * @return
+     */
+    User getUserByCredential(@Param("credential") Credential credential);
 
     /**
      *

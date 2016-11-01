@@ -14,31 +14,31 @@ public class CategoryService {
 
     /**
      *
-     * @param category
+     * @param insert
      * @return
      */
-    public static int createCategory(Category category) {
+    public static int createCategory(Category insert) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
-        if (category.getCategory_parent_id() != null) {
-            Category parent = myBatisCategoryDao.getCategoryById(category.getCategory_parent_id());
+        if (insert.getCategory_parent_id() != null) {
+            Category parent = myBatisCategoryDao.getCategoryById(insert.getCategory_parent_id());
             if (parent != null) {
-                category.setCategory_level(parent.getCategory_level() + 1);
-                category.setCategory_root_id(parent.getCategory_root_id());
+                insert.setCategory_level(parent.getCategory_level() + 1);
+                insert.setCategory_root_id(parent.getCategory_root_id());
             } else {
-                throw new NotFoundException("Not found parent category: Id = " + category.getCategory_parent_id());
+                throw new NotFoundException("Not found parent category: Id = " + insert.getCategory_parent_id());
             }
         } else {
-            category.setCategory_level(1);
-            category.setCategory_root_id(null);
-            category.setCategory_parent_id(null);
+            insert.setCategory_level(1);
+            insert.setCategory_root_id(null);
+            insert.setCategory_parent_id(null);
         }
-        category.setDefaultCategory_enabled();
-        category.setDefaultCategory_created_at();
-        category.setDefaultCategory_updated_at();
+        insert.setDefaultCategory_enabled();
+        insert.setDefaultCategory_created_at();
+        insert.setDefaultCategory_updated_at();
 
-        return myBatisCategoryDao.createCategory(category);
+        return myBatisCategoryDao.createCategory(insert);
     }
 
     /**
@@ -60,17 +60,17 @@ public class CategoryService {
     /**
      *
      * @param categoryId
-     * @param category
+     * @param update
      * @return
      */
-    public static boolean updateCategory(int categoryId, Category category)  {
+    public static boolean updateCategory(int categoryId, Category update)  {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
-            category.setDefaultCategory_updated_at();
+            update.setDefaultCategory_updated_at();
 
-            return myBatisCategoryDao.updateCategory(categoryId, category);
+            return myBatisCategoryDao.updateCategory(categoryId, update);
         } else {
             throw new NotFoundException("Not found category: Id = " + categoryId);
         }

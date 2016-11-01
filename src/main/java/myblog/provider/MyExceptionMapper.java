@@ -1,7 +1,9 @@
 package myblog.provider;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import myblog.App;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -16,6 +18,8 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         WebApplicationException ex;
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
+        } else if (e instanceof JsonMappingException){
+            ex = new BadRequestException(e.getMessage(), e);
         } else {
             ex = new InternalServerErrorException(e.getMessage(), e);
         }

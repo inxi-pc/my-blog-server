@@ -1,5 +1,7 @@
 package myblog;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import myblog.auth.AuthDynamicFeature;
 import myblog.auth.jwt.JwtAuthFilter;
@@ -18,6 +20,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Base64;
 import java.util.Properties;
 
 /**
@@ -54,10 +57,14 @@ public class App extends ResourceConfig {
     private App() {
         packages("myblog.resource");
 
-        register(JacksonJsonProvider.class);
         register(MyExceptionMapper.class);
         register(MyErrorMapper.class);
         register(CORSFilter.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        register(new JacksonJsonProvider(objectMapper));
+
         register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
                 .setAuthenticator(new JwtAuthenticator())
                 .setPrefix("Bearer")
@@ -114,6 +121,11 @@ public class App extends ResourceConfig {
         }
     }
 
+    /**
+     * Get encrypt jwt secret key
+     *
+     * @return
+     */
     public static String getJwtKey() {
         if (config != null) {
             String jwtKey;

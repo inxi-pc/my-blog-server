@@ -3,7 +3,6 @@
 <mapper namespace="myblog.dao.MyBatis.Mapper.UserMapper">
     <insert id="createUser" useGeneratedKeys="true" keyProperty="user_id">
         INSERT INTO user(
-            user_id,
             user_name,
             user_telephone,
             user_email,
@@ -13,7 +12,6 @@
             user_updated_at
         )
         VALUES(
-            #{user_id},
             #{user_name},
             #{user_telephone},
             #{user_email},
@@ -54,6 +52,14 @@
 
     <select id="getUserById" resultType="User">
         SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
+    <select id="getUserByCredential" resultType="User">
+        SELECT * FROM user WHERE
+        (user_name = #{credential.identifier}
+        OR user_email = #{credential.identifier}
+        OR user_telephone = #{credential.identifier})
+        AND user_password = #{credential.password}
     </select>
 
     <!-- Basic way to find list -->

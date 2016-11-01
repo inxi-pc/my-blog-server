@@ -10,13 +10,13 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-public class User extends Domain implements Principal {
+public class User extends Domain implements Principal, Credential {
 
     @PrimaryKey
     private Integer user_id;
 
     @OuterSettable
-    @Insertable(nullable = true)
+    @Insertable(nullable = false)
     private String user_name;
 
     @OuterSettable
@@ -46,6 +46,45 @@ public class User extends Domain implements Principal {
     @Override
     public String getName() {
         return this.user_name;
+    }
+
+    @Override
+    public boolean hasIdentifier() {
+        return this.user_name != null
+                || this.user_telephone != null
+                || this.user_email != null;
+    }
+
+    @Override
+    public Object getIdentifier() {
+        if (this.user_name != null) {
+            return this.user_name;
+        }
+
+        if (this.user_email != null) {
+            return this.user_email;
+        }
+
+        if (this.user_telephone != null) {
+            return this.user_telephone;
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean hasPassword() {
+        return this.user_password != null;
+    }
+
+    @Override
+    public Object getPassword() {
+        return this.user_password;
+    }
+
+    @Override
+    public void encryptPassword() {
+
     }
 
     public int getUser_id() {
@@ -109,6 +148,7 @@ public class User extends Domain implements Principal {
             return true;
         } else {
             Pattern p = Pattern.compile("[a-zA-Z1-9_-]+@[a-zA-Z1-9_-]+\\.\\w+");
+
             return p.matcher(userEmail).matches();
         }
     }

@@ -1,15 +1,13 @@
 package myblog.auth;
 
-import org.glassfish.jersey.server.model.AnnotatedMethod;
-
-import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuthDynamicFeature implements DynamicFeature {
 
@@ -29,17 +27,11 @@ public class AuthDynamicFeature implements DynamicFeature {
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        Method am = resourceInfo.getResourceMethod();
-        Class as = resourceInfo.getResourceClass();
+        Class<?> cls = resourceInfo.getResourceClass();
+        Method method = resourceInfo.getResourceMethod();
 
-        boolean hasAnnotation = am.isAnnotationPresent(RolesAllowed.class)
-                || am.isAnnotationPresent(PermitAll.class)
-                || am.isAnnotationPresent(DenyAll.class)
-                || as.isAnnotationPresent(RolesAllowed.class)
-                || as.isAnnotationPresent(PermitAll.class)
-                || as.isAnnotationPresent(DenyAll.class);
-
-        if (hasAnnotation) {
+        if (!cls.isAnnotationPresent(PermitAll.class)
+                && !method.isAnnotationPresent(PermitAll.class)) {
             if (this.authFilter != null) {
                 context.register(this.authFilter);
             } else {

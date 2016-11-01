@@ -69,7 +69,7 @@ public class MyBatisDaoFactory extends DaoFactory {
 
     @Override
     public UserDaoMyBatisImpl getUserDao() {
-        return new UserDaoMyBatisImpl();
+        return new UserDaoMyBatisImpl(this);
     }
 
     @Override

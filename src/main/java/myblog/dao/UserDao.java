@@ -1,5 +1,6 @@
 package myblog.dao;
 
+import myblog.domain.Credential;
 import myblog.domain.User;
 
 import java.util.List;
@@ -34,6 +35,13 @@ public interface UserDao {
      * @return
      */
     User getUserById(int userId);
+
+    /**
+     *
+     * @param credential
+     * @return
+     */
+    User getUserByCredential(Credential credential);
 
     /**
      *

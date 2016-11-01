@@ -20,6 +20,10 @@ public class PostResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post insert) {
+        if (insert == null) {
+            throw new BadRequestException("Unexpected post: Absence value");
+        }
+
         try {
             insert.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
@@ -61,6 +65,10 @@ public class PostResource {
     public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
             throw new BadRequestException("Unexpected post id: Absence value");
+        }
+
+        if (update == null) {
+            return Response.noContent().build();
         }
 
         try {
@@ -146,7 +154,7 @@ public class PostResource {
             }
         }
         if (noQueryParam) {
-            throw new BadRequestException("Unexpected post query parameter: No parameters");
+            throw new BadRequestException("Unexpected query parameter: No parameters");
         }
 
         List<Post> posts = PostService.getPosts(post);
@@ -163,7 +171,6 @@ public class PostResource {
 
     @GET
     @Path("/list")
-    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPostList(@QueryParam("user_id") Integer userId,
                                 @QueryParam("category_id") Integer categoryId,

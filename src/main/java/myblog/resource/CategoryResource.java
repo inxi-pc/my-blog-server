@@ -18,14 +18,18 @@ public class CategoryResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCategory(Category category) {
+    public Response createCategory(Category insert) {
+        if (insert == null) {
+            throw new BadRequestException("Unexpected category: Absence value");
+        }
+
         try {
-            category.checkFieldOuterSettable();
+            insert.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
-        int categoryId = CategoryService.createCategory(category);
+        int categoryId = CategoryService.createCategory(insert);
 
         if (Category.isValidCategoryId(categoryId)) {
             return Response.created(URI.create("/categories/" + categoryId)).build();
@@ -57,19 +61,23 @@ public class CategoryResource {
     @Path("/{categoryId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category category) {
+    public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category update) {
         if (categoryId == null) {
             throw new BadRequestException("Unexpected category id: Absence value");
         }
 
+        if (update == null) {
+            return Response.noContent().build();
+        }
+
         try {
-            category.checkFieldOuterSettable();
+            update.checkFieldOuterSettable();
         } catch (FieldNotOuterSettableException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
         if (Category.isValidCategoryId(categoryId)) {
-            if (CategoryService.updateCategory(categoryId, category)) {
+            if (CategoryService.updateCategory(categoryId, update)) {
                 return Response.noContent().build();
             } else {
                 throw new InternalServerErrorException("Unexpected error");

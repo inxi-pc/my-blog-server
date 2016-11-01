@@ -2,6 +2,7 @@ package myblog.dao.MyBatis;
 
 import myblog.dao.MyBatis.Mapper.UserMapper;
 import myblog.dao.UserDao;
+import myblog.domain.Credential;
 import myblog.domain.User;
 import myblog.exception.FieldNotInsertableException;
 import myblog.exception.FieldNotNullableException;
@@ -30,7 +31,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public int createUser(User insert) {
         if (insert == null) {
-            throw new IllegalArgumentException("Unexpected user: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected user: Null pointer");
         }
 
         insert.setDefaultableFieldValue();
@@ -77,7 +78,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public boolean updateUser(int userId, User update) {
         if (update == null) {
-            throw new IllegalArgumentException("Unexpected user: " + "Null pointer");
+            return true;
         }
 
         try {
@@ -111,13 +112,34 @@ public class UserDaoMyBatisImpl implements UserDao {
 
     /**
      *
+     * @param credential
+     * @return
+     */
+    @Override
+    public User getUserByCredential(Credential credential) {
+        if (credential == null) {
+            throw new IllegalArgumentException("Unexpected credential: Null pointer");
+        }
+
+        if (credential.hasIdentifier() && credential.hasPassword()) {
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            return userMapper.getUserByCredential(credential);
+        } else {
+            throw new IllegalArgumentException("Unexpected identifier or password: Absence value");
+        }
+    }
+
+    /**
+     *
      * @param userIds
      * @return
      */
     @Override
     public List<User> getUsersByIds(int[] userIds) {
         if (userIds == null) {
-            throw new IllegalArgumentException("Unexpected user ids: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected user ids: Null pointer");
         }
 
         if (userIds.length > 0) {
@@ -138,7 +160,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public List<User> getUsersByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected params: Null pointer");
         }
 
         if (params.size() > 0) {

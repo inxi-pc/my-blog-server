@@ -35,7 +35,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public int createCategory(Category insert) {
         if (insert == null) {
-            throw new IllegalArgumentException("Unexpected category: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected category: Null pointer");
         }
 
         insert.setDefaultableFieldValue();
@@ -83,7 +83,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public boolean updateCategory(int categoryId, Category update) {
         if (update == null) {
-            throw new IllegalArgumentException("Unexpected category: " + "Null pointer");
+            return true;
         }
 
         try {
@@ -123,7 +123,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByIds(int[] categoryIds) {
         if (categoryIds == null) {
-            throw new IllegalArgumentException("Unexpected category ids: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected category ids: Null pointer");
         }
 
         if (categoryIds.length > 0) {
@@ -144,7 +144,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected params: Null pointer");
         }
 
         if (params.size() > 0) {

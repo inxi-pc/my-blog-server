@@ -35,7 +35,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public int createPost(Post insert) {
         if (insert == null) {
-            throw new NullPointerException("Unexpected category: " + "Null pointer");
+            throw new NullPointerException("Unexpected category: Null pointer");
         }
 
         insert.setDefaultableFieldValue();
@@ -82,7 +82,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public boolean updatePost(int postId, Post update) {
         if (update == null) {
-            throw new NullPointerException("Unexpected post: " + "Null pointer");
+            return true;
         }
 
         try {
@@ -122,7 +122,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public List<Post> getPostsByIds(int[] postIds) {
         if (postIds == null) {
-            throw new IllegalArgumentException("Unexpected post ids: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected post ids: Null pointer");
         }
 
         if (postIds.length > 0) {
@@ -143,7 +143,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public List<Post> getPostsByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: " + "Null pointer");
+            throw new IllegalArgumentException("Unexpected params: Null pointer");
         }
 
         if (params.size() > 0) {
