@@ -62,6 +62,21 @@
         AND user_password = #{credential.password}
     </select>
 
+    <select id="getUserByCondition" resultType="User">
+        SELECT * FROM user
+        <where>
+            <if test="user_name != null">
+                AND user_name = #{user_name}
+            </if>
+            <if test="user_email != null">
+                AND user_email = #{user_email}
+            </if>
+            <if test="user_telephone != null">
+                AND user_telephone = #{user_telephone}
+            </if>
+        </where>
+    </select>
+
     <!-- Basic way to find list -->
     <select id="getUsersByIds" resultType="User">
         SELECT * FROM user WHERE user_id IN

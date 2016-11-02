@@ -2,8 +2,6 @@ package myblog.exception;
 
 public class AuthenticationException extends Exception {
 
-    private static final long serialVersionUID = -5053567474138953905L;
-
     public AuthenticationException(String message) {
         super(message);
     }

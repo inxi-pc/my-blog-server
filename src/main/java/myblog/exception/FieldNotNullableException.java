@@ -6,7 +6,13 @@ public class FieldNotNullableException extends DomainFieldException {
 
     public FieldNotNullableException(Field field) {
         super("Unexpected "
-                + field.getName().replace("_", " ")
+                + getFormattedFieldName(field)
                 + ": " + "Not nullable", field);
+    }
+
+    public FieldNotNullableException(Exception e, Field field) {
+        super("Unexpected "
+                + getFormattedFieldName(field)
+                + ": " + "Not nullable", e, field);
     }
 }

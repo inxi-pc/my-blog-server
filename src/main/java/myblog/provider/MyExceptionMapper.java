@@ -2,6 +2,7 @@ package myblog.provider;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import myblog.App;
+import org.apache.logging.log4j.Level;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
@@ -15,6 +16,8 @@ import javax.ws.rs.ext.Provider;
 public class MyExceptionMapper implements ExceptionMapper<Exception> {
 
     public Response toResponse(Exception e) {
+        App.logger.log(Level.ERROR, e);
+
         WebApplicationException ex;
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
@@ -25,7 +28,6 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         }
 
         if (App.isDebug()) {
-            ex.printStackTrace();
             return Response.status(ex.getResponse().getStatus())
                     .entity(ex)
                     .type(MediaType.APPLICATION_JSON)

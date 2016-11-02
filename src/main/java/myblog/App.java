@@ -17,6 +17,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -33,7 +34,7 @@ public class App extends ResourceConfig {
      * Server root URI
      *
      */
-    private static URI BASE_URI = URI.create("http://localhost:8888/");
+    private static final URI BASE_URI = URI.create("http://localhost:8888/");
 
     /**
      * App config file name
@@ -47,8 +48,10 @@ public class App extends ResourceConfig {
      */
     private static Properties config;
 
-
-    private static Logger logger = LogManager.getLogger(App.class);
+    /**
+     * App logger
+     */
+    public static Logger logger = LogManager.getLogger(App.class);
 
     /**
      * Register component
@@ -126,11 +129,13 @@ public class App extends ResourceConfig {
      *
      * @return
      */
-    public static String getJwtKey() {
+    public static byte[] getJwtKey() {
         if (config != null) {
             String jwtKey;
             if ((jwtKey = config.getProperty("jwtKey")) != null) {
-                return jwtKey;
+                String base64Key = DatatypeConverter.printBase64Binary(jwtKey.getBytes());
+
+                return DatatypeConverter.parseBase64Binary(base64Key);
             } else {
                 throw new RuntimeException("No configuration value found: jwtKey");
             }

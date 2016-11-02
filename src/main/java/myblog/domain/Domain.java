@@ -3,14 +3,12 @@ package myblog.domain;
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
-import myblog.exception.FieldNotInsertableException;
-import myblog.exception.FieldNotNullableException;
-import myblog.exception.FieldNotOuterSettableException;
-import myblog.exception.FieldNotUpdatableException;
+import myblog.exception.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Stream;
 
 public abstract class Domain {
 
@@ -79,6 +77,9 @@ public abstract class Domain {
                 + fieldName.substring(1, fieldName.length());
     }
 
+    /**
+     *
+     */
     public void setDefaultableFieldValue() {
         for (Field field : getClass().getDeclaredFields()) {
             if (isDefaultable(field)) {
@@ -103,15 +104,20 @@ public abstract class Domain {
         }
     }
 
-    public void checkFieldInsertable() throws FieldNotInsertableException,
-            FieldNotNullableException {
+    /**
+     *
+     * @throws FieldNotInsertableException
+     * @throws FieldNotNullableException
+     */
+    public void checkFieldInsertable()
+            throws FieldNotInsertableException, FieldNotNullableException {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new FieldNotInsertableException(e, field);
             }
 
             if (isInsertable(field)) {
@@ -126,6 +132,10 @@ public abstract class Domain {
         }
     }
 
+    /**
+     *
+     * @throws FieldNotUpdatableException
+     */
     public void checkFieldUpdatable() throws FieldNotUpdatableException {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
@@ -133,7 +143,7 @@ public abstract class Domain {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new FieldNotUpdatableException(e, field);
             }
 
             if (!isUpdatable(field) && value != null) {
@@ -142,6 +152,10 @@ public abstract class Domain {
         }
     }
 
+    /**
+     *
+     * @throws FieldNotOuterSettableException
+     */
     public void checkFieldOuterSettable() throws FieldNotOuterSettableException {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
@@ -149,7 +163,7 @@ public abstract class Domain {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new FieldNotOuterSettableException(e, field);
             }
 
             if (!isOuterSettable(field) && value != null) {
@@ -159,22 +173,68 @@ public abstract class Domain {
     }
 
     /**
-     * Convert Object to HashMap
      *
      * @return
+     * @throws DomainFieldException
      */
-    public HashMap<String, Object> convertToHashMap() {
+    public HashMap<String, Object> convertToHashMap(Field[] unless) throws DomainFieldException {
+        List<Field> fields = Arrays.asList(getClass().getDeclaredFields());
+        fields.removeIf(field -> {
+            for (Field remove : unless) {
+                if (field.getName().equals(remove.getName())) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
         HashMap<String, Object> params = new HashMap<String, Object>();
-        for (Field field : getClass().getDeclaredFields()) {
+        for (Field field : fields) {
             try {
                 field.setAccessible(true);
                 Object value = field.get(this);
                 params.put(field.getName(), value);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new DomainFieldException(e, field);
             }
         }
 
         return params;
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param map
+     * @param <T>
+     * @return
+     * @throws DomainException
+     * @throws DomainFieldException
+     */
+    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map)
+            throws DomainException, DomainFieldException {
+        T instance;
+        try {
+            instance = clazz.newInstance();
+        } catch (Exception e) {
+            throw new DomainException(e);
+        }
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (final Field field : instance.getClass().getDeclaredFields()) {
+                if (field.getName().equals(entry.getKey())) {
+                    field.setAccessible(true);
+
+                    try {
+                        field.set(instance, entry.getValue());
+                    } catch (Exception e) {
+                        throw new DomainFieldException(e, field);
+                    }
+                }
+            }
+        }
+
+        return instance;
     }
 }

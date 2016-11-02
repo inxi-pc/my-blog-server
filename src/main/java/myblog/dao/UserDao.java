@@ -3,6 +3,7 @@ package myblog.dao;
 import myblog.domain.Credential;
 import myblog.domain.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,13 @@ public interface UserDao {
      * @return
      */
     User getUserByCredential(Credential credential);
+
+    /**
+     *
+     * @param params
+     * @return
+     */
+    User getUserByCondition(Map<String, Object> params);
 
     /**
      *

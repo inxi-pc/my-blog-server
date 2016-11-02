@@ -43,6 +43,13 @@ public interface UserMapper {
 
     /**
      *
+     * @param params
+     * @return
+     */
+    User getUserByCondition(Map<String, Object> params);
+
+    /**
+     *
      * @return
      */
     List<User> getUsersByIds(int[] userIds);

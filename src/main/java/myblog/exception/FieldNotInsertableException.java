@@ -6,7 +6,13 @@ public class FieldNotInsertableException extends DomainFieldException {
 
     public FieldNotInsertableException(Field field) {
         super("Unexpected "
-                + field.getName().replace("_", " ")
+                + getFormattedFieldName(field)
                 + ": " + "Not insertable", field);
+    }
+
+    public FieldNotInsertableException(Exception e, Field field) {
+        super("Unexpected "
+                + getFormattedFieldName(field)
+                + ": " + "Not insertable", e, field);
     }
 }

@@ -1,23 +1,16 @@
 package myblog.service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClaims;
-import io.jsonwebtoken.impl.DefaultHeader;
 import myblog.App;
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.UserDaoMyBatisImpl;
 import myblog.domain.Credential;
 import myblog.domain.User;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Collection;
+import javax.ws.rs.ForbiddenException;
 import java.util.Map;
-import java.util.Set;
 
 public class UserService {
 
@@ -30,11 +23,23 @@ public class UserService {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
-        register.setDefaultUser_enabled();
-        register.setDefaultUser_created_at();
-        register.setDefaultUser_updated_at();
+        Map<String, Object> params;
 
-        return userDao.createUser(register);
+        try {
+            params = register.convertToHashMap();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        if (userDao.getUserByCondition(params) == null) {
+            register.setDefaultUser_enabled();
+            register.setDefaultUser_created_at();
+            register.setDefaultUser_updated_at();
+
+            return userDao.createUser(register);
+        } else {
+            throw new ForbiddenException("Unexpected register: Already exist");
+        }
     }
 
     /**
@@ -47,19 +52,25 @@ public class UserService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
         credential.encryptPassword();
+
         User user = userDao.getUserByCredential(credential);
-
         if (user != null) {
-            Map<String, Object> userMap = user.convertToHashMap();
-            Claims claims = new DefaultClaims(userMap);
+            Map<String, Object> claims;
+            try {
+                claims = user.convertToHashMap();
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            }
 
-            return Jwts.builder()
+            String token = Jwts.builder()
                     .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                     .setClaims(claims)
                     .signWith(SignatureAlgorithm.HS256, App.getJwtKey())
                     .compact();
+
+            return token;
         } else {
-            return null;
+
         }
     }
 }

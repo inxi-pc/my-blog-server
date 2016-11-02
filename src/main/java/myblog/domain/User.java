@@ -1,13 +1,15 @@
 package myblog.domain;
 
 import myblog.Helper;
-import myblog.annotation.Insertable;
-import myblog.annotation.OuterSettable;
-import myblog.annotation.PrimaryKey;
-import myblog.annotation.Updatable;
+import myblog.annotation.*;
+import myblog.exception.IllegalNumberOfIdentifierException;
 
+import java.lang.reflect.Field;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class User extends Domain implements Principal, Credential {
@@ -17,14 +19,17 @@ public class User extends Domain implements Principal, Credential {
 
     @OuterSettable
     @Insertable(nullable = false)
+    @Identifier
     private String user_name;
 
     @OuterSettable
     @Insertable(nullable = true)
+    @Identifier
     private Integer user_telephone;
 
     @OuterSettable
     @Insertable(nullable = true)
+    @Identifier
     private String user_email;
 
     @OuterSettable
@@ -49,27 +54,39 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public boolean hasIdentifier() {
-        return this.user_name != null
-                || this.user_telephone != null
-                || this.user_email != null;
+    public List<Field> getIdentifierFields() {
+        List<Field> fields = Arrays.asList(this.getClass().getDeclaredFields());
+        fields.removeIf(field -> !field.isAnnotationPresent(Identifier.class));
+
+        return fields;
     }
 
     @Override
-    public Object getIdentifier() {
-        if (this.user_name != null) {
-            return this.user_name;
+    public boolean hasIdentifier() {
+        return getIdentifierFields().size() > 0;
+    }
+
+    @Override
+    public Object getIdentifier() throws IllegalNumberOfIdentifierException {
+        List<Field> fields = getIdentifierFields();
+        List<Object> values = new ArrayList<Object>();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(this);
+                if (value != null) {
+                    values.add(value);
+                }
+            } catch (Exception e) {
+
+            }
         }
 
-        if (this.user_email != null) {
-            return this.user_email;
+        if (values.size() == 1) {
+            return values.get(0);
+        } else {
+            throw new IllegalStateException();
         }
-
-        if (this.user_telephone != null) {
-            return this.user_telephone;
-        }
-
-        return null;
     }
 
     @Override
@@ -87,7 +104,7 @@ public class User extends Domain implements Principal, Credential {
 
     }
 
-    public int getUser_id() {
+    public Integer getUser_id() {
         return user_id;
     }
 

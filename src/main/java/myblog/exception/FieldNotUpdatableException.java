@@ -6,7 +6,13 @@ public class FieldNotUpdatableException extends DomainFieldException {
 
     public FieldNotUpdatableException(Field field) {
         super("Unexpected "
-                + field.getName().replace("_", " ")
+                + getFormattedFieldName(field)
                 + ": " + "Not updatable", field);
+    }
+
+    public FieldNotUpdatableException(Exception e, Field field) {
+        super("Unexpected "
+                + getFormattedFieldName(field)
+                + ": " + "Not updatable", e, field);
     }
 }

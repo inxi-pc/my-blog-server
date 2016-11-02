@@ -132,6 +132,26 @@ public class UserDaoMyBatisImpl implements UserDao {
     }
 
     /**
+     * @param params
+     * @return
+     */
+    @Override
+    public User getUserByCondition(Map<String, Object> params) {
+        if (params == null) {
+            throw new IllegalArgumentException("Unexpected params: Null pointer");
+        }
+
+        if (params.size() > 0) {
+            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            return userMapper.getUserByCondition(params);
+        } else {
+            throw new IllegalArgumentException("Unexpected params: Empty value");
+        }
+    }
+
+    /**
      *
      * @param userIds
      * @return
