@@ -5,18 +5,17 @@ import myblog.dao.MyBatis.PostDaoMyBatisImpl;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
+import myblog.exception.DaoException;
+import myblog.exception.DomainException;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
 public class PostService {
 
-    /**
-     *
-     * @param insert
-     * @return
-     */
     public static int createPost(Post insert) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -25,90 +24,99 @@ public class PostService {
         insert.setDefaultPost_created_at();
         insert.setDefaultPost_updated_at();
 
-        return myBatisPostDao.createPost(insert);
+        try {
+            return myBatisPostDao.createPost(insert);
+        } catch (DomainException | DaoException e) {
+            throw new BadRequestException(e.getMessage(), e);
+        }
     }
 
-    /**
-     *
-     * @param postId
-     * @return
-     */
     public static boolean deletePost(int postId) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        if (PostService.getPostById(postId) != null) {
-            return myBatisPostDao.deletePost(postId);
-        } else {
-            throw new NotFoundException("Not found post: Id = " + postId);
+        try {
+            if (myBatisPostDao.getPostById(postId) != null) {
+                return myBatisPostDao.deletePost(postId);
+            } else {
+                throw new NotFoundException("Not found post: Post id = " + postId);
+            }
+        } catch (DaoException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
-    /**
-     *
-     * @param postId
-     * @param update
-     * @return
-     */
     public static boolean updatePost(int postId, Post update) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
-        if (PostService.getPostById(postId) != null) {
-            update.setDefaultPost_updated_at();
 
-            return myBatisPostDao.updatePost(postId, update);
-        } else {
-            throw new NotFoundException("Not found post: Id = " + postId);
+        try {
+            if (myBatisPostDao.getPostById(postId) != null) {
+                update.setDefaultPost_updated_at();
+
+                return myBatisPostDao.updatePost(postId, update);
+            } else {
+                throw new NotFoundException("Not found post: Post id = " + postId);
+            }
+        } catch (DomainException | DaoException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 
-    /**
-     *
-     * @param postId
-     * @return
-     */
     public static Post getPostById(int postId) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        return myBatisPostDao.getPostById(postId);
+        try {
+            return myBatisPostDao.getPostById(postId);
+        } catch (DaoException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
+        }
     }
 
-    /**
-     *
-     * @param post
-     * @return
-     */
     public static List<Post> getPosts(Post post) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        HashMap<String, Object> params = post.convertToHashMap();
+        List<Post> posts = null;
+        try {
+            HashMap<String, Object> params = post.convertToHashMap(null);
+            posts = myBatisPostDao.getPostsByCondition(params);
+        } catch (DomainException | DaoException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
+        }
 
-        return myBatisPostDao.getPostsByCondition(params);
+        if (posts != null && posts.size() <= 0) {
+            return posts;
+        } else {
+            throw new NotFoundException("Not found posts");
+        }
     }
 
-    /**
-     *
-     * @param post
-     * @param page
-     * @param sort
-     * @return
-     */
     public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort sort) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        HashMap<String, Object> params = post.convertToHashMap();
-        params.put("limit", page.getLimit());
-        params.put("offset", page.getOffset());
-        params.put("orderBy", sort.getOrder_by());
-        params.put("orderType", sort.getOrder_type());
+        List<Post> posts = null;
+        try {
+            HashMap<String, Object> params = post.convertToHashMap(null);
+            params.put("limit", page.getLimit());
+            params.put("offset", page.getOffset());
+            params.put("orderBy", sort.getOrder_by());
+            params.put("orderType", sort.getOrder_type());
 
-        List<Post> posts = myBatisPostDao.getPostsByCondition(params);
-        page.setData(posts);
-        page.setRecordsTotal(myBatisPostDao.countAllPost());
+            posts = myBatisPostDao.getPostsByCondition(params);
+        } catch (DomainException | DaoException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
+        }
 
-        return page;
+        if (posts != null && posts.size() > 0) {
+            page.setData(posts);
+            page.setRecordsTotal(myBatisPostDao.countAllPost());
+
+            return page;
+        } else {
+            throw new NotFoundException("Not found post list");
+        }
     }
 }

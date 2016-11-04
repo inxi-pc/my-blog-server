@@ -4,11 +4,11 @@ import myblog.dao.MyBatis.Mapper.UserMapper;
 import myblog.dao.UserDao;
 import myblog.domain.Credential;
 import myblog.domain.User;
-import myblog.exception.FieldNotInsertableException;
-import myblog.exception.FieldNotNullableException;
-import myblog.exception.FieldNotUpdatableException;
+import myblog.exception.DaoException;
+import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -28,18 +28,24 @@ public class UserDaoMyBatisImpl implements UserDao {
         this.myBatisDaoFactory = factory;
     }
 
+    /**
+     *
+     * @param insert
+     * @return
+     * @throws DomainException
+     * @throws DaoException
+     */
     @Override
-    public int createUser(User insert) {
+    public int createUser(User insert) throws DomainException, DaoException {
         if (insert == null) {
-            throw new IllegalArgumentException("Unexpected user: Null pointer");
+            throw new DaoException(User.class, DaoException.Type.NULL_POINTER);
         }
 
         insert.setDefaultableFieldValue();
-
         try {
             insert.checkFieldInsertable();
-        } catch (FieldNotInsertableException | FieldNotNullableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -53,9 +59,10 @@ public class UserDaoMyBatisImpl implements UserDao {
      *
      * @param userId
      * @return
+     * @throws DaoException
      */
     @Override
-    public boolean deleteUser(int userId) {
+    public boolean deleteUser(int userId) throws DaoException {
         if (User.isValidUserId(userId)) {
             User user = new User();
             user.setUser_enabled(false);
@@ -65,7 +72,7 @@ public class UserDaoMyBatisImpl implements UserDao {
 
             return userMapper.updateUser(userId, user);
         } else {
-            throw new IllegalArgumentException("Unexpected user id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -74,17 +81,23 @@ public class UserDaoMyBatisImpl implements UserDao {
      * @param userId
      * @param update
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public boolean updateUser(int userId, User update) {
+    public boolean updateUser(int userId, User update) throws DomainException, DaoException {
         if (update == null) {
             return true;
         }
 
+        if (!User.isValidUserId(userId)) {
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+        }
+
         try {
             update.checkFieldUpdatable();
-        } catch (FieldNotUpdatableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -97,16 +110,17 @@ public class UserDaoMyBatisImpl implements UserDao {
      *
      * @param userId
      * @return
+     * @throws DaoException
      */
     @Override
-    public User getUserById(int userId) {
+    public User getUserById(int userId) throws DaoException {
         if (User.isValidUserId(userId)) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             UserMapper userMapper = session.getMapper(UserMapper.class);
 
             return userMapper.getUserById(userId);
         } else {
-            throw new IllegalArgumentException("Unexpected user id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -114,31 +128,37 @@ public class UserDaoMyBatisImpl implements UserDao {
      *
      * @param credential
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public User getUserByCredential(Credential credential) {
+    public User getUserByCredential(Credential credential) throws DomainException, DaoException {
         if (credential == null) {
-            throw new IllegalArgumentException("Unexpected credential: Null pointer");
+            throw new DaoException(Credential.class, DaoException.Type.NULL_POINTER);
+        }
+        if (!credential.hasIdentifier()) {
+            throw new DomainException(Credential.class, DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
+        }
+        if (!credential.hasPassword()) {
+            throw new DomainException(Credential.class, DomainException.Type.ILLEGAL_NUMBER_OF_PASSOWRD);
         }
 
-        if (credential.hasIdentifier() && credential.hasPassword()) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        UserMapper userMapper = session.getMapper(UserMapper.class);
 
-            return userMapper.getUserByCredential(credential);
-        } else {
-            throw new IllegalArgumentException("Unexpected identifier or password: Absence value");
-        }
+        return userMapper.getUserByCredential(credential);
     }
 
     /**
+     *
      * @param params
      * @return
+     * @throws DaoException
      */
     @Override
-    public User getUserByCondition(Map<String, Object> params) {
+    public User getUserByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: Null pointer");
+            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
         }
 
         if (params.size() > 0) {
@@ -147,7 +167,7 @@ public class UserDaoMyBatisImpl implements UserDao {
 
             return userMapper.getUserByCondition(params);
         } else {
-            throw new IllegalArgumentException("Unexpected params: Empty value");
+            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 
@@ -155,11 +175,12 @@ public class UserDaoMyBatisImpl implements UserDao {
      *
      * @param userIds
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<User> getUsersByIds(int[] userIds) {
+    public List<User> getUsersByIds(int[] userIds) throws DaoException {
         if (userIds == null) {
-            throw new IllegalArgumentException("Unexpected user ids: Null pointer");
+            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
         }
 
         if (userIds.length > 0) {
@@ -168,7 +189,7 @@ public class UserDaoMyBatisImpl implements UserDao {
 
             return userMapper.getUsersByIds(userIds);
         } else {
-            throw new IllegalArgumentException("Unexpected user ids: Empty value");
+            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 
@@ -176,11 +197,12 @@ public class UserDaoMyBatisImpl implements UserDao {
      *
      * @param params
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<User> getUsersByCondition(Map<String, Object> params) {
+    public List<User> getUsersByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: Null pointer");
+            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
         }
 
         if (params.size() > 0) {
@@ -189,7 +211,7 @@ public class UserDaoMyBatisImpl implements UserDao {
 
             return userMapper.getUsersByCondition(params);
         } else {
-            throw new IllegalArgumentException("Unexpected params: Empty value");
+            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 

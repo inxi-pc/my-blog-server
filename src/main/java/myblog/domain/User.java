@@ -2,7 +2,7 @@ package myblog.domain;
 
 import myblog.Helper;
 import myblog.annotation.*;
-import myblog.exception.IllegalNumberOfIdentifierException;
+import myblog.exception.DomainException;
 
 import java.lang.reflect.Field;
 import java.security.Principal;
@@ -67,7 +67,7 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public Object getIdentifier() throws IllegalNumberOfIdentifierException {
+    public Object getIdentifier() throws DomainException {
         List<Field> fields = getIdentifierFields();
         List<Object> values = new ArrayList<Object>();
         for (Field field : fields) {
@@ -78,14 +78,14 @@ public class User extends Domain implements Principal, Credential {
                     values.add(value);
                 }
             } catch (Exception e) {
-
+                throw new DomainException(e);
             }
         }
 
         if (values.size() == 1) {
             return values.get(0);
         } else {
-            throw new IllegalStateException();
+            throw new DomainException(User.class, DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
         }
     }
 
@@ -95,8 +95,12 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public Object getPassword() {
-        return this.user_password;
+    public Object getPassword() throws DomainException {
+        if (this.user_password != null) {
+            return this.user_password;
+        } else {
+            throw new DomainException(User.class, DomainException.Type.ILLEGAL_NUMBER_OF_PASSWORD);
+        }
     }
 
     @Override

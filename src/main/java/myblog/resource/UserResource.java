@@ -1,7 +1,6 @@
 package myblog.resource;
 
 import myblog.domain.User;
-import myblog.exception.FieldNotOuterSettableException;
 import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;

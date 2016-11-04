@@ -1,5 +1,7 @@
 package myblog.domain;
 
+import myblog.exception.DomainException;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -9,11 +11,11 @@ public interface Credential {
 
     boolean hasIdentifier();
 
-    Object getIdentifier();
+    Object getIdentifier() throws DomainException;
 
     boolean hasPassword();
 
-    Object getPassword();
+    Object getPassword() throws DomainException;
 
     void encryptPassword();
 }

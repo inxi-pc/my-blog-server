@@ -3,11 +3,11 @@ package myblog.dao.MyBatis;
 import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
-import myblog.exception.FieldNotInsertableException;
-import myblog.exception.FieldNotNullableException;
-import myblog.exception.FieldNotUpdatableException;
+import myblog.exception.DaoException;
+import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -31,19 +31,21 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @param insert
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public int createCategory(Category insert) {
+    public int createCategory(Category insert) throws DomainException, DaoException {
         if (insert == null) {
-            throw new IllegalArgumentException("Unexpected category: Null pointer");
+            throw new DaoException(Category.class, DaoException.Type.NULL_POINTER);
         }
 
         insert.setDefaultableFieldValue();
 
         try {
             insert.checkFieldInsertable();
-        } catch (FieldNotInsertableException | FieldNotNullableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -57,9 +59,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @param categoryId
      * @return
+     * @throws DaoException
      */
     @Override
-    public boolean deleteCategory(int categoryId) {
+    public boolean deleteCategory(int categoryId) throws DaoException {
         if (Category.isValidCategoryId(categoryId)) {
             Category delete = new Category();
             delete.setCategory_enabled(false);
@@ -70,7 +73,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
             return categoryMapper.deleteCategory(categoryId, delete);
         } else {
-            throw new IllegalArgumentException("Unexpected category id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -79,17 +82,23 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      * @param categoryId
      * @param update
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public boolean updateCategory(int categoryId, Category update) {
+    public boolean updateCategory(int categoryId, Category update) throws DomainException, DaoException {
         if (update == null) {
             return true;
         }
 
+        if (!Category.isValidCategoryId(categoryId)) {
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+        }
+
         try {
             update.checkFieldUpdatable();
-        } catch (FieldNotUpdatableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -102,16 +111,17 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @param categoryId
      * @return
+     * @throws DaoException
      */
     @Override
-    public Category getCategoryById(int categoryId) {
+    public Category getCategoryById(int categoryId) throws DaoException {
         if (Category.isValidCategoryId(categoryId)) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
             return categoryMapper.getCategoryById(categoryId);
         } else {
-            throw new IllegalArgumentException("Unexpected category id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -119,11 +129,12 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @param categoryIds
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<Category> getCategoriesByIds(int[] categoryIds) {
+    public List<Category> getCategoriesByIds(int[] categoryIds) throws DaoException {
         if (categoryIds == null) {
-            throw new IllegalArgumentException("Unexpected category ids: Null pointer");
+            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
         }
 
         if (categoryIds.length > 0) {
@@ -132,7 +143,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
             return categoryMapper.getCategoriesByIds(categoryIds);
         } else {
-            throw new IllegalArgumentException("Unexpected category ids: Invalid value");
+            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 
@@ -140,11 +151,12 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
      *
      * @param params
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<Category> getCategoriesByCondition(Map<String, Object> params) {
+    public List<Category> getCategoriesByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: Null pointer");
+            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
         }
 
         if (params.size() > 0) {
@@ -153,7 +165,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
             return categoryMapper.getCategoriesByCondition(params);
         } else {
-            throw new IllegalArgumentException("Unexpected params: Empty value");
+            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 

@@ -3,7 +3,6 @@ package myblog.resource;
 import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Sort;
-import myblog.exception.FieldNotOuterSettableException;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.*;

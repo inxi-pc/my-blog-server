@@ -5,6 +5,7 @@ import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
+import myblog.exception.DomainException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,7 +71,7 @@ public class Category extends Domain {
         this.children = children;
     }
 
-    public static List<Category> formatCategoryTree(List<Category> categories) {
+    public static List<Category> formatCategoryTree(List<Category> categories) throws DomainException {
         List<Category> rootCategories = new ArrayList<Category>();
         List<Category> childCategories = new ArrayList<Category>();
         List<Category> grandChildCategories = new ArrayList<Category>();
@@ -85,13 +86,19 @@ public class Category extends Domain {
                 grandChildCategories.add(category);
             }
         }
-        attachChildrenToParent(childCategories, grandChildCategories.iterator());
-        attachChildrenToParent(rootCategories, childCategories.iterator());
 
-        return rootCategories;
+        try {
+            attachChildrenToParent(childCategories, grandChildCategories.iterator());
+            attachChildrenToParent(rootCategories, childCategories.iterator());
+
+            return rootCategories;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    private static void attachChildrenToParent(List<Category> parent, Iterator<Category> children) {
+    private static void attachChildrenToParent(List<Category> parent, Iterator<Category> children)
+            throws DomainException {
         while (children.hasNext()) {
             Category category = children.next();
             for (Category categoryParent : parent) {
@@ -106,7 +113,7 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new RuntimeException("Lack some children");
+            throw new DomainException(Category.class, DomainException.Type.ILLEGAL_CHILDREN_STATE);
         }
     }
 

@@ -3,11 +3,11 @@ package myblog.dao.MyBatis;
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
 import myblog.domain.Post;
-import myblog.exception.FieldNotInsertableException;
-import myblog.exception.FieldNotNullableException;
-import myblog.exception.FieldNotUpdatableException;
+import myblog.exception.DaoException;
+import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -31,19 +31,20 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @param insert
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public int createPost(Post insert) {
+    public int createPost(Post insert) throws DomainException, DaoException {
         if (insert == null) {
-            throw new NullPointerException("Unexpected category: Null pointer");
+            throw new DaoException(Post.class, DaoException.Type.NULL_POINTER);
         }
 
         insert.setDefaultableFieldValue();
-
         try {
             insert.checkFieldInsertable();
-        } catch (FieldNotInsertableException | FieldNotNullableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -57,9 +58,10 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @param postId
      * @return
+     * @throws DaoException
      */
     @Override
-    public boolean deletePost(int postId) {
+    public boolean deletePost(int postId) throws DaoException {
         if (Post.isValidPostId(postId)) {
             Post post = new Post();
             post.setPost_enabled(false);
@@ -69,7 +71,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return postMapper.updatePost(postId, post);
         } else {
-            throw new IllegalArgumentException("Unexpected post id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -78,17 +80,23 @@ public class PostDaoMyBatisImpl implements PostDao {
      * @param postId
      * @param update
      * @return
+     * @throws DomainException
+     * @throws DaoException
      */
     @Override
-    public boolean updatePost(int postId, Post update) {
+    public boolean updatePost(int postId, Post update) throws DomainException, DaoException {
         if (update == null) {
             return true;
         }
 
+        if (!Post.isValidPostId(postId)) {
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+        }
+
         try {
             update.checkFieldUpdatable();
-        } catch (FieldNotUpdatableException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (DomainException e) {
+            throw e;
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -101,16 +109,17 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @param postId
      * @return
+     * @throws DaoException
      */
     @Override
-    public Post getPostById(int postId) {
+    public Post getPostById(int postId) throws DaoException {
         if (Post.isValidPostId(postId)) {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             PostMapper postMapper = session.getMapper(PostMapper.class);
 
             return postMapper.getPostById(postId);
         } else {
-            throw new IllegalArgumentException("Unexpected post id: Invalid value");
+            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
         }
     }
 
@@ -118,11 +127,12 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @param postIds
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<Post> getPostsByIds(int[] postIds) {
+    public List<Post> getPostsByIds(int[] postIds) throws DaoException {
         if (postIds == null) {
-            throw new IllegalArgumentException("Unexpected post ids: Null pointer");
+            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
         }
 
         if (postIds.length > 0) {
@@ -131,7 +141,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return postMapper.getPostsByIds(postIds);
         } else {
-            throw new IllegalArgumentException("Unexpected post ids: Empty value");
+            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 
@@ -139,11 +149,12 @@ public class PostDaoMyBatisImpl implements PostDao {
      *
      * @param params
      * @return
+     * @throws DaoException
      */
     @Override
-    public List<Post> getPostsByCondition(Map<String, Object> params) {
+    public List<Post> getPostsByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new IllegalArgumentException("Unexpected params: Null pointer");
+            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
         }
 
         if (params.size() > 0) {
@@ -152,7 +163,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
             return postMapper.getPostsByCondition(params);
         } else {
-            throw new IllegalArgumentException("Unexpected params: Empty value");
+            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
         }
     }
 

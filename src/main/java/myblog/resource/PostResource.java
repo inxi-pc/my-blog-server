@@ -3,10 +3,9 @@ package myblog.resource;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.FieldNotOuterSettableException;
+import myblog.exception.DomainException;
 import myblog.service.PostService;
 
-import javax.annotation.security.DenyAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -26,12 +25,11 @@ public class PostResource {
 
         try {
             insert.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
         int postId = PostService.createPost(insert);
-
         if (Post.isValidPostId(postId)) {
             return Response.created(URI.create("/posts/" + postId)).build();
         } else {
@@ -73,7 +71,7 @@ public class PostResource {
 
         try {
             update.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
