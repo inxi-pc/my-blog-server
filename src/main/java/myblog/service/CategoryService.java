@@ -88,13 +88,7 @@ public class CategoryService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         try {
-            Category category = myBatisCategoryDao.getCategoryById(categoryId);
-
-            if (category != null) {
-                return category;
-            } else {
-                throw new NotFoundException("Not found the category");
-            }
+            return myBatisCategoryDao.getCategoryById(categoryId);
         } catch (DaoException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
@@ -104,18 +98,12 @@ public class CategoryService {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
-        List<Category> categories = null;
         try {
             HashMap<String, Object> params = category.convertToHashMap(null);
-            categories = myBatisCategoryDao.getCategoriesByCondition(params);
+
+            return myBatisCategoryDao.getCategoriesByCondition(params);
         } catch (DomainException | DaoException e) {
             throw new BadRequestException(e.getMessage(), e);
-        }
-
-        if (categories != null && categories.size() > 0) {
-            return categories;
-        } else {
-            throw new NotFoundException("Not found the categories");
         }
     }
 
@@ -136,12 +124,8 @@ public class CategoryService {
             throw new BadRequestException(e.getMessage(), e);
         }
 
-        if (categories != null && categories.size() > 0) {
-            page.setData(categories);
-            page.setRecordsTotal(myBatisCategoryDao.countAllCategory());
-        } else {
-            throw new NotFoundException("Not found the category list");
-        }
+        page.setData(categories);
+        page.setRecordsTotal(myBatisCategoryDao.countAllCategory());
 
         return page;
     }

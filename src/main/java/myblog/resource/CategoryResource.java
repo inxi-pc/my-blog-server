@@ -226,12 +226,11 @@ public class CategoryResource {
         Pagination<Category> page = new Pagination<Category>(limit, offset);
         Sort<Category> sort = new Sort<Category>(orderBy, orderType, Category.class);
 
-        if (treeEnabled != null && treeEnabled == true) {
+        if (treeEnabled != null && treeEnabled) {
             page = CategoryService.getCategoryListTree(category, page, sort);
         } else {
             page = CategoryService.getCategoryList(category, page, sort);
         }
-
 
         if (page != null) {
             if (page.getData().size() > 0) {

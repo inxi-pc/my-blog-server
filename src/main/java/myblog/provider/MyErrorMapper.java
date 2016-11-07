@@ -15,6 +15,7 @@ public class MyErrorMapper implements ExceptionMapper<Error> {
         App.logger.log(Level.ERROR, e);
 
         if (App.isDebug()) {
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e)
                     .type(MediaType.APPLICATION_JSON)

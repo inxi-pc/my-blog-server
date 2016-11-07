@@ -40,6 +40,7 @@ public abstract class Domain {
     private static boolean isOuterSettable(Field field) {
         return field.isAnnotationPresent(OuterSettable.class);
     }
+
     /**
      *
      * @param field
@@ -179,15 +180,17 @@ public abstract class Domain {
      */
     public HashMap<String, Object> convertToHashMap(Field[] unless) throws DomainException {
         List<Field> fields = Arrays.asList(getClass().getDeclaredFields());
-        fields.removeIf(field -> {
-            for (Field remove : unless) {
-                if (field.getName().equals(remove.getName())) {
-                    return true;
+        if (unless != null) {
+            fields.removeIf(field -> {
+                for (Field remove : unless) {
+                    if (field.getName().equals(remove.getName())) {
+                        return true;
+                    }
                 }
-            }
 
-            return false;
-        });
+                return false;
+            });
+        }
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         for (Field field : fields) {

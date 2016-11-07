@@ -92,6 +92,7 @@ public class PostResource {
 
         if (Post.isValidPostId(postId)) {
             Post post = PostService.getPostById(postId);
+
             if (post != null) {
                 return post;
             } else {
