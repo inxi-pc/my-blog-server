@@ -113,7 +113,7 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new DomainException(Category.class, DomainException.Type.ILLEGAL_CHILDREN_STATE);
+            throw new DomainException(DomainException.Type.CATEGORY_CHILDREN_HAS_NO_PARENT);
         }
     }
 

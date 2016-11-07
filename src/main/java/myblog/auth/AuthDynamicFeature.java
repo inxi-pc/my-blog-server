@@ -6,8 +6,6 @@ import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AuthDynamicFeature implements DynamicFeature {
 

@@ -137,10 +137,10 @@ public class UserDaoMyBatisImpl implements UserDao {
             throw new DaoException(Credential.class, DaoException.Type.NULL_POINTER);
         }
         if (!credential.hasIdentifier()) {
-            throw new DomainException(Credential.class, DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
+            throw new DomainException(DomainException.Type.USER_ILLEGAL_NUMBER_OF_IDENTIFIER);
         }
         if (!credential.hasPassword()) {
-            throw new DomainException(Credential.class, DomainException.Type.ILLEGAL_NUMBER_OF_PASSOWRD);
+            throw new DomainException(DomainException.Type.USER_ILLEGAL_NUMBER_OF_PASSWORD);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

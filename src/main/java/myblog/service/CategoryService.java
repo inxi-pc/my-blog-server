@@ -26,14 +26,14 @@ public class CategoryService {
             try {
                 parent = myBatisCategoryDao.getCategoryById(insert.getCategory_parent_id());
             } catch (DaoException e) {
-                throw new BadRequestException("Not found the parent category");
+                throw new BadRequestException(e.getMessage(), e);
             }
 
             if (parent != null) {
                 insert.setCategory_level(parent.getCategory_level() + 1);
                 insert.setCategory_root_id(parent.getCategory_root_id());
             } else {
-                throw new BadRequestException("Not found the parent category");
+                throw new BadRequestException("Not found the inserted category's parent");
             }
         } else {
             insert.setCategory_level(1);
@@ -59,10 +59,10 @@ public class CategoryService {
             if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
                 return myBatisCategoryDao.deleteCategory(categoryId);
             } else {
-                throw new BadRequestException("Not found the category");
+                throw new BadRequestException("Not found the deleted category");
             }
         } catch (DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -76,10 +76,10 @@ public class CategoryService {
 
                 return myBatisCategoryDao.updateCategory(categoryId, update);
             } else {
-                throw new BadRequestException("Not found the category");
+                throw new BadRequestException("Not found the updated category");
             }
-        } catch (Exception e) {
-            throw e;
+        } catch (DomainException | DaoException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -89,13 +89,14 @@ public class CategoryService {
 
         try {
             Category category = myBatisCategoryDao.getCategoryById(categoryId);
+
             if (category != null) {
                 return category;
             } else {
                 throw new NotFoundException("Not found the category");
             }
-        } catch (Exception e) {
-            throw e;
+        } catch (DaoException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -107,14 +108,14 @@ public class CategoryService {
         try {
             HashMap<String, Object> params = category.convertToHashMap(null);
             categories = myBatisCategoryDao.getCategoriesByCondition(params);
-        } catch (Exception e) {
-            throw e;
+        } catch (DomainException | DaoException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (categories != null && categories.size() > 0) {
             return categories;
         } else {
-            throw new ServiceException(Category.class, ServiceException.Type.NOT_FOUND);
+            throw new NotFoundException("Not found the categories");
         }
     }
 
@@ -131,40 +132,40 @@ public class CategoryService {
             params.put("orderType", sort.getOrder_type());
 
             categories = myBatisCategoryDao.getCategoriesByCondition(params);
-        } catch (Exception e) {
-            throw e;
+        } catch (DaoException | DomainException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (categories != null && categories.size() > 0) {
             page.setData(categories);
             page.setRecordsTotal(myBatisCategoryDao.countAllCategory());
         } else {
-            throw new ServiceException(Category.class, ServiceException.Type.NOT_FOUND);
+            throw new NotFoundException("Not found the category list");
         }
 
         return page;
     }
 
     public static List<Category> getCategoriesTree(Category category) {
-        List<Category> categories = null;
-        try {
-             categories = getCategories(category);
-        } catch (Exception e) {
-            throw e;
-        }
+        List<Category> categories = getCategories(category);
 
-        return Category.formatCategoryTree(categories);
+        try {
+            return Category.formatCategoryTree(categories);
+        } catch (DomainException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
+        }
     }
 
     public static Pagination<Category> getCategoryListTree(Category category, Pagination<Category> page, Sort sort) {
+        getCategoryList(category, page, sort);
+
         try {
-            getCategoryList(category, page, sort);
             List<Category> categories = Category.formatCategoryTree(page.getData());
             page.setData(categories);
 
             return page;
-        } catch (Exception e) {
-            throw e;
+        } catch (DomainException e) {
+            throw new InternalServerErrorException(e.getMessage(), e);
         }
     }
 }

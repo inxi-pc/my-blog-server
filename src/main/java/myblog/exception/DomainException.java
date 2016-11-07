@@ -1,14 +1,15 @@
 package myblog.exception;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 public class DomainException extends Exception {
 
-    private Class clazz;
+    private Optional<Field> field;
+
+    private Optional<Class> clazz;
 
     private Type type;
-
-    private Field field;
 
     public static enum Type {
 
@@ -20,9 +21,11 @@ public class DomainException extends Exception {
 
         FIELD_NOT_UPDATABLE("Unexpected %s: Not updatable"),
 
-        ILLEGAL_NUMBER_OF_IDENTIFIER("Unexpected %s: Illegal number of identifier"),
+        USER_ILLEGAL_NUMBER_OF_IDENTIFIER("User illegal number of identifier"),
 
-        ILLEGAL_NUMBER_OF_PASSWORD("Unexpected %s: Illegal number of password");
+        USER_ILLEGAL_NUMBER_OF_PASSWORD("User illegal number of password"),
+
+        CATEGORY_CHILDREN_HAS_NO_PARENT("Category children has no parent");
 
         private String format;
 
@@ -43,26 +46,41 @@ public class DomainException extends Exception {
         super(getFormattedMessage(field, type));
 
         this.type = type;
-        this.field = field;
+        this.field = Optional.of(field);
+        this.clazz = Optional.empty();
     }
 
     public DomainException(Class clazz, Type type) {
         super(getFormattedMessage(clazz, type));
 
         this.type = type;
-        this.clazz = clazz;
+        this.clazz = Optional.of(clazz);
+        this.field = Optional.empty();
     }
 
-    public Field getField() {
+    public DomainException(Type type) {
+        super(getFormattedMessage(type));
+
+        this.type = type;
+        this.clazz = Optional.empty();
+        this.field = Optional.empty();
+    }
+
+    public Optional<Field> getField() {
         return this.field;
     }
 
-    public Class getClazz() {
+    public Optional<Class> getClazz() {
         return this.clazz;
     }
 
     public Type getType() {
         return this.type;
+    }
+
+
+    private static String getFormattedMessage(Type type) {
+        return type.format;
     }
 
     private static String getFormattedMessage(Class clazz, Type type) {

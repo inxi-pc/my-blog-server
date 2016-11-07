@@ -21,7 +21,6 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Base64;
 import java.util.Properties;
 
 /**

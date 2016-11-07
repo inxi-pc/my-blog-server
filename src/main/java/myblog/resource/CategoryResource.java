@@ -3,6 +3,7 @@ package myblog.resource;
 import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Sort;
+import myblog.exception.DomainException;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.*;
@@ -24,7 +25,7 @@ public class CategoryResource {
 
         try {
             insert.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
@@ -71,7 +72,7 @@ public class CategoryResource {
 
         try {
             update.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 

@@ -1,10 +1,12 @@
 package myblog.exception;
 
+import java.util.Optional;
+
 public class DaoException extends Exception {
 
     private Type type;
 
-    private Class clazz;
+    private Optional<Class> clazz;
 
     public static enum Type {
 
@@ -33,15 +35,26 @@ public class DaoException extends Exception {
         super(getFormattedMessage(clazz, type));
 
         this.type = type;
-        this.clazz = clazz;
+        this.clazz = Optional.of(clazz);
     }
 
-    public Class getClazz() {
+    public DaoException(Type type) {
+        super(getFormattedMessage(type));
+
+        this.type = type;
+        this.clazz = Optional.empty();
+    }
+
+    public Optional<Class> getClazz() {
         return this.clazz;
     }
 
     public Type getType() {
         return this.type;
+    }
+
+    private static String getFormattedMessage(Type type) {
+        return type.getFormat();
     }
 
     private static String getFormattedMessage(Class clazz, Type type) {

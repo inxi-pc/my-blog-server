@@ -6,19 +6,12 @@ import myblog.domain.User;
 import myblog.exception.DaoException;
 import myblog.exception.DomainException;
 
+import javax.ws.rs.BadRequestException;
 import java.util.Map;
 
 public class UserService {
 
-    /**
-     *
-     * @param register
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     * @throws ServiceException
-     */
-    public static int registerUser(User register) throws DomainException, DaoException, ServiceException {
+    public static int registerUser(User register) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
@@ -31,10 +24,14 @@ public class UserService {
 
                 return userDao.createUser(register);
             } else {
-                throw new ServiceException(User.class, ServiceException.Type.NOT_FOUND);
+                throw new BadRequestException("Registered user has been exist");
             }
-        } catch (Exception e) {
-            throw e;
+        } catch (DomainException | DaoException e) {
+            throw new BadRequestException(e.getMessage(), e);
         }
+    }
+
+    public static String loginUser(User login) {
+        return null;
     }
 }

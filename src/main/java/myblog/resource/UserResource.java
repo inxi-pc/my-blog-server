@@ -1,6 +1,7 @@
 package myblog.resource;
 
 import myblog.domain.User;
+import myblog.exception.DomainException;
 import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
@@ -24,7 +25,7 @@ public class UserResource {
 
         try {
             user.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 
@@ -49,7 +50,7 @@ public class UserResource {
 
         try {
             user.checkFieldOuterSettable();
-        } catch (FieldNotOuterSettableException e) {
+        } catch (DomainException e) {
             throw new BadRequestException(e.getMessage(), e);
         }
 

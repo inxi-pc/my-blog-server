@@ -9,7 +9,6 @@ import myblog.exception.DaoException;
 import myblog.exception.DomainException;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +38,10 @@ public class PostService {
             if (myBatisPostDao.getPostById(postId) != null) {
                 return myBatisPostDao.deletePost(postId);
             } else {
-                throw new NotFoundException("Not found post: Post id = " + postId);
+                throw new BadRequestException("Not found the deleted post");
             }
         } catch (DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -56,10 +55,10 @@ public class PostService {
 
                 return myBatisPostDao.updatePost(postId, update);
             } else {
-                throw new NotFoundException("Not found post: Post id = " + postId);
+                throw new BadRequestException("Not found the updated post");
             }
         } catch (DomainException | DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -68,9 +67,15 @@ public class PostService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         try {
-            return myBatisPostDao.getPostById(postId);
+            Post post = myBatisPostDao.getPostById(postId);
+
+            if (post != null) {
+                return post;
+            } else {
+                throw new NotFoundException("Not found the post");
+            }
         } catch (DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -83,7 +88,7 @@ public class PostService {
             HashMap<String, Object> params = post.convertToHashMap(null);
             posts = myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (posts != null && posts.size() <= 0) {
@@ -107,7 +112,7 @@ public class PostService {
 
             posts = myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new BadRequestException(e.getMessage(), e);
         }
 
         if (posts != null && posts.size() > 0) {
