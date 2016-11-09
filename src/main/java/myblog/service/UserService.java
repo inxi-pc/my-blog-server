@@ -1,5 +1,8 @@
 package myblog.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import myblog.App;
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.UserDaoMyBatisImpl;
 import myblog.domain.User;
@@ -8,6 +11,8 @@ import myblog.exception.DomainException;
 import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserService {
@@ -37,6 +42,19 @@ public class UserService {
     }
 
     public static String loginUser(User login) {
-        return null;
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        try {
+            User user = userDao.getUserByCredential(login);
+            Map<String, Object> header = new HashMap<String, Object>();
+            header.put("typ", "JWT");
+            return Jwts.builder().setHeader(header)
+                    .setClaims(user.convertToHashMap(null))
+                    .setExpiration(App.getJwtExpiredTime())
+                    .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
+        } catch (DomainException | DaoException e) {
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+        }
     }
 }

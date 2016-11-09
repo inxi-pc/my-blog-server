@@ -55,8 +55,12 @@ public class User extends Domain implements Principal, Credential {
 
     @Override
     public List<Field> getIdentifierFields() {
-        List<Field> fields = Arrays.asList(this.getClass().getDeclaredFields());
-        fields.removeIf(field -> !field.isAnnotationPresent(Identifier.class));
+        List<Field> fields = new ArrayList<Field>();
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(Identifier.class)) {
+                fields.add(field);
+            }
+        }
 
         return fields;
     }

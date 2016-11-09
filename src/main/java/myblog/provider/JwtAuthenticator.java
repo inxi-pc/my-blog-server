@@ -19,11 +19,10 @@ public class JwtAuthenticator implements Authenticator<String, User> {
     @Override
     public Optional<User> authenticate(String jwtCredentials) throws AuthenticationException {
         Jwt jwt = Jwts.parser().setSigningKey(App.getJwtKey()).parse(jwtCredentials);
-
-        User user;
         Claims body = (Claims) jwt.getBody();
+
         try {
-            user = Domain.fromHashMap(User.class, body);
+            User user = Domain.fromHashMap(User.class, body);
 
             return Optional.of(user);
         } catch (DomainException e) {

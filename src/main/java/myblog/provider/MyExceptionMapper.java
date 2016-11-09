@@ -1,11 +1,13 @@
 package myblog.provider;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import io.jsonwebtoken.JwtException;
 import myblog.App;
 import org.apache.logging.log4j.Level;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,6 +25,8 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
             ex = (WebApplicationException) e;
         } else if (e instanceof JsonMappingException){
             ex = new BadRequestException(e.getMessage(), e);
+        } else if (e instanceof JwtException) {
+            ex = new NotAuthorizedException(e.getMessage(), e);
         } else {
             ex = new InternalServerErrorException(e.getMessage(), e);
         }

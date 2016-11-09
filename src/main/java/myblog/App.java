@@ -3,7 +3,11 @@ package myblog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import myblog.auth.AuthDynamicFeature;
+import myblog.auth.jwt.JwtAuthFilter;
+import myblog.domain.User;
 import myblog.provider.CORSFilter;
+import myblog.provider.JwtAuthenticator;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
 import org.apache.logging.log4j.Level;
@@ -17,6 +21,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -63,11 +68,11 @@ public class App extends ResourceConfig {
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         register(new JacksonJsonProvider(objectMapper));
 
-//        register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
-//                .setAuthenticator(new JwtAuthenticator())
-//                .setPrefix("Bearer")
-//                .setRealm("SUPER SECRET STUFF")
-//                .buildAuthFilter()));
+        register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
+                .setAuthenticator(new JwtAuthenticator())
+                .setPrefix("Bearer")
+                .setRealm("SUPER SECRET STUFF")
+                .buildAuthFilter()));
     }
 
     public static void main(String[] args) {
@@ -112,10 +117,10 @@ public class App extends ResourceConfig {
             if ((debug = config.getProperty("debug")) != null) {
                 return Boolean.parseBoolean(debug);
             } else {
-                throw new RuntimeException("No configuration value found: jwtKey");
+                throw new RuntimeException("Not found configuration key: `jwtKey`");
             }
         } else {
-            throw new RuntimeException("No configuration found");
+            throw new RuntimeException("Not found configuration");
         }
     }
 
@@ -132,10 +137,30 @@ public class App extends ResourceConfig {
 
                 return DatatypeConverter.parseBase64Binary(base64Key);
             } else {
-                throw new RuntimeException("No configuration value found: jwtKey");
+                throw new RuntimeException("Not found configuration key: `jwtKey`");
             }
         } else {
-            throw new RuntimeException("No configuration found");
+            throw new RuntimeException("Not found configuration");
+        }
+    }
+
+    /**
+     * Get jwt expired time
+     *
+     * @return
+     */
+    public static Date getJwtExpiredTime() {
+        if (config != null) {
+            String jwtKey;
+            if ((jwtKey = config.getProperty("jwtExpiredTime")) != null) {
+                Long expiredAtLong = System.currentTimeMillis() + Long.parseLong(jwtKey);
+
+                return new Date(expiredAtLong);
+            } else {
+                throw new RuntimeException("Not found configuration key: `jwtExpiredTime`");
+            }
+        } else {
+            throw new RuntimeException("Not found configuration");
         }
     }
 }
