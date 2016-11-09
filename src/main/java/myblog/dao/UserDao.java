@@ -60,7 +60,7 @@ public interface UserDao {
      * @return
      * @throws DaoException
      */
-    User getUserByCondition(Map<String, Object> params) throws DaoException;
+    User checkUserIfExist(Map<String, Object> params) throws DaoException;
 
     /**
      *

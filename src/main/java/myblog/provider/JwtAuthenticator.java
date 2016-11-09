@@ -10,7 +10,6 @@ import myblog.domain.User;
 import myblog.exception.AuthenticationException;
 import myblog.exception.DomainException;
 
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.ext.Provider;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class JwtAuthenticator implements Authenticator<String, User> {
 
             return Optional.of(user);
         } catch (DomainException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw new AuthenticationException(e.getMessage(), e);
         }
     }
 }

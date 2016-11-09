@@ -40,9 +40,8 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
             throw new DaoException(Category.class, DaoException.Type.NULL_POINTER);
         }
 
-        insert.setDefaultableFieldValue();
-
         try {
+            insert.setDefaultableFieldValue();
             insert.checkFieldInsertable();
         } catch (DomainException e) {
             throw e;

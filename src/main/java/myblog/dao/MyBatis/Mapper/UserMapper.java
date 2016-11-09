@@ -46,7 +46,7 @@ public interface UserMapper {
      * @param params
      * @return
      */
-    User getUserByCondition(Map<String, Object> params);
+    User checkUserIfExist(Map<String, Object> params);
 
     /**
      *

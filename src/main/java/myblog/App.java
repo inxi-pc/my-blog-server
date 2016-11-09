@@ -3,11 +3,7 @@ package myblog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import myblog.auth.AuthDynamicFeature;
-import myblog.auth.jwt.JwtAuthFilter;
-import myblog.domain.User;
 import myblog.provider.CORSFilter;
-import myblog.provider.JwtAuthenticator;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
 import org.apache.logging.log4j.Level;
@@ -67,11 +63,11 @@ public class App extends ResourceConfig {
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         register(new JacksonJsonProvider(objectMapper));
 
-        register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
-                .setAuthenticator(new JwtAuthenticator())
-                .setPrefix("Bearer")
-                .setRealm("SUPER SECRET STUFF")
-                .buildAuthFilter()));
+//        register(new AuthDynamicFeature(new JwtAuthFilter.Builder<User>()
+//                .setAuthenticator(new JwtAuthenticator())
+//                .setPrefix("Bearer")
+//                .setRealm("SUPER SECRET STUFF")
+//                .buildAuthFilter()));
     }
 
     public static void main(String[] args) {

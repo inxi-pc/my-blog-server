@@ -5,6 +5,7 @@ import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
+import myblog.exception.DomainException;
 
 import java.util.Date;
 
@@ -173,7 +174,9 @@ public class Post extends Domain {
         if (isValidPostId(postId)) {
             this.post_id = postId;
         } else {
-            throw new IllegalArgumentException("Unexpected post id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -181,7 +184,9 @@ public class Post extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException("Unexpected category id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -189,7 +194,9 @@ public class Post extends Domain {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new IllegalArgumentException("Unexpected user id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -197,7 +204,9 @@ public class Post extends Domain {
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
         } else {
-            throw new IllegalArgumentException("Unexpected post title: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_title", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -205,7 +214,9 @@ public class Post extends Domain {
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
         } else {
-            throw new IllegalArgumentException("Unexpected post content: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_content", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -213,7 +224,9 @@ public class Post extends Domain {
         if (isValidPostPublished(postPublished)) {
             this.post_published = postPublished;
         } else {
-            throw new IllegalArgumentException("Unexpected post published: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_published", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -221,7 +234,9 @@ public class Post extends Domain {
         if (isValidPostEnabled(postEnabled)) {
             this.post_enabled = postEnabled;
         } else {
-            throw new IllegalArgumentException("Unexpected post enabled: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_enabled", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -229,7 +244,9 @@ public class Post extends Domain {
         if (isValidPostCreatedAt(postCreatedAt)) {
             this.post_created_at = postCreatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected post created at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_created_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -237,7 +254,9 @@ public class Post extends Domain {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
             this.post_updated_at = postUpdatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected post updated at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("post_updated_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 

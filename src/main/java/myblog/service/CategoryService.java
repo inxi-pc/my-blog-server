@@ -7,10 +7,10 @@ import myblog.domain.Pagination;
 import myblog.domain.Sort;
 import myblog.exception.DaoException;
 import myblog.exception.DomainException;
+import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,18 +22,21 @@ public class CategoryService {
 
         if (insert.getCategory_parent_id() != null) {
             Category parent = null;
-
             try {
                 parent = myBatisCategoryDao.getCategoryById(insert.getCategory_parent_id());
             } catch (DaoException e) {
-                throw new BadRequestException(e.getMessage(), e);
+                throw HttpExceptionFactory.produce(BadRequestException.class, e);
             }
 
             if (parent != null) {
                 insert.setCategory_level(parent.getCategory_level() + 1);
                 insert.setCategory_root_id(parent.getCategory_root_id());
             } else {
-                throw new BadRequestException("Not found the inserted category's parent");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.NOT_FOUND,
+                        Category.class,
+                        HttpExceptionFactory.Reason.NOT_EXIST_CATEGORY_PARENT);
             }
         } else {
             insert.setCategory_level(1);
@@ -47,7 +50,7 @@ public class CategoryService {
         try {
             return myBatisCategoryDao.createCategory(insert);
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -59,10 +62,14 @@ public class CategoryService {
             if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
                 return myBatisCategoryDao.deleteCategory(categoryId);
             } else {
-                throw new BadRequestException("Not found the deleted category");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.NOT_FOUND,
+                        Category.class,
+                        HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -76,10 +83,14 @@ public class CategoryService {
 
                 return myBatisCategoryDao.updateCategory(categoryId, update);
             } else {
-                throw new BadRequestException("Not found the updated category");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.NOT_FOUND,
+                        Category.class,
+                        HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -90,7 +101,7 @@ public class CategoryService {
         try {
             return myBatisCategoryDao.getCategoryById(categoryId);
         } catch (DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -103,7 +114,7 @@ public class CategoryService {
 
             return myBatisCategoryDao.getCategoriesByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -121,7 +132,7 @@ public class CategoryService {
 
             categories = myBatisCategoryDao.getCategoriesByCondition(params);
         } catch (DaoException | DomainException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
         page.setData(categories);
@@ -136,7 +147,7 @@ public class CategoryService {
         try {
             return Category.formatCategoryTree(categories);
         } catch (DomainException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
@@ -149,7 +160,7 @@ public class CategoryService {
 
             return page;
         } catch (DomainException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 }

@@ -2,6 +2,7 @@ package myblog.resource;
 
 import myblog.domain.User;
 import myblog.exception.DomainException;
+import myblog.exception.HttpExceptionFactory;
 import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
@@ -20,7 +21,11 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response userRegister(User user) {
         if (user == null) {
-            throw new BadRequestException("Unexpected user: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    User.class,
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
         }
 
         try {
@@ -34,7 +39,11 @@ public class UserResource {
         if (User.isValidUserId(userId)) {
             return Response.created(URI.create("/users/" + userId)).build();
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw HttpExceptionFactory.produce(
+                    InternalServerErrorException.class,
+                    HttpExceptionFactory.Type.CREATE_FAILED,
+                    User.class,
+                    HttpExceptionFactory.Reason.INVALID_PRIMARY_KEY_VALUE);
         }
     }
 
@@ -45,18 +54,22 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response userLogin(User user) {
         if (user == null) {
-            throw new BadRequestException("Unexpected user: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    User.class,
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
         }
 
         try {
             user.checkFieldOuterSettable();
         } catch (DomainException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
         String token = UserService.loginUser(user);
         if (token == null) {
-            throw new NotFoundException("Not found user: Invalid identifier or password");
+            throw HttpExceptionFactory.produce(NotAuthorizedException.class);
         } else {
             return Response.ok(token).build();
         }

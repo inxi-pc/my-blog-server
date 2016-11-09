@@ -221,7 +221,9 @@ public class Category extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException("Unexpected category id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -229,7 +231,9 @@ public class Category extends Domain {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
         } else {
-            throw new IllegalArgumentException("Unexpected category parent id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_parent_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -237,7 +241,9 @@ public class Category extends Domain {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
         } else {
-            throw new IllegalArgumentException("Unexpected category root id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_root_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -245,7 +251,9 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
-            throw new IllegalArgumentException("Unexpected category name en: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_name_en", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -253,7 +261,9 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
-            throw new IllegalArgumentException("Unexpected category name cn: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_name_cn", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -261,7 +271,9 @@ public class Category extends Domain {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
         } else {
-            throw new IllegalArgumentException("Unexpected category level: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_level", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -269,7 +281,9 @@ public class Category extends Domain {
         if (isValidCategoryEnabled(categoryEnabled)) {
             this.category_enabled = categoryEnabled;
         } else {
-            throw new IllegalArgumentException("Unexpected category enabled: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_enabled", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -277,7 +291,9 @@ public class Category extends Domain {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
             this.category_created_at = categoryCreatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected category created at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_created_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -285,7 +301,9 @@ public class Category extends Domain {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
             this.category_updated_at = categoryUpdatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected category updated at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("category_updated_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 

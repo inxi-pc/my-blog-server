@@ -4,6 +4,7 @@ import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
 import myblog.exception.DomainException;
+import myblog.exception.HttpExceptionFactory;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
@@ -20,20 +21,28 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post insert) {
         if (insert == null) {
-            throw new BadRequestException("Unexpected post: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    Post.class,
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
         }
 
         try {
             insert.checkFieldOuterSettable();
         } catch (DomainException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
         int postId = PostService.createPost(insert);
         if (Post.isValidPostId(postId)) {
             return Response.created(URI.create("/posts/" + postId)).build();
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw HttpExceptionFactory.produce(
+                    InternalServerErrorException.class,
+                    HttpExceptionFactory.Type.CREATE_FAILED,
+                    Post.class,
+                    HttpExceptionFactory.Reason.INVALID_PRIMARY_KEY_VALUE);
         }
     }
 
@@ -42,17 +51,29 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePost(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw new BadRequestException("Unexpected post id: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
         }
 
         if (Post.isValidPostId(postId)) {
             if (PostService.deletePost(postId)) {
                 return Response.noContent().build();
             } else {
-                throw new InternalServerErrorException("Unexpected error");
+                throw HttpExceptionFactory.produce(
+                        InternalServerErrorException.class,
+                        HttpExceptionFactory.Type.DELETE_FAILED,
+                        Post.class,
+                        HttpExceptionFactory.Reason.UNDEFINED_ERROR);
             }
         } else {
-            throw new BadRequestException("Unexpected post id: Invalid value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.INVALID_VALUE);
         }
     }
 
@@ -62,7 +83,19 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
-            throw new BadRequestException("Unexpected post id: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+        }
+
+        if (!Post.isValidPostId(postId)) {
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.INVALID_VALUE);
         }
 
         if (update == null) {
@@ -72,13 +105,17 @@ public class PostResource {
         try {
             update.checkFieldOuterSettable();
         } catch (DomainException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
         if (PostService.updatePost(postId, update)) {
             return Response.noContent().build();
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw HttpExceptionFactory.produce(
+                    InternalServerErrorException.class,
+                    HttpExceptionFactory.Type.UPDATE_FAILED,
+                    Post.class,
+                    HttpExceptionFactory.Reason.UNDEFINED_ERROR);
         }
     }
 
@@ -87,19 +124,30 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPostById(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw new BadRequestException("Unexpected post id: Absence value");
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
         }
 
-        if (Post.isValidPostId(postId)) {
-            Post post = PostService.getPostById(postId);
+        if (!Post.isValidPostId(postId)) {
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    "postId",
+                    HttpExceptionFactory.Reason.INVALID_VALUE);
+        }
 
-            if (post != null) {
-                return post;
-            } else {
-                throw new NotFoundException("Not found post: Id = " + postId);
-            }
+        Post post = PostService.getPostById(postId);
+        if (post != null) {
+            return post;
         } else {
-            throw new BadRequestException("Unexpected post id: Not valid value");
+            throw HttpExceptionFactory.produce(
+                    NotFoundException.class,
+                    HttpExceptionFactory.Type.NOT_FOUND,
+                    Post.class,
+                    HttpExceptionFactory.Reason.NOT_EXIST);
         }
     }
 
@@ -111,67 +159,78 @@ public class PostResource {
                                @QueryParam("post_published") Boolean postPublished,
                                @QueryParam("post_enabled") Boolean postEnabled) {
         Post post = new Post();
-        boolean noQueryParam = true;
         if (userId != null) {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
-                noQueryParam = false;
             } else {
-                throw new BadRequestException("Unexpected user id: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "user_id",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
-                noQueryParam = false;
             } else {
-                throw new BadRequestException("Unexpected category id: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "category_id",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
-                noQueryParam = false;
             } else {
-                throw new BadRequestException("Unexpected post title: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_title",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postPublished != null) {
             if (Post.isValidPostPublished(postPublished)) {
                 post.setPost_published(postPublished);
-                noQueryParam = false;
             } else {
-                throw new BadRequestException("Unexpected post published: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_published",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postEnabled != null) {
             if (Post.isValidPostEnabled(postEnabled)) {
                 post.setPost_enabled(postEnabled);
-                noQueryParam = false;
             } else {
-                throw new BadRequestException("Unexpected post enabled: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_enabled",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
-        }
-        if (noQueryParam) {
-            throw new BadRequestException("Unexpected query parameter: No parameters");
         }
 
         List<Post> posts = PostService.getPosts(post);
-        if (posts != null) {
-            if (posts.size() > 0) {
-                return posts;
-            } else {
-                throw new NotFoundException("Not found posts");
-            }
+        if (posts != null && posts.size() > 0) {
+            return posts;
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw HttpExceptionFactory.produce(
+                    NotFoundException.class,
+                    HttpExceptionFactory.Type.NOT_FOUND,
+                    Post.class,
+                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
         }
     }
 
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPostList(@QueryParam("user_id") Integer userId,
+    public Pagination<Post> getPostList(@QueryParam("user_id") Integer userId,
                                 @QueryParam("category_id") Integer categoryId,
                                 @QueryParam("post_title") String postTitle,
                                 @QueryParam("post_published") Boolean postPublished,
@@ -185,35 +244,55 @@ public class PostResource {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
             } else {
-                throw new BadRequestException("Unexpected user id: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "user_id",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
             } else {
-                throw new BadRequestException("Unexpected category id: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "category_id",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
             } else {
-                throw new BadRequestException("Unexpected post title: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_title",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postPublished != null) {
             if (Post.isValidPostPublished(postPublished)) {
                 post.setPost_published(postPublished);
             } else {
-                throw new BadRequestException("Unexpected post published: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_published",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
         if (postEnabled != null) {
             if (Post.isValidPostEnabled(postEnabled)) {
                 post.setPost_enabled(postEnabled);
             } else {
-                throw new BadRequestException("Unexpected post enabled: Not valid value");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.UNEXPECTED,
+                        "post_enabled",
+                        HttpExceptionFactory.Reason.INVALID_VALUE);
             }
         }
 
@@ -221,14 +300,14 @@ public class PostResource {
         Sort<Post> sort = new Sort<Post>(orderBy, orderType, Post.class);
         page = PostService.getPostList(post, page, sort);
 
-        if (page != null) {
-            if (page.getData().size() > 0) {
-                return Response.ok(page).build();
-            } else {
-                throw new NotFoundException("Not found posts");
-            }
+        if (page != null && page.getData().size() > 0) {
+            return page;
         } else {
-            throw new InternalServerErrorException("Unexpected error");
+            throw HttpExceptionFactory.produce(
+                    NotFoundException.class,
+                    HttpExceptionFactory.Type.NOT_FOUND,
+                    Post.class,
+                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
         }
     }
 }

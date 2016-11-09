@@ -2,14 +2,15 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.PostDaoMyBatisImpl;
+import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
 import myblog.exception.DaoException;
 import myblog.exception.DomainException;
+import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class PostService {
         try {
             return myBatisPostDao.createPost(insert);
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -38,10 +39,14 @@ public class PostService {
             if (myBatisPostDao.getPostById(postId) != null) {
                 return myBatisPostDao.deletePost(postId);
             } else {
-                throw new BadRequestException("Not found the deleted post");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.NOT_FOUND,
+                        Category.class,
+                        HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -55,10 +60,14 @@ public class PostService {
 
                 return myBatisPostDao.updatePost(postId, update);
             } else {
-                throw new BadRequestException("Not found the updated post");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.NOT_FOUND,
+                        Category.class,
+                        HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -69,7 +78,7 @@ public class PostService {
         try {
             return myBatisPostDao.getPostById(postId);
         } catch (DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -82,7 +91,7 @@ public class PostService {
 
             return myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
@@ -100,7 +109,7 @@ public class PostService {
 
             posts = myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
         page.setData(posts);

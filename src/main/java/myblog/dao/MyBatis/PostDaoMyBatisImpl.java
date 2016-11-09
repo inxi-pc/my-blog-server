@@ -40,8 +40,8 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new DaoException(Post.class, DaoException.Type.NULL_POINTER);
         }
 
-        insert.setDefaultableFieldValue();
         try {
+            insert.setDefaultableFieldValue();
             insert.checkFieldInsertable();
         } catch (DomainException e) {
             throw e;

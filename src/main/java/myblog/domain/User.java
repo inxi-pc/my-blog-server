@@ -210,7 +210,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new IllegalArgumentException("Unexpected user id: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -218,7 +220,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserName(userName)) {
             this.user_name = userName;
         } else {
-            throw new IllegalArgumentException("Unexpected user name: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_name", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -226,7 +230,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserTelephone(userTelephone)) {
             this.user_telephone = userTelephone;
         } else {
-            throw new IllegalArgumentException("Unexpected user telephone: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_telephone", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -234,7 +240,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserEmail(userEmail)) {
             this.user_email = userEmail;
         } else {
-            throw new IllegalArgumentException("Unexpected user email: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_email", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -242,7 +250,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserPassword(userPassword)) {
             this.user_password = userPassword;
         } else {
-            throw new IllegalArgumentException("Unexpected user password: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_password", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -250,7 +260,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserCreatedAt(userCreatedAt)) {
             this.user_created_at = userCreatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected user created at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_created_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -258,7 +270,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserUpdatedAt(userUpdatedAt)) {
             this.user_updated_at = userUpdatedAt;
         } else {
-            throw new IllegalArgumentException("Unexpected user updated at: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_updated_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 
@@ -266,7 +280,9 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserEnabled(userEnabled)) {
             this.user_enabled = userEnabled;
         } else {
-            throw new IllegalArgumentException("Unexpected user enabled: Invalid value");
+            throw new IllegalArgumentException(
+                    new DomainException("user_enabled", DomainException.Type.FIELD_NOT_VALID_VALUE)
+            );
         }
     }
 

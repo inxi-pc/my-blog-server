@@ -9,6 +9,8 @@ public class DomainException extends Exception {
 
     private Optional<Class> clazz;
 
+    private Optional<String> wrap;
+
     private Type type;
 
     public static enum Type {
@@ -20,6 +22,8 @@ public class DomainException extends Exception {
         FIELD_NOT_OUTER_SETTABLE("Unexpected %s: Not outer settable"),
 
         FIELD_NOT_UPDATABLE("Unexpected %s: Not updatable"),
+
+        FIELD_NOT_VALID_VALUE("Unexpected %s: Not valid value"),
 
         USER_ILLEGAL_NUMBER_OF_IDENTIFIER("User illegal number of identifier"),
 
@@ -58,6 +62,15 @@ public class DomainException extends Exception {
         this.field = Optional.empty();
     }
 
+    public DomainException(String wrap, Type type) {
+        super(getFormattedMessage(wrap, type));
+
+        this.type = type;
+        this.field = Optional.empty();
+        this.clazz = Optional.empty();
+        this.wrap = Optional.of(wrap);
+    }
+
     public DomainException(Type type) {
         super(getFormattedMessage(type));
 
@@ -74,10 +87,13 @@ public class DomainException extends Exception {
         return this.clazz;
     }
 
+    public Optional<String> getWrap() {
+        return this.wrap;
+    }
+
     public Type getType() {
         return this.type;
     }
-
 
     private static String getFormattedMessage(Type type) {
         return type.format;
@@ -89,5 +105,9 @@ public class DomainException extends Exception {
 
     private static String getFormattedMessage(Field field, Type type) {
         return String.format(type.getFormat(), field.getName().replace("_", " "));
+    }
+
+    private static String getFormattedMessage(String wrap, Type type) {
+        return String.format(type.getFormat(), wrap);
     }
 }

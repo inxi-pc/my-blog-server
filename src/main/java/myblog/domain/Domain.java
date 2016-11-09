@@ -3,6 +3,7 @@ package myblog.domain;
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
+import myblog.exception.DaoException;
 import myblog.exception.DomainException;
 
 import java.lang.reflect.Field;
@@ -47,11 +48,7 @@ public abstract class Domain {
      * @return
      */
     private static boolean isNullable(Field field) {
-        if (isInsertable(field)) {
-            return field.getDeclaredAnnotation(Insertable.class).nullable();
-        } else {
-            return false;
-        }
+        return isInsertable(field) && field.getDeclaredAnnotation(Insertable.class).nullable();
     }
 
     /**
@@ -60,11 +57,7 @@ public abstract class Domain {
      * @return
      */
     private static boolean isDefaultable(Field field) {
-        if (isInsertable(field)) {
-            return field.getDeclaredAnnotation(Insertable.class).defaultable();
-        } else {
-            return false;
-        }
+        return isInsertable(field) && field.getDeclaredAnnotation(Insertable.class).defaultable();
     }
 
     /**
@@ -82,8 +75,9 @@ public abstract class Domain {
 
     /**
      *
+     * @throws DaoException
      */
-    public void setDefaultableFieldValue() {
+    public void setDefaultableFieldValue() throws DaoException {
         for (Field field : getClass().getDeclaredFields()) {
             if (isDefaultable(field)) {
                 Object value;
@@ -91,7 +85,7 @@ public abstract class Domain {
                     field.setAccessible(true);
                     value = field.get(this);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new DaoException(e);
                 }
 
                 if (value == null) {
@@ -100,7 +94,7 @@ public abstract class Domain {
                         Method method = getClass().getDeclaredMethod(setterName);
                         method.invoke(this);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new DaoException(e);
                     }
                 }
             }

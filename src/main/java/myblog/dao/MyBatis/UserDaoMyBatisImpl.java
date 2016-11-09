@@ -41,8 +41,8 @@ public class UserDaoMyBatisImpl implements UserDao {
             throw new DaoException(User.class, DaoException.Type.NULL_POINTER);
         }
 
-        insert.setDefaultableFieldValue();
         try {
+            insert.setDefaultableFieldValue();
             insert.checkFieldInsertable();
         } catch (DomainException e) {
             throw e;
@@ -156,7 +156,7 @@ public class UserDaoMyBatisImpl implements UserDao {
      * @throws DaoException
      */
     @Override
-    public User getUserByCondition(Map<String, Object> params) throws DaoException {
+    public User checkUserIfExist(Map<String, Object> params) throws DaoException {
         if (params == null) {
             throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
         }
@@ -165,7 +165,7 @@ public class UserDaoMyBatisImpl implements UserDao {
             SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
             UserMapper userMapper = session.getMapper(UserMapper.class);
 
-            return userMapper.getUserByCondition(params);
+            return userMapper.checkUserIfExist(params);
         } else {
             throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
         }

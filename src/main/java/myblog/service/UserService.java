@@ -5,8 +5,11 @@ import myblog.dao.MyBatis.UserDaoMyBatisImpl;
 import myblog.domain.User;
 import myblog.exception.DaoException;
 import myblog.exception.DomainException;
+import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
+import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 public class UserService {
@@ -17,17 +20,21 @@ public class UserService {
 
         try {
             Map<String, Object> params = register.convertToHashMap(null);
-            if (userDao.getUserByCondition(params) == null) {
+            if (userDao.checkUserIfExist(params) == null) {
                 register.setDefaultUser_enabled();
                 register.setDefaultUser_created_at();
                 register.setDefaultUser_updated_at();
 
                 return userDao.createUser(register);
             } else {
-                throw new BadRequestException("Registered user has been exist");
+                throw HttpExceptionFactory.produce(
+                        BadRequestException.class,
+                        HttpExceptionFactory.Type.CONFLICT,
+                        User.class,
+                        HttpExceptionFactory.Reason.EXIST_ALREADY);
             }
         } catch (DomainException | DaoException e) {
-            throw new BadRequestException(e.getMessage(), e);
+            throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
     }
 
