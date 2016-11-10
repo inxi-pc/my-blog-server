@@ -69,7 +69,10 @@ public class UserResource {
 
         String token = UserService.loginUser(user);
         if (token == null) {
-            throw HttpExceptionFactory.produce(NotAuthorizedException.class);
+            throw HttpExceptionFactory.produce(
+                    InternalServerErrorException.class,
+                    HttpExceptionFactory.Type.UNEXPECTED,
+                    HttpExceptionFactory.Reason.UNDEFINED_ERROR);
         } else {
             return Response.ok(token).build();
         }

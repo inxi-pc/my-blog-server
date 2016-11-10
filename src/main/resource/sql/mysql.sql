@@ -11,7 +11,7 @@ CREATE TABLE user (
   user_name       VARCHAR(30) NOT NULL UNIQUE,
   user_telephone  CHAR(20) UNIQUE,
   user_email      CHAR(30) UNIQUE,
-  user_password   VARCHAR(30) NOT NULL,
+  user_password   VARCHAR(200) NOT NULL,
   user_created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   user_updated_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   user_enabled    BOOLEAN     NOT NULL DEFAULT FALSE

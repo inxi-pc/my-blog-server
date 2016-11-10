@@ -4,8 +4,16 @@ import myblog.Helper;
 import myblog.annotation.*;
 import myblog.exception.DomainException;
 
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,7 +106,7 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public Object getPassword() throws DomainException {
+    public String getPassword() throws DomainException {
         if (this.user_password != null) {
             return this.user_password;
         } else {
@@ -107,8 +115,69 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public void encryptPassword() {
+    public void encryptPassword() throws DomainException {
+        try {
+            int iterations = 1000;
+            byte[] salt = genSalt();
+            PBEKeySpec spec = new PBEKeySpec(getPassword().toCharArray(), salt, iterations, 64*8);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = skf.generateSecret(spec).getEncoded();
 
+            this.user_password = iterations + ":" + convertToHex(salt) + ":" + convertToHex(hash);
+        } catch (Exception e) {
+            throw new DomainException(e);
+        }
+    }
+
+    @Override
+    public boolean validPassword(String compared) throws DomainException {
+        try {
+            String[] parts = getPassword().split(":");
+            int iterations = Integer.parseInt(parts[0]);
+            byte[] salt = fromHex(parts[1]);
+            byte[] hash = fromHex(parts[2]);
+
+            PBEKeySpec spec = new PBEKeySpec(compared.toCharArray(), salt, iterations, hash.length * 8);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] testHash = skf.generateSecret(spec).getEncoded();
+
+            int diff = hash.length ^ testHash.length;
+            for(int i = 0; i < hash.length && i < testHash.length; i++) {
+                diff |= hash[i] ^ testHash[i];
+            }
+
+            return diff == 0;
+        } catch (Exception e) {
+            throw new DomainException(e);
+        }
+    }
+
+    private static byte[] genSalt() throws NoSuchAlgorithmException {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+
+        return salt;
+    }
+
+    private static String convertToHex(byte[] array) {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if(paddingLength > 0) {
+            return String.format("%0" + paddingLength + "d", 0) + hex;
+        } else {
+            return hex;
+        }
+    }
+
+    private static byte[] fromHex(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for(int i = 0; i<bytes.length ;i++) {
+            bytes[i] = (byte)Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        }
+
+        return bytes;
     }
 
     public Integer getUser_id() {

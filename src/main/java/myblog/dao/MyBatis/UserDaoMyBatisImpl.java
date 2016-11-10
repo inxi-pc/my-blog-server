@@ -139,36 +139,11 @@ public class UserDaoMyBatisImpl implements UserDao {
         if (!credential.hasIdentifier()) {
             throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
         }
-        if (!credential.hasPassword()) {
-            throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_PASSWORD);
-        }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
         return userMapper.getUserByCredential(credential);
-    }
-
-    /**
-     *
-     * @param params
-     * @return
-     * @throws DaoException
-     */
-    @Override
-    public User checkUserIfExist(Map<String, Object> params) throws DaoException {
-        if (params == null) {
-            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
-        }
-
-        if (params.size() > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
-
-            return userMapper.checkUserIfExist(params);
-        } else {
-            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
-        }
     }
 
     /**

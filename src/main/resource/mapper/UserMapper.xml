@@ -55,26 +55,10 @@
     </select>
 
     <select id="getUserByCredential" resultType="User">
-        SELECT * FROM user WHERE
-        (user_name = #{credential.identifier}
-        OR user_email = #{credential.identifier}
-        OR user_telephone = #{credential.identifier})
-        AND user_password = #{credential.password}
-    </select>
-
-    <select id="checkUserIfExist" resultType="User">
         SELECT * FROM user
-        <where>
-            <if test="user_name != null">
-                OR user_name = #{user_name}
-            </if>
-            <if test="user_email != null">
-                OR user_email = #{user_email}
-            </if>
-            <if test="user_telephone != null">
-                OR user_telephone = #{user_telephone}
-            </if>
-        </where>
+        WHERE user_name = #{credential.identifier}
+        OR user_email = #{credential.identifier}
+        OR user_telephone = #{credential.identifier}
     </select>
 
     <!-- Basic way to find list -->

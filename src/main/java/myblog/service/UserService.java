@@ -12,7 +12,8 @@ import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,11 +29,11 @@ public class UserService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
         try {
-            Map<String, Object> params = register.convertToHashMap(null);
-            if (userDao.checkUserIfExist(params) == null) {
+            if (userDao.getUserByCredential(register) == null) {
                 register.setDefaultUser_enabled();
                 register.setDefaultUser_created_at();
                 register.setDefaultUser_updated_at();
+                register.encryptPassword();
 
                 return userDao.createUser(register);
             } else {
@@ -56,21 +57,17 @@ public class UserService {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
-        User user = null;
         try {
-            user = userDao.getUserByCredential(login);
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+            User user = userDao.getUserByCredential(login);
 
-        if (user == null) {
-            throw HttpExceptionFactory.produce(
-                    NotAuthorizedException.class,
-                    HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
-                    HttpExceptionFactory.Reason.INVALID_USERNAME_OR_PASSWORD);
-        }
+            if (user == null || user.validPassword(login.getUser_password())) {
+                throw HttpExceptionFactory.produce(
+                        WebApplicationException.class,
+                        Response.Status.UNAUTHORIZED,
+                        HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
+                        HttpExceptionFactory.Reason.INVALID_USERNAME_OR_PASSWORD);
+            }
 
-        try {
             Map<String, Object> header = new HashMap<String, Object>();
             header.put("typ", "JWT");
 
@@ -78,7 +75,7 @@ public class UserService {
                     .setClaims(user.convertToHashMap(null))
                     .setExpiration(App.getJwtExpiredTime())
                     .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
-        } catch (DomainException e) {
+        } catch (DomainException | DaoException e) {
             throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }

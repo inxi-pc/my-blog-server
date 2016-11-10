@@ -56,14 +56,6 @@ public interface UserDao {
 
     /**
      *
-     * @param params
-     * @return
-     * @throws DaoException
-     */
-    User checkUserIfExist(Map<String, Object> params) throws DaoException;
-
-    /**
-     *
      * @param userIds
      * @return
      * @throws DaoException

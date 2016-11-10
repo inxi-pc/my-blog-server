@@ -15,7 +15,9 @@ public interface Credential {
 
     boolean hasPassword();
 
-    Object getPassword() throws DomainException;
+    String getPassword() throws DomainException;
 
-    void encryptPassword();
+    void encryptPassword() throws DomainException;
+
+    boolean validPassword(String compared) throws DomainException;
 }

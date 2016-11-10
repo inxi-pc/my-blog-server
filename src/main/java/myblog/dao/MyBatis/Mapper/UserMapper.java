@@ -43,13 +43,6 @@ public interface UserMapper {
 
     /**
      *
-     * @param params
-     * @return
-     */
-    User checkUserIfExist(Map<String, Object> params);
-
-    /**
-     *
      * @return
      */
     List<User> getUsersByIds(int[] userIds);
