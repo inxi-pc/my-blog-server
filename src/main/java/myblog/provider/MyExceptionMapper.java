@@ -1,13 +1,14 @@
 package myblog.provider;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import myblog.App;
+import myblog.exception.HttpExceptionFactory;
 import org.apache.logging.log4j.Level;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,11 +25,23 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
         } else if (e instanceof JsonMappingException){
-            ex = new BadRequestException(e.getMessage(), e);
+            ex = HttpExceptionFactory.produce(BadRequestException.class, e);
         } else if (e instanceof JwtException) {
-            ex = new NotAuthorizedException(e.getMessage(), e);
+            if (e instanceof ExpiredJwtException) {
+                ex = HttpExceptionFactory.produce(
+                        WebApplicationException.class,
+                        Response.Status.UNAUTHORIZED,
+                        HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
+                        HttpExceptionFactory.Reason.BEARER_TOKEN_EXPIRED);
+            } else {
+                ex = HttpExceptionFactory.produce(
+                        WebApplicationException.class,
+                        Response.Status.UNAUTHORIZED,
+                        HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
+                        HttpExceptionFactory.Reason.INVALID_BEARER_TOKEN);
+            }
         } else {
-            ex = new InternalServerErrorException(e.getMessage(), e);
+            ex = HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
 
         if (App.isDebug()) {
@@ -39,7 +52,7 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
                     .build();
         } else {
             return Response.status(ex.getResponse().getStatus())
-                    .entity(ex.getResponse().getEntity())
+                    .entity(ex.getMessage())
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         }

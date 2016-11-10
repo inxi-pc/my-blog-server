@@ -7,7 +7,6 @@ import myblog.exception.DomainException;
 import java.lang.reflect.Field;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -89,7 +88,7 @@ public class User extends Domain implements Principal, Credential {
         if (values.size() == 1) {
             return values.get(0);
         } else {
-            throw new DomainException(DomainException.Type.USER_ILLEGAL_NUMBER_OF_IDENTIFIER);
+            throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
         }
     }
 
@@ -103,7 +102,7 @@ public class User extends Domain implements Principal, Credential {
         if (this.user_password != null) {
             return this.user_password;
         } else {
-            throw new DomainException(DomainException.Type.USER_ILLEGAL_NUMBER_OF_PASSWORD);
+            throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_PASSWORD);
         }
     }
 

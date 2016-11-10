@@ -11,12 +11,18 @@ import myblog.exception.DomainException;
 import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
-import java.util.Date;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserService {
 
+    /**
+     *
+     * @param register
+     * @return
+     */
     public static int registerUser(User register) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
@@ -37,24 +43,43 @@ public class UserService {
                         HttpExceptionFactory.Reason.EXIST_ALREADY);
             }
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param login
+     * @return
+     */
     public static String loginUser(User login) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
+        User user = null;
         try {
-            User user = userDao.getUserByCredential(login);
+            user = userDao.getUserByCredential(login);
+        } catch (DomainException | DaoException e) {
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
+        }
+
+        if (user == null) {
+            throw HttpExceptionFactory.produce(
+                    NotAuthorizedException.class,
+                    HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
+                    HttpExceptionFactory.Reason.INVALID_USERNAME_OR_PASSWORD);
+        }
+
+        try {
             Map<String, Object> header = new HashMap<String, Object>();
             header.put("typ", "JWT");
+
             return Jwts.builder().setHeader(header)
                     .setClaims(user.convertToHashMap(null))
                     .setExpiration(App.getJwtExpiredTime())
                     .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+        } catch (DomainException e) {
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 }

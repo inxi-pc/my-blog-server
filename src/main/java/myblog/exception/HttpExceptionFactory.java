@@ -2,11 +2,15 @@ package myblog.exception;
 
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Constructor;
 
 public class HttpExceptionFactory {
 
-    public static enum Type {
+    /**
+     * Exception message header
+     */
+    public enum Type {
 
         UNEXPECTED("Unexpected %s: "),
 
@@ -18,11 +22,13 @@ public class HttpExceptionFactory {
 
         NOT_FOUND("Not found %s: "),
 
-        CONFLICT("Conflict %s: ");
+        CONFLICT("Conflict %s: "),
+
+        AUTHENTICATE_FAILED("Authenticate failed: ");
 
         private String format;
 
-        private Type(String format) {
+        Type(String format) {
             this.format = format;
         }
 
@@ -31,7 +37,10 @@ public class HttpExceptionFactory {
         }
     }
 
-    public static enum Reason {
+    /**
+     * Exception message body
+     */
+    public enum Reason {
 
         UNDEFINED_ERROR("Undefined error"),
 
@@ -41,19 +50,25 @@ public class HttpExceptionFactory {
 
         INVALID_PRIMARY_KEY_VALUE("Invalid primary key value"),
 
-        INVALID_CREDENTIAL("Invalid identifier or password"),
-
+        //---------------Query--------------------//
         NOT_EXIST("Not exist"),
 
-        NOT_EXIST_CATEGORY_PARENT("Not exist category parent"),
+        NOT_EXIST_PARENT_CATEGORY("Not exist parent category"),
 
         NOT_ELIGIBLE("Not eligible"),
 
-        EXIST_ALREADY("Exist already");
+        EXIST_ALREADY("Exist already"),
+
+        //---------------Authenticate-------------//
+        BEARER_TOKEN_EXPIRED("Credential expired"),
+
+        INVALID_BEARER_TOKEN("Invalid bearer token"),
+
+        INVALID_USERNAME_OR_PASSWORD("Invalid username or password");
 
         private String detail;
 
-        private Reason(String detail) {
+        Reason(String detail) {
             this.detail = detail;
         }
 
@@ -62,6 +77,13 @@ public class HttpExceptionFactory {
         }
     }
 
+    /**
+     * Produce exception by Class, no message specified
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public static<T extends WebApplicationException> T produce(Class<T> clazz) {
         try {
             return clazz.newInstance();
@@ -70,6 +92,33 @@ public class HttpExceptionFactory {
         }
     }
 
+    /**
+     * Produce exception by Class, message generate by Type + Reason
+     *
+     * @param clazz
+     * @param type
+     * @param reason
+     * @param <T>
+     * @return
+     */
+    public static<T extends WebApplicationException> T produce(Class<T> clazz,
+                                                               Type type,
+                                                               Reason reason) {
+        String message = getFormattedMessage(type) + reason.getDetail();
+
+        return produce(clazz, message);
+    }
+
+    /**
+     * Produce exception by Class, message generate by Type + Reason
+     *
+     * @param clazz
+     * @param type
+     * @param wrap
+     * @param reason
+     * @param <T>
+     * @return
+     */
     public static<T extends WebApplicationException> T produce(Class<T> clazz,
                                                                Type type,
                                                                Class wrap,
@@ -79,6 +128,16 @@ public class HttpExceptionFactory {
         return produce(clazz, message);
     }
 
+    /**
+     * Produce exception by Class, message generate by Type + Reason
+     *
+     * @param clazz
+     * @param type
+     * @param wrap
+     * @param reason
+     * @param <T>
+     * @return
+     */
     public static<T extends WebApplicationException> T produce(Class<T> clazz,
                                                                Type type,
                                                                String wrap,
@@ -88,25 +147,61 @@ public class HttpExceptionFactory {
         return produce(clazz, message);
     }
 
+    /**
+     * Produce exception by Class and Status, message generate by Type + Reason
+     *
+     * @param clazz
+     * @param status
+     * @param type
+     * @param reason
+     * @param <T>
+     * @return
+     */
     public static<T extends WebApplicationException> T produce(Class<T> clazz,
-                                                               String message) {
+                                                               Response.Status status,
+                                                               Type type,
+                                                               Reason reason) {
         try {
-            Constructor method = clazz.getConstructor(String.class);
+            Constructor method = clazz.getDeclaredConstructor(String.class, Response.Status.class);
+            String message = getFormattedMessage(type) + reason.getDetail();
 
-            return (T) method.newInstance(message);
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
+            return (T) method.newInstance(message, status);
+        } catch (Exception ex) {
+            throw new InternalServerErrorException(ex.getMessage(), ex);
         }
     }
 
-    public static<T extends WebApplicationException> T produce(Class<T> clazz,
-                                                               Exception e) {
+    /**
+     *
+     * @param clazz
+     * @param message
+     * @param <T>
+     * @return
+     */
+    public static<T extends WebApplicationException> T produce(Class<T> clazz, String message) {
         try {
-            Constructor method = clazz.getConstructor(String.class, Throwable.class);
+            Constructor method = clazz.getDeclaredConstructor(String.class);
+
+            return (T) method.newInstance(message);
+        } catch (Exception ex) {
+            throw new InternalServerErrorException(ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param e
+     * @param <T>
+     * @return
+     */
+    public static<T extends WebApplicationException> T produce(Class<T> clazz, Exception e) {
+        try {
+            Constructor method = clazz.getDeclaredConstructor(String.class, Throwable.class);
 
             return (T) method.newInstance(e.getMessage(), e);
         } catch (Exception ex) {
-            throw new InternalServerErrorException(e.getMessage(), ex);
+            throw new InternalServerErrorException(ex.getMessage(), ex);
         }
     }
 
@@ -116,5 +211,9 @@ public class HttpExceptionFactory {
 
     private static String getFormattedMessage(Type type, String name) {
         return String.format(type.getFormat(), name);
+    }
+
+    private static String getFormattedMessage(Type type) {
+        return type.getFormat();
     }
 }

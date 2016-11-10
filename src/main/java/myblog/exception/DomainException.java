@@ -25,9 +25,9 @@ public class DomainException extends Exception {
 
         FIELD_NOT_VALID_VALUE("Unexpected %s: Not valid value"),
 
-        USER_ILLEGAL_NUMBER_OF_IDENTIFIER("User illegal number of identifier"),
+        ILLEGAL_NUMBER_OF_IDENTIFIER("Illegal number of identifier"),
 
-        USER_ILLEGAL_NUMBER_OF_PASSWORD("User illegal number of password"),
+        ILLEGAL_NUMBER_OF_PASSWORD("Illegal number of password"),
 
         CATEGORY_CHILDREN_HAS_NO_PARENT("Category children has no parent");
 

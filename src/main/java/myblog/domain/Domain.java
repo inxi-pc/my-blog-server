@@ -8,10 +8,7 @@ import myblog.exception.DomainException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Domain {
 
@@ -173,21 +170,28 @@ public abstract class Domain {
      * @throws DomainException
      */
     public HashMap<String, Object> convertToHashMap(Field[] unless) throws DomainException {
-        List<Field> fields = Arrays.asList(getClass().getDeclaredFields());
+        Field[] fields = getClass().getDeclaredFields();
+        List<Field> result = new ArrayList<Field>();
+
         if (unless != null) {
-            fields.removeIf(field -> {
-                for (Field remove : unless) {
-                    if (field.getName().equals(remove.getName())) {
-                        return true;
+            for (Field field : fields) {
+                boolean removable = false;
+                for (Field unles : unless) {
+                    if (unles.getName().equals(field.getName())) {
+                        removable = true;
                     }
                 }
 
-                return false;
-            });
+                if (!removable) {
+                    result.add(field);
+                }
+            }
+        } else {
+            result = Arrays.asList(fields);
         }
 
         HashMap<String, Object> params = new HashMap<String, Object>();
-        for (Field field : fields) {
+        for (Field field : result) {
             try {
                 field.setAccessible(true);
                 Object value = field.get(this);

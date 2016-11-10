@@ -11,11 +11,17 @@ import myblog.exception.DomainException;
 import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
 import java.util.HashMap;
 import java.util.List;
 
 public class PostService {
 
+    /**
+     *
+     * @param insert
+     * @return
+     */
     public static int createPost(Post insert) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -27,10 +33,15 @@ public class PostService {
         try {
             return myBatisPostDao.createPost(insert);
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param postId
+     * @return
+     */
     public static boolean deletePost(int postId) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -46,10 +57,16 @@ public class PostService {
                         HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param postId
+     * @param update
+     * @return
+     */
     public static boolean updatePost(int postId, Post update) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -67,10 +84,15 @@ public class PostService {
                         HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param postId
+     * @return
+     */
     public static Post getPostById(int postId) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -78,10 +100,15 @@ public class PostService {
         try {
             return myBatisPostDao.getPostById(postId);
         } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param post
+     * @return
+     */
     public static List<Post> getPosts(Post post) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -91,10 +118,17 @@ public class PostService {
 
             return myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     *
+     * @param post
+     * @param page
+     * @param sort
+     * @return
+     */
     public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort sort) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
@@ -109,7 +143,7 @@ public class PostService {
 
             posts = myBatisPostDao.getPostsByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
 
         page.setData(posts);

@@ -16,27 +16,31 @@ import java.util.List;
 
 public class CategoryService {
 
+    /**
+     * Create category
+     *
+     * @param insert
+     * @return
+     */
     public static int createCategory(Category insert) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
 
         if (insert.getCategory_parent_id() != null) {
-            Category parent = null;
             try {
-                parent = myBatisCategoryDao.getCategoryById(insert.getCategory_parent_id());
+                Category parent = myBatisCategoryDao.getCategoryById(insert.getCategory_parent_id());
+                if (parent != null) {
+                    insert.setCategory_level(parent.getCategory_level() + 1);
+                    insert.setCategory_root_id(parent.getCategory_root_id());
+                } else {
+                    throw HttpExceptionFactory.produce(
+                            BadRequestException.class,
+                            HttpExceptionFactory.Type.NOT_FOUND,
+                            Category.class,
+                            HttpExceptionFactory.Reason.NOT_EXIST_PARENT_CATEGORY);
+                }
             } catch (DaoException e) {
-                throw HttpExceptionFactory.produce(BadRequestException.class, e);
-            }
-
-            if (parent != null) {
-                insert.setCategory_level(parent.getCategory_level() + 1);
-                insert.setCategory_root_id(parent.getCategory_root_id());
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.NOT_FOUND,
-                        Category.class,
-                        HttpExceptionFactory.Reason.NOT_EXIST_CATEGORY_PARENT);
+                throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
             }
         } else {
             insert.setCategory_level(1);
@@ -50,10 +54,16 @@ public class CategoryService {
         try {
             return myBatisCategoryDao.createCategory(insert);
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     * Delete category
+     *
+     * @param categoryId
+     * @return
+     */
     public static boolean deleteCategory(int categoryId) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
@@ -69,10 +79,17 @@ public class CategoryService {
                         HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     * Update category
+     *
+     * @param categoryId
+     * @param update
+     * @return
+     */
     public static boolean updateCategory(int categoryId, Category update) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
@@ -90,10 +107,16 @@ public class CategoryService {
                         HttpExceptionFactory.Reason.NOT_EXIST);
             }
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     * Get category
+     *
+     * @param categoryId
+     * @return
+     */
     public static Category getCategoryById(int categoryId) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
@@ -101,10 +124,16 @@ public class CategoryService {
         try {
             return myBatisCategoryDao.getCategoryById(categoryId);
         } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     * Get categories
+     *
+     * @param category
+     * @return
+     */
     public static List<Category> getCategories(Category category) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
@@ -114,10 +143,18 @@ public class CategoryService {
 
             return myBatisCategoryDao.getCategoriesByCondition(params);
         } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
     }
 
+    /**
+     * Get category list
+     *
+     * @param category
+     * @param page
+     * @param sort
+     * @return
+     */
     public static Pagination<Category> getCategoryList(Category category, Pagination<Category> page, Sort sort) {
         CategoryDaoMyBatisImpl myBatisCategoryDao = (CategoryDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getCategoryDao();
@@ -132,7 +169,7 @@ public class CategoryService {
 
             categories = myBatisCategoryDao.getCategoriesByCondition(params);
         } catch (DaoException | DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
+            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }
 
         page.setData(categories);
@@ -141,6 +178,12 @@ public class CategoryService {
         return page;
     }
 
+    /**
+     * Get categories tree
+     *
+     * @param category
+     * @return
+     */
     public static List<Category> getCategoriesTree(Category category) {
         List<Category> categories = getCategories(category);
 
@@ -151,6 +194,14 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Get category tree list
+     *
+     * @param category
+     * @param page
+     * @param sort
+     * @return
+     */
     public static Pagination<Category> getCategoryListTree(Category category, Pagination<Category> page, Sort sort) {
         getCategoryList(category, page, sort);
 
