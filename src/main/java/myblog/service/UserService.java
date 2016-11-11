@@ -53,7 +53,7 @@ public class UserService {
      * @param login
      * @return
      */
-    public static String loginUser(User login) {
+    public static Map<String, Object> loginUser(User login) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
@@ -70,11 +70,16 @@ public class UserService {
 
             Map<String, Object> header = new HashMap<String, Object>();
             header.put("typ", "JWT");
-
-            return Jwts.builder().setHeader(header)
+            String token = Jwts.builder().setHeader(header)
                     .setClaims(user.convertToHashMap(null))
                     .setExpiration(App.getJwtExpiredTime())
                     .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
+
+            Map<String, Object> result = new HashMap<String, Object>();
+            result.put("token", token);
+            result.put("user", user);
+
+            return result;
         } catch (DomainException | DaoException e) {
             throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }

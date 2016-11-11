@@ -7,9 +7,12 @@ import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.Map;
 
 @Path("/users")
 public class UserResource {
@@ -67,14 +70,17 @@ public class UserResource {
             throw HttpExceptionFactory.produce(BadRequestException.class, e);
         }
 
-        String token = UserService.loginUser(user);
-        if (token == null) {
+        Map<String, Object> result = UserService.loginUser(user);
+        if (result == null) {
             throw HttpExceptionFactory.produce(
                     InternalServerErrorException.class,
                     HttpExceptionFactory.Type.UNEXPECTED,
                     HttpExceptionFactory.Reason.UNDEFINED_ERROR);
         } else {
-            return Response.ok(token).build();
+            Cookie cookie = new Cookie("token", (String) result.get("token"));
+            return Response.ok(result.get("user"))
+                    .cookie(new NewCookie(cookie, null, 60, true))
+                    .build();
         }
     }
 }
