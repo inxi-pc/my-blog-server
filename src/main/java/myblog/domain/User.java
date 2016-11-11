@@ -4,11 +4,8 @@ import myblog.Helper;
 import myblog.annotation.*;
 import myblog.exception.DomainException;
 
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -119,7 +116,7 @@ public class User extends Domain implements Principal, Credential {
         try {
             int iterations = 1000;
             byte[] salt = genSalt();
-            PBEKeySpec spec = new PBEKeySpec(getPassword().toCharArray(), salt, iterations, 64*8);
+            PBEKeySpec spec = new PBEKeySpec(getPassword().toCharArray(), salt, iterations, 64 * 8);
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = skf.generateSecret(spec).getEncoded();
 
