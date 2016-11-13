@@ -3,6 +3,7 @@ package myblog.auth.basic;
 import myblog.auth.AuthFilter;
 
 import javax.annotation.Priority;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -19,12 +20,14 @@ public class BasicCredentialAuthFilter<P extends Principal> extends AuthFilter<B
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        final Optional<BasicCredentials> basicCredentials =
-                getBasicCredentials(requestContext.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+        if (!requestContext.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS)) {
+            final Optional<BasicCredentials> basicCredentials =
+                    getBasicCredentials(requestContext.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
-        if (!basicCredentials.isPresent()
-                || !authenticate(requestContext, basicCredentials.get(), SecurityContext.BASIC_AUTH)) {
-            throw new WebApplicationException(this.unauthorizedHandler.buildResponse(this.prefix, this.realm));
+            if (!basicCredentials.isPresent()
+                    || !authenticate(requestContext, basicCredentials.get(), SecurityContext.BASIC_AUTH)) {
+                throw new WebApplicationException(this.unauthorizedHandler.buildResponse(this.prefix, this.realm));
+            }
         }
     }
 

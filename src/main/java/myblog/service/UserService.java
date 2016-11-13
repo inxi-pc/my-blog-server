@@ -60,7 +60,7 @@ public class UserService {
         try {
             User user = userDao.getUserByCredential(login);
 
-            if (user == null || !user.validPassword(login.getUser_password())) {
+            if (user == null || !user.validPassword(login.getPassword())) {
                 throw HttpExceptionFactory.produce(
                         WebApplicationException.class,
                         Response.Status.UNAUTHORIZED,

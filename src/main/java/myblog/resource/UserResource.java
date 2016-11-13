@@ -78,8 +78,9 @@ public class UserResource {
                     HttpExceptionFactory.Reason.UNDEFINED_ERROR);
         } else {
             Cookie cookie = new Cookie("token", (String) result.get("token"));
+
             return Response.ok(result.get("user"))
-                    .cookie(new NewCookie(cookie, null, 60, true))
+                    .cookie(new NewCookie(cookie, null, 60, false))
                     .build();
         }
     }

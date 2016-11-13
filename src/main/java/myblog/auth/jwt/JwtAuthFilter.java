@@ -3,6 +3,7 @@ package myblog.auth.jwt;
 import myblog.auth.AuthFilter;
 
 import javax.annotation.Priority;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -15,11 +16,13 @@ public class JwtAuthFilter<P extends Principal> extends AuthFilter<String, P> {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        Optional<String> jwtCredential = getJwtCredentials(requestContext.getHeaders().getFirst("Authorization"));
+        if (!requestContext.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS)) {
+            Optional<String> jwtCredential = getJwtCredentials(requestContext.getHeaders().getFirst("Authorization"));
 
-        if (!jwtCredential.isPresent()
-                || !authenticate(requestContext, jwtCredential.get(), "Bear")) {
-            throw new WebApplicationException(this.unauthorizedHandler.buildResponse(this.prefix, this.realm));
+            if (!jwtCredential.isPresent()
+                    || !authenticate(requestContext, jwtCredential.get(), "Bear")) {
+                throw new WebApplicationException(this.unauthorizedHandler.buildResponse(this.prefix, this.realm));
+            }
         }
     }
 
