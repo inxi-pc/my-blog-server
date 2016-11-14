@@ -7,9 +7,7 @@ import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Map;
@@ -77,11 +75,7 @@ public class UserResource {
                     HttpExceptionFactory.Type.UNEXPECTED,
                     HttpExceptionFactory.Reason.UNDEFINED_ERROR);
         } else {
-            Cookie cookie = new Cookie("token", (String) result.get("token"));
-
-            return Response.ok(result.get("user"))
-                    .cookie(new NewCookie(cookie, null, 60, false))
-                    .build();
+            return Response.ok(result).build();
         }
     }
 }

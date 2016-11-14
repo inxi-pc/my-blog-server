@@ -11,6 +11,9 @@ public interface Credential {
     @JsonIgnore
     List<Field> getIdentifierFields();
 
+    @JsonIgnore
+    List<Object> getIdentifierValues() throws DomainException;
+
     boolean hasIdentifier();
 
     @JsonIgnore

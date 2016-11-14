@@ -70,12 +70,7 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public boolean hasIdentifier() {
-        return getIdentifierFields().size() > 0;
-    }
-
-    @Override
-    public Object getIdentifier() throws DomainException {
+    public List<Object> getIdentifierValues() throws DomainException {
         List<Field> fields = getIdentifierFields();
         List<Object> values = new ArrayList<Object>();
         for (Field field : fields) {
@@ -88,6 +83,30 @@ public class User extends Domain implements Principal, Credential {
             } catch (Exception e) {
                 throw new DomainException(e);
             }
+        }
+
+        return values;
+    }
+
+    @Override
+    public boolean hasIdentifier() {
+        try {
+            List<Object> values = getIdentifierValues();
+
+            return values.size() == 1;
+        } catch (DomainException e){
+            return false;
+        }
+    }
+
+    @Override
+    public Object getIdentifier() throws DomainException {
+        List<Field> fields = getIdentifierFields();
+        List<Object> values = null;
+        try {
+            values = getIdentifierValues();
+        } catch (DomainException e){
+            throw e;
         }
 
         if (values.size() == 1) {
