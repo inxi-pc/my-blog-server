@@ -187,11 +187,7 @@ public class CategoryService {
     public static List<Category> getCategoriesTree(Category category) {
         List<Category> categories = getCategories(category);
 
-        try {
-            return Category.formatCategoryTree(categories);
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        return Category.formatCategoryTree(categories);
     }
 
     /**
@@ -204,14 +200,9 @@ public class CategoryService {
      */
     public static Pagination<Category> getCategoryListTree(Category category, Pagination<Category> page, Sort sort) {
         getCategoryList(category, page, sort);
+        List<Category> categories = Category.formatCategoryTree(page.getData());
+        page.setData(categories);
 
-        try {
-            List<Category> categories = Category.formatCategoryTree(page.getData());
-            page.setData(categories);
-
-            return page;
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        return page;
     }
 }

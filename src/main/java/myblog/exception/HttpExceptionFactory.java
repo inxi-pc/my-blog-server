@@ -78,21 +78,6 @@ public class HttpExceptionFactory {
     }
 
     /**
-     * Produce exception by Class, no message specified
-     *
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    public static<T extends WebApplicationException> T produce(Class<T> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
-        }
-    }
-
-    /**
      * Produce exception by Class, message generate by Type + Reason
      *
      * @param clazz
@@ -148,37 +133,13 @@ public class HttpExceptionFactory {
     }
 
     /**
-     * Produce exception by Class and Status, message generate by Type + Reason
-     *
-     * @param clazz
-     * @param status
-     * @param type
-     * @param reason
-     * @param <T>
-     * @return
-     */
-    public static<T extends WebApplicationException> T produce(Class<T> clazz,
-                                                               Response.Status status,
-                                                               Type type,
-                                                               Reason reason) {
-        try {
-            Constructor method = clazz.getDeclaredConstructor(String.class, Response.Status.class);
-            String message = getFormattedMessage(type) + reason.getDetail();
-
-            return (T) method.newInstance(message, status);
-        } catch (Exception ex) {
-            throw new InternalServerErrorException(ex.getMessage(), ex);
-        }
-    }
-
-    /**
      *
      * @param clazz
      * @param message
      * @param <T>
      * @return
      */
-    public static<T extends WebApplicationException> T produce(Class<T> clazz, String message) {
+    private static<T extends WebApplicationException> T produce(Class<T> clazz, String message) {
         try {
             Constructor method = clazz.getDeclaredConstructor(String.class);
 
@@ -186,6 +147,20 @@ public class HttpExceptionFactory {
         } catch (Exception ex) {
             throw new InternalServerErrorException(ex.getMessage(), ex);
         }
+    }
+
+
+    /**
+     *
+     * @param status
+     * @param type
+     * @param reason
+     * @return
+     */
+    public static WebApplicationException produce(Response.Status status, Type type, Reason reason) {
+        String message = getFormattedMessage(type) + reason.getDetail();
+
+        return new WebApplicationException(message, status);
     }
 
     /**

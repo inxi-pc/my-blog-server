@@ -4,11 +4,13 @@ import java.util.Optional;
 
 public class DaoException extends Exception {
 
-    private Type type;
-
     private Optional<Class> clazz;
 
-    public static enum Type {
+    private static MessageFactory<Type> messageFactory = new MessageFactory<Type>();
+
+    private Type type;
+
+    public enum Type implements Message {
 
         EMPTY_VALUE("Unexpected %s: Empty value"),
 
@@ -18,7 +20,7 @@ public class DaoException extends Exception {
 
         private String format;
 
-        private Type(String format) {
+        Type(String format) {
             this.format = format;
         }
 
@@ -32,14 +34,14 @@ public class DaoException extends Exception {
     }
 
     public DaoException(Class clazz, Type type) {
-        super(getFormattedMessage(clazz, type));
+        super(messageFactory.getFormattedMessage(clazz, type));
 
         this.type = type;
         this.clazz = Optional.of(clazz);
     }
 
     public DaoException(Type type) {
-        super(getFormattedMessage(type));
+        super(messageFactory.getFormattedMessage(type));
 
         this.type = type;
         this.clazz = Optional.empty();
@@ -51,13 +53,5 @@ public class DaoException extends Exception {
 
     public Type getType() {
         return this.type;
-    }
-
-    private static String getFormattedMessage(Type type) {
-        return type.getFormat();
-    }
-
-    private static String getFormattedMessage(Class clazz, Type type) {
-        return String.format(type.getFormat(), clazz.getName());
     }
 }

@@ -62,7 +62,6 @@ public class UserService {
 
             if (user == null || !user.validPassword(login.getPassword())) {
                 throw HttpExceptionFactory.produce(
-                        WebApplicationException.class,
                         Response.Status.UNAUTHORIZED,
                         HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
                         HttpExceptionFactory.Reason.INVALID_USERNAME_OR_PASSWORD);

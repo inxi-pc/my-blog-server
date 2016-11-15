@@ -5,12 +5,19 @@ import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
 import myblog.exception.DaoException;
 import myblog.exception.DomainException;
+import myblog.exception.MessageFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public abstract class Domain {
+
+    /**
+     *
+     * Exception Message factory
+     */
+    protected static MessageFactory<DomainException.Type> messageFactory = new MessageFactory<>();
 
     /**
      *

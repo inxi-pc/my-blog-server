@@ -29,13 +29,11 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         } else if (e instanceof JwtException) {
             if (e instanceof ExpiredJwtException) {
                 ex = HttpExceptionFactory.produce(
-                        WebApplicationException.class,
                         Response.Status.UNAUTHORIZED,
                         HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
                         HttpExceptionFactory.Reason.BEARER_TOKEN_EXPIRED);
             } else {
                 ex = HttpExceptionFactory.produce(
-                        WebApplicationException.class,
                         Response.Status.UNAUTHORIZED,
                         HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
                         HttpExceptionFactory.Reason.INVALID_BEARER_TOKEN);

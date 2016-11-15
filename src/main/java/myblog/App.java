@@ -37,12 +37,6 @@ public class App extends ResourceConfig {
     private static final URI BASE_URI = URI.create("http://localhost:8888/");
 
     /**
-     * App config file name
-     *
-     */
-    private static final String SERVER_CONFIG_FILENAME = "config.properties";
-
-    /**
      * App config
      *
      */
@@ -96,7 +90,7 @@ public class App extends ResourceConfig {
     private static void loadApplicationConfig() {
         config = new Properties();
         try {
-            InputStream in = App.class.getClassLoader().getResourceAsStream(SERVER_CONFIG_FILENAME);
+            InputStream in = App.class.getClassLoader().getResourceAsStream("config.properties");
             config.load(in);
             in.close();
         } catch (IOException e) {

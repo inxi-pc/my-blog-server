@@ -63,18 +63,11 @@ public class Category extends Domain {
         this.children = null;
     }
 
-    public List getChildren() {
-        return this.children;
-    }
-
-    public void setChildren(List<Category> children) {
-        this.children = children;
-    }
-
-    public static List<Category> formatCategoryTree(List<Category> categories) throws DomainException {
+    public static List<Category> formatCategoryTree(List<Category> categories) {
         List<Category> rootCategories = new ArrayList<Category>();
         List<Category> childCategories = new ArrayList<Category>();
         List<Category> grandChildCategories = new ArrayList<Category>();
+
         for (Category category : categories) {
             if (category.category_level == 1) {
                 rootCategories.add(category);
@@ -88,8 +81,8 @@ public class Category extends Domain {
         }
 
         try {
-            attachChildrenToParent(childCategories, grandChildCategories.iterator());
-            attachChildrenToParent(rootCategories, childCategories.iterator());
+            createTree(childCategories, grandChildCategories.iterator());
+            createTree(rootCategories, childCategories.iterator());
 
             return rootCategories;
         } catch (Exception e) {
@@ -97,8 +90,7 @@ public class Category extends Domain {
         }
     }
 
-    private static void attachChildrenToParent(List<Category> parent, Iterator<Category> children)
-            throws DomainException {
+    private static void createTree(List<Category> parent, Iterator<Category> children) {
         while (children.hasNext()) {
             Category category = children.next();
             for (Category categoryParent : parent) {
@@ -113,7 +105,9 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new DomainException(DomainException.Type.CATEGORY_CHILDREN_HAS_NO_PARENT);
+            throw new IllegalStateException(messageFactory.getFormattedMessage(
+                    DomainException.Type.CATEGORY_CHILDREN_HAS_NO_PARENT
+            ));
         }
     }
 
@@ -151,6 +145,10 @@ public class Category extends Domain {
 
     public Boolean getCategory_enabled() {
         return category_enabled;
+    }
+
+    public List getChildren() {
+        return this.children;
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
@@ -222,7 +220,10 @@ public class Category extends Domain {
             this.category_id = categoryId;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_id",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -232,7 +233,10 @@ public class Category extends Domain {
             this.category_parent_id = categoryParentId;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_parent_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_parent_id",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -242,7 +246,10 @@ public class Category extends Domain {
             this.category_root_id = categoryRootId;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_root_id", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_root_id",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -252,7 +259,10 @@ public class Category extends Domain {
             this.category_name_en = categoryNameEn;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_name_en", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_name_en",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -262,7 +272,10 @@ public class Category extends Domain {
             this.category_name_cn = categoryNameCn;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_name_cn", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_name_cn",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -272,7 +285,10 @@ public class Category extends Domain {
             this.category_level = categoryLevel;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_level", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_level",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -282,7 +298,10 @@ public class Category extends Domain {
             this.category_enabled = categoryEnabled;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_enabled", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_enabled",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -292,7 +311,10 @@ public class Category extends Domain {
             this.category_created_at = categoryCreatedAt;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_created_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_created_at",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
     }
@@ -302,9 +324,16 @@ public class Category extends Domain {
             this.category_updated_at = categoryUpdatedAt;
         } else {
             throw new IllegalArgumentException(
-                    new DomainException("category_updated_at", DomainException.Type.FIELD_NOT_VALID_VALUE)
+                    messageFactory.getFormattedMessage(
+                            getClass(),
+                            "category_updated_at",
+                            DomainException.Type.FIELD_NOT_VALID_VALUE)
             );
         }
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
     }
 
     public void setDefaultCategory_enabled() {

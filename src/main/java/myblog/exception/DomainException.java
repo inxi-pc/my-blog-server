@@ -11,9 +11,11 @@ public class DomainException extends Exception {
 
     private Optional<String> wrap;
 
+    private static MessageFactory<Type> messageFactory = new MessageFactory<Type>();
+
     private Type type;
 
-    public static enum Type {
+    public enum Type implements Message {
 
         FIELD_NOT_INSERTABLE("Unexpected %s: Not insertabled"),
 
@@ -33,7 +35,7 @@ public class DomainException extends Exception {
 
         private String format;
 
-        private Type(String format) {
+        Type(String format) {
             this.format = format;
         }
 
@@ -47,7 +49,7 @@ public class DomainException extends Exception {
     }
 
     public DomainException(Field field, Type type) {
-        super(getFormattedMessage(field, type));
+        super(messageFactory.getFormattedMessage(field, type));
 
         this.type = type;
         this.field = Optional.of(field);
@@ -55,7 +57,7 @@ public class DomainException extends Exception {
     }
 
     public DomainException(Class clazz, Type type) {
-        super(getFormattedMessage(clazz, type));
+        super(messageFactory.getFormattedMessage(clazz, type));
 
         this.type = type;
         this.clazz = Optional.of(clazz);
@@ -63,7 +65,7 @@ public class DomainException extends Exception {
     }
 
     public DomainException(String wrap, Type type) {
-        super(getFormattedMessage(wrap, type));
+        super(messageFactory.getFormattedMessage(wrap, type));
 
         this.type = type;
         this.field = Optional.empty();
@@ -72,7 +74,7 @@ public class DomainException extends Exception {
     }
 
     public DomainException(Type type) {
-        super(getFormattedMessage(type));
+        super(messageFactory.getFormattedMessage(type));
 
         this.type = type;
         this.clazz = Optional.empty();
@@ -93,21 +95,5 @@ public class DomainException extends Exception {
 
     public Type getType() {
         return this.type;
-    }
-
-    private static String getFormattedMessage(Type type) {
-        return type.format;
-    }
-
-    private static String getFormattedMessage(Class clazz, Type type) {
-        return String.format(type.getFormat(), clazz.getName());
-    }
-
-    private static String getFormattedMessage(Field field, Type type) {
-        return String.format(type.getFormat(), field.getName().replace("_", " "));
-    }
-
-    private static String getFormattedMessage(String wrap, Type type) {
-        return String.format(type.getFormat(), wrap);
     }
 }
