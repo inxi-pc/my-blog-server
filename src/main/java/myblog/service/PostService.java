@@ -6,12 +6,9 @@ import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.DaoException;
-import myblog.exception.DomainException;
 import myblog.exception.HttpExceptionFactory;
 
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,11 +27,7 @@ public class PostService {
         insert.setDefaultPost_created_at();
         insert.setDefaultPost_updated_at();
 
-        try {
-            return myBatisPostDao.createPost(insert);
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        return myBatisPostDao.createPost(insert);
     }
 
     /**
@@ -46,18 +39,14 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        try {
-            if (myBatisPostDao.getPostById(postId) != null) {
-                return myBatisPostDao.deletePost(postId);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.NOT_FOUND,
-                        Category.class,
-                        HttpExceptionFactory.Reason.NOT_EXIST);
-            }
-        } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
+        if (myBatisPostDao.getPostById(postId) != null) {
+            return myBatisPostDao.deletePost(postId);
+        } else {
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.NOT_FOUND,
+                    Category.class,
+                    HttpExceptionFactory.Reason.NOT_EXIST);
         }
     }
 
@@ -71,20 +60,16 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        try {
-            if (myBatisPostDao.getPostById(postId) != null) {
-                update.setDefaultPost_updated_at();
+        if (myBatisPostDao.getPostById(postId) != null) {
+            update.setDefaultPost_updated_at();
 
-                return myBatisPostDao.updatePost(postId, update);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.NOT_FOUND,
-                        Category.class,
-                        HttpExceptionFactory.Reason.NOT_EXIST);
-            }
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
+            return myBatisPostDao.updatePost(postId, update);
+        } else {
+            throw HttpExceptionFactory.produce(
+                    BadRequestException.class,
+                    HttpExceptionFactory.Type.NOT_FOUND,
+                    Category.class,
+                    HttpExceptionFactory.Reason.NOT_EXIST);
         }
     }
 
@@ -97,11 +82,8 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        try {
-            return myBatisPostDao.getPostById(postId);
-        } catch (DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        return myBatisPostDao.getPostById(postId);
+
     }
 
     /**
@@ -113,13 +95,9 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        try {
-            HashMap<String, Object> params = post.convertToHashMap(null);
+        HashMap<String, Object> params = post.convertToHashMap(null);
 
-            return myBatisPostDao.getPostsByCondition(params);
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        return myBatisPostDao.getPostsByCondition(params);
     }
 
     /**
@@ -133,18 +111,12 @@ public class PostService {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        List<Post> posts = null;
-        try {
-            HashMap<String, Object> params = post.convertToHashMap(null);
-            params.put("limit", page.getLimit());
-            params.put("offset", page.getOffset());
-            params.put("orderBy", sort.getOrder_by());
-            params.put("orderType", sort.getOrder_type());
-
-            posts = myBatisPostDao.getPostsByCondition(params);
-        } catch (DomainException | DaoException e) {
-            throw HttpExceptionFactory.produce(InternalServerErrorException.class, e);
-        }
+        HashMap<String, Object> params = post.convertToHashMap(null);
+        params.put("limit", page.getLimit());
+        params.put("offset", page.getOffset());
+        params.put("orderBy", sort.getOrder_by());
+        params.put("orderType", sort.getOrder_type());
+        List<Post> posts = myBatisPostDao.getPostsByCondition(params);
 
         page.setData(posts);
         page.setRecordsTotal(myBatisPostDao.countAllPost());

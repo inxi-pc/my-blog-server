@@ -80,14 +80,10 @@ public class Category extends Domain {
             }
         }
 
-        try {
-            createTree(childCategories, grandChildCategories.iterator());
-            createTree(rootCategories, childCategories.iterator());
+        createTree(childCategories, grandChildCategories.iterator());
+        createTree(rootCategories, childCategories.iterator());
 
-            return rootCategories;
-        } catch (Exception e) {
-            throw e;
-        }
+        return rootCategories;
     }
 
     private static void createTree(List<Category> parent, Iterator<Category> children) {
@@ -105,9 +101,7 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new IllegalStateException(messageFactory.getFormattedMessage(
-                    DomainException.Type.CATEGORY_CHILDREN_HAS_NO_PARENT
-            ));
+            throw new DomainException(DomainException.Type.CATEGORY_HAS_NO_PARENT);
         }
     }
 
@@ -219,12 +213,9 @@ public class Category extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_id");
         }
     }
 
@@ -232,12 +223,9 @@ public class Category extends Domain {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_parent_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_parent_id");
         }
     }
 
@@ -245,12 +233,9 @@ public class Category extends Domain {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_root_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_root_id");
         }
     }
 
@@ -258,12 +243,9 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_name_en",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_name_en");
         }
     }
 
@@ -271,12 +253,9 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_name_cn",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_name_cn");
         }
     }
 
@@ -284,12 +263,9 @@ public class Category extends Domain {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_level",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_level");
         }
     }
 
@@ -297,12 +273,9 @@ public class Category extends Domain {
         if (isValidCategoryEnabled(categoryEnabled)) {
             this.category_enabled = categoryEnabled;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_enabled",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_enabled");
         }
     }
 
@@ -310,12 +283,9 @@ public class Category extends Domain {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
             this.category_created_at = categoryCreatedAt;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_created_at",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_created_at");
         }
     }
 
@@ -323,12 +293,9 @@ public class Category extends Domain {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
             this.category_updated_at = categoryUpdatedAt;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_updated_at",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_updated_at");
         }
     }
 

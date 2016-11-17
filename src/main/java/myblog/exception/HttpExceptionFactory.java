@@ -10,7 +10,7 @@ public class HttpExceptionFactory {
     /**
      * Exception message header
      */
-    public enum Type {
+    public enum Type implements MessageMeta {
 
         UNEXPECTED("Unexpected %s: "),
 
@@ -34,6 +34,10 @@ public class HttpExceptionFactory {
 
         public String getFormat() {
             return this.format;
+        }
+
+        public Response.Status getStatus() {
+            return null;
         }
     }
 
@@ -89,7 +93,7 @@ public class HttpExceptionFactory {
     public static<T extends WebApplicationException> T produce(Class<T> clazz,
                                                                Type type,
                                                                Reason reason) {
-        String message = getFormattedMessage(type) + reason.getDetail();
+        String message = MessageFactory.getFormattedMessage(type) + reason.getDetail();
 
         return produce(clazz, message);
     }
@@ -108,7 +112,7 @@ public class HttpExceptionFactory {
                                                                Type type,
                                                                Class wrap,
                                                                Reason reason) {
-        String message = getFormattedMessage(type, wrap) + reason.getDetail();
+        String message = MessageFactory.getFormattedMessage(type, wrap) + reason.getDetail();
 
         return produce(clazz, message);
     }
@@ -127,7 +131,7 @@ public class HttpExceptionFactory {
                                                                Type type,
                                                                String wrap,
                                                                Reason reason) {
-        String message = getFormattedMessage(type, wrap) + reason.getDetail();
+        String message = MessageFactory.getFormattedMessage(type, wrap) + reason.getDetail();
 
         return produce(clazz, message);
     }
@@ -149,7 +153,6 @@ public class HttpExceptionFactory {
         }
     }
 
-
     /**
      *
      * @param status
@@ -158,8 +161,18 @@ public class HttpExceptionFactory {
      * @return
      */
     public static WebApplicationException produce(Response.Status status, Type type, Reason reason) {
-        String message = getFormattedMessage(type) + reason.getDetail();
+        String message = MessageFactory.getFormattedMessage(type) + reason.getDetail();
 
+        return new WebApplicationException(message, status);
+    }
+
+    /**
+     *
+     * @param status
+     * @param message
+     * @return
+     */
+    public static WebApplicationException produce(Response.Status status, String message) {
         return new WebApplicationException(message, status);
     }
 
@@ -178,17 +191,5 @@ public class HttpExceptionFactory {
         } catch (Exception ex) {
             throw new InternalServerErrorException(ex.getMessage(), ex);
         }
-    }
-
-    private static String getFormattedMessage(Type type, Class wrap) {
-        return String.format(type.getFormat(), wrap.getName());
-    }
-
-    private static String getFormattedMessage(Type type, String name) {
-        return String.format(type.getFormat(), name);
-    }
-
-    private static String getFormattedMessage(Type type) {
-        return type.getFormat();
     }
 }

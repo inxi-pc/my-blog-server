@@ -15,9 +15,9 @@ public abstract class Domain {
 
     /**
      *
-     * Exception Message factory
+     * Exception MessageMeta factory
      */
-    protected static MessageFactory<DomainException.Type> messageFactory = new MessageFactory<>();
+    protected static MessageFactory messageFactory = new MessageFactory();
 
     /**
      *
@@ -77,11 +77,7 @@ public abstract class Domain {
                 + fieldName.substring(1, fieldName.length());
     }
 
-    /**
-     *
-     * @throws DaoException
-     */
-    public void setDefaultableFieldValue() throws DaoException {
+    public void setDefaultableFieldValue() {
         for (Field field : getClass().getDeclaredFields()) {
             if (isDefaultable(field)) {
                 Object value;
@@ -105,11 +101,7 @@ public abstract class Domain {
         }
     }
 
-    /**
-     *
-     * @throws DomainException
-     */
-    public void checkFieldInsertable() throws DomainException {
+    public void checkFieldInsertable() {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
@@ -122,20 +114,16 @@ public abstract class Domain {
             if (isInsertable(field)) {
                 if (!isDefaultable(field)) {
                     if (!isNullable(field) && value == null) {
-                        throw new DomainException(field, DomainException.Type.FIELD_NOT_NULLABLE);
+                        throw new DomainException(DomainException.Type.FIELD_NOT_NULLABLE, field);
                     }
                 }
             } else if (value != null) {
-                throw new DomainException(field, DomainException.Type.FIELD_NOT_INSERTABLE);
+                throw new DomainException(DomainException.Type.FIELD_NOT_INSERTABLE, field);
             }
         }
     }
 
-    /**
-     *
-     * @throws DomainException
-     */
-    public void checkFieldUpdatable() throws DomainException {
+    public void checkFieldUpdatable() {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
@@ -146,16 +134,12 @@ public abstract class Domain {
             }
 
             if (!isUpdatable(field) && value != null) {
-                throw new DomainException(field, DomainException.Type.FIELD_NOT_UPDATABLE);
+                throw new DomainException(DomainException.Type.FIELD_NOT_UPDATABLE, field);
             }
         }
     }
 
-    /**
-     *
-     * @throws DomainException
-     */
-    public void checkFieldOuterSettable() throws DomainException {
+    public void checkFieldOuterSettable() {
         for (Field field : getClass().getDeclaredFields()) {
             Object value;
             try {
@@ -166,17 +150,17 @@ public abstract class Domain {
             }
 
             if (!isOuterSettable(field) && value != null) {
-                throw new DomainException(field, DomainException.Type.FIELD_NOT_OUTER_SETTABLE);
+                throw new DomainException(DomainException.Type.FIELD_NOT_OUTER_SETTABLE, field);
             }
         }
     }
 
     /**
      *
+     * @param unless
      * @return
-     * @throws DomainException
      */
-    public HashMap<String, Object> convertToHashMap(Field[] unless) throws DomainException {
+    public HashMap<String, Object> convertToHashMap(Field[] unless) {
         Field[] fields = getClass().getDeclaredFields();
         List<Field> result = new ArrayList<Field>();
 
@@ -217,11 +201,8 @@ public abstract class Domain {
      * @param map
      * @param <T>
      * @return
-     * @throws DomainException
-     * @throws DomainException
      */
-    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map)
-            throws DomainException {
+    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map) {
         T instance;
         try {
             instance = clazz.newInstance();

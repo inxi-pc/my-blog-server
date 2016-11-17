@@ -1,46 +1,47 @@
 package myblog.exception;
 
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
-import java.util.Optional;
 
-public class DomainException extends Exception {
+public class DomainException extends GenericException {
 
-    private Optional<Field> field;
+    public enum Type implements MessageMeta {
 
-    private Optional<Class> clazz;
+        FIELD_NOT_INSERTABLE("Unexpected %s: Not insertabled", Response.Status.BAD_REQUEST),
 
-    private Optional<String> wrap;
+        FIELD_NOT_NULLABLE("Unexpected %s: Not nullable", Response.Status.BAD_REQUEST),
 
-    private static MessageFactory<Type> messageFactory = new MessageFactory<Type>();
+        FIELD_NOT_OUTER_SETTABLE("Unexpected %s: Not outer settable", Response.Status.BAD_REQUEST),
 
-    private Type type;
+        FIELD_NOT_UPDATABLE("Unexpected %s: Not updatable", Response.Status.BAD_REQUEST),
 
-    public enum Type implements Message {
+        FIELD_NOT_VALID_VALUE("Unexpected %s: Not valid value", Response.Status.BAD_REQUEST),
 
-        FIELD_NOT_INSERTABLE("Unexpected %s: Not insertabled"),
+        OBJECT_NOT_EXIST("Not exist %s", Response.Status.NOT_FOUND),
 
-        FIELD_NOT_NULLABLE("Unexpected %s: Not nullable"),
+        ILLEGAL_NUMBER_OF_IDENTIFIER("Illegal number of identifier", Response.Status.BAD_REQUEST),
 
-        FIELD_NOT_OUTER_SETTABLE("Unexpected %s: Not outer settable"),
+        ILLEGAL_NUMBER_OF_PASSWORD("Illegal number of password", Response.Status.BAD_REQUEST),
 
-        FIELD_NOT_UPDATABLE("Unexpected %s: Not updatable"),
+        CATEGORY_TREE_INVALID("Invalid category tree, some category has no parent", Response.Status.INTERNAL_SERVER_ERROR),
 
-        FIELD_NOT_VALID_VALUE("Unexpected %s: Not valid value"),
-
-        ILLEGAL_NUMBER_OF_IDENTIFIER("Illegal number of identifier"),
-
-        ILLEGAL_NUMBER_OF_PASSWORD("Illegal number of password"),
-
-        CATEGORY_CHILDREN_HAS_NO_PARENT("Category children has no parent");
+        CATEGORY_PARENT_NOT_EXIST("Category parent not exist", Response.Status.BAD_REQUEST);
 
         private String format;
 
-        Type(String format) {
+        private Response.Status status;
+
+        Type(String format, Response.Status status) {
             this.format = format;
+            this.status = status;
         }
 
         public String getFormat() {
             return this.format;
+        }
+
+        public Response.Status getStatus() {
+            return this.status;
         }
     }
 
@@ -48,52 +49,15 @@ public class DomainException extends Exception {
         super(cause);
     }
 
-    public DomainException(Field field, Type type) {
-        super(messageFactory.getFormattedMessage(field, type));
-
-        this.type = type;
-        this.field = Optional.of(field);
-        this.clazz = Optional.empty();
-    }
-
-    public DomainException(Class clazz, Type type) {
-        super(messageFactory.getFormattedMessage(clazz, type));
-
-        this.type = type;
-        this.clazz = Optional.of(clazz);
-        this.field = Optional.empty();
-    }
-
-    public DomainException(String wrap, Type type) {
-        super(messageFactory.getFormattedMessage(wrap, type));
-
-        this.type = type;
-        this.field = Optional.empty();
-        this.clazz = Optional.empty();
-        this.wrap = Optional.of(wrap);
-    }
-
     public DomainException(Type type) {
-        super(messageFactory.getFormattedMessage(type));
-
-        this.type = type;
-        this.clazz = Optional.empty();
-        this.field = Optional.empty();
+        super(type);
     }
 
-    public Optional<Field> getField() {
-        return this.field;
+    public DomainException(Type type, Field field) {
+        super(field, type);
     }
 
-    public Optional<Class> getClazz() {
-        return this.clazz;
-    }
-
-    public Optional<String> getWrap() {
-        return this.wrap;
-    }
-
-    public Type getType() {
-        return this.type;
+    public DomainException(Type type, Class clazz) {
+        super(clazz, type);
     }
 }

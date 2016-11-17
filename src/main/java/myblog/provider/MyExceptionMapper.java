@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import myblog.App;
+import myblog.exception.GenericException;
 import myblog.exception.HttpExceptionFactory;
 import org.apache.logging.log4j.Level;
 
@@ -38,6 +39,9 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
                         HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
                         HttpExceptionFactory.Reason.INVALID_BEARER_TOKEN);
             }
+        } else if (e instanceof GenericException) {
+            ex = HttpExceptionFactory.produce(
+                    ((GenericException) e).getMeta().getStatus(), e.getMessage());
         } else {
             ex = HttpExceptionFactory.produce(InternalServerErrorException.class, e);
         }

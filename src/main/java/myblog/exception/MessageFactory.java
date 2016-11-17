@@ -2,31 +2,21 @@ package myblog.exception;
 
 import java.lang.reflect.Field;
 
-public class MessageFactory<T extends Message> {
+public class MessageFactory {
 
-    public String getFormattedMessage(T type) {
-        return type.getFormat();
+    public static String getFormattedMessage(MessageMeta meta) {
+        return meta.getFormat();
     }
 
-    public String getFormattedMessage(Class clazz, T type) {
-        return String.format(type.getFormat(), clazz.getName());
+    public static String getFormattedMessage(MessageMeta meta, String wrap) {
+        return String.format(meta.getFormat(), wrap);
     }
 
-    public String getFormattedMessage(String wrap, T type) {
-        return String.format(type.getFormat(), wrap);
+    public static String getFormattedMessage(MessageMeta meta, Class clazz) {
+        return String.format(meta.getFormat(), clazz.getName());
     }
 
-    public String getFormattedMessage(Field field, T type) {
-        return String.format(type.getFormat(), field.getName().replace("_", " "));
-    }
-
-    public String getFormattedMessage(Class clazz, String fieldName, T type) {
-        try {
-            Field field = clazz.getDeclaredField(fieldName);
-
-            return getFormattedMessage(field, type);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static String getFormattedMessage(MessageMeta meta, Field field) {
+        return String.format(meta.getFormat(), field.getName().replace("_", " "));
     }
 }

@@ -174,12 +174,9 @@ public class Post extends Domain {
         if (isValidPostId(postId)) {
             this.post_id = postId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_id");
         }
     }
 
@@ -187,12 +184,9 @@ public class Post extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "category_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "category_id");
         }
     }
 
@@ -200,12 +194,9 @@ public class Post extends Domain {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "user_id",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "user_id");
         }
     }
 
@@ -213,12 +204,9 @@ public class Post extends Domain {
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_title",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_title");
         }
     }
 
@@ -226,12 +214,9 @@ public class Post extends Domain {
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_content",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_content");
         }
     }
 
@@ -239,12 +224,9 @@ public class Post extends Domain {
         if (isValidPostPublished(postPublished)) {
             this.post_published = postPublished;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_published",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_published");
         }
     }
 
@@ -252,12 +234,9 @@ public class Post extends Domain {
         if (isValidPostEnabled(postEnabled)) {
             this.post_enabled = postEnabled;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_enabled",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_enabled");
         }
     }
 
@@ -265,12 +244,9 @@ public class Post extends Domain {
         if (isValidPostCreatedAt(postCreatedAt)) {
             this.post_created_at = postCreatedAt;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_created_at",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_created_at");
         }
     }
 
@@ -278,12 +254,9 @@ public class Post extends Domain {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
             this.post_updated_at = postUpdatedAt;
         } else {
-            throw new IllegalArgumentException(
-                    messageFactory.getFormattedMessage(
-                            getClass(),
-                            "post_updated_at",
-                            DomainException.Type.FIELD_NOT_VALID_VALUE)
-            );
+            throw new DomainException(
+                    DomainException.Type.FIELD_NOT_VALID_VALUE,
+                    getClass(), "post_updated_at");
         }
     }
 

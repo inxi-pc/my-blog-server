@@ -1,31 +1,38 @@
 package myblog.exception;
 
-import java.util.Optional;
+import javax.ws.rs.core.Response;
 
-public class DaoException extends Exception {
+public class DaoException extends GenericException {
 
-    private Optional<Class> clazz;
+    public enum Type implements MessageMeta {
 
-    private static MessageFactory<Type> messageFactory = new MessageFactory<Type>();
+        INSERT_NULL_OBJECT("Insert null object", Response.Status.BAD_REQUEST),
 
-    private Type type;
+        INVALID_DELETED_ID("Invalid deleted id", Response.Status.BAD_REQUEST),
 
-    public enum Type implements Message {
+        INVALID_UPDATED_ID("Invalid updated id", Response.Status.BAD_REQUEST),
 
-        EMPTY_VALUE("Unexpected %s: Empty value"),
+        INVALID_QUERY_ID("Invalid query id", Response.Status.BAD_REQUEST),
 
-        NULL_POINTER("Unexpected %s: Null pointer"),
+        NULL_QUERY_PARAM("Query param is null", Response.Status.BAD_REQUEST),
 
-        INVALID_PARAM("Unexpected %s: Invalid parameter");
+        EMPTY_QUERY_PARAM("Query param is empty", Response.Status.BAD_REQUEST);
 
         private String format;
 
-        Type(String format) {
+        private Response.Status status;
+
+        Type(String format, Response.Status status) {
             this.format = format;
+            this.status = status;
         }
 
         public String getFormat() {
             return this.format;
+        }
+
+        public Response.Status getStatus() {
+            return this.status;
         }
     }
 
@@ -33,25 +40,7 @@ public class DaoException extends Exception {
         super(cause);
     }
 
-    public DaoException(Class clazz, Type type) {
-        super(messageFactory.getFormattedMessage(clazz, type));
-
-        this.type = type;
-        this.clazz = Optional.of(clazz);
-    }
-
     public DaoException(Type type) {
-        super(messageFactory.getFormattedMessage(type));
-
-        this.type = type;
-        this.clazz = Optional.empty();
-    }
-
-    public Optional<Class> getClazz() {
-        return this.clazz;
-    }
-
-    public Type getType() {
-        return this.type;
+        super(type);
     }
 }

@@ -8,7 +8,6 @@ import myblog.exception.DaoException;
 import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -28,25 +27,14 @@ public class UserDaoMyBatisImpl implements UserDao {
         this.myBatisDaoFactory = factory;
     }
 
-    /**
-     *
-     * @param insert
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public int createUser(User insert) throws DomainException, DaoException {
+    public int createUser(User insert) {
         if (insert == null) {
-            throw new DaoException(User.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.INSERT_NULL_OBJECT);
         }
 
-        try {
-            insert.setDefaultableFieldValue();
-            insert.checkFieldInsertable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        insert.setDefaultableFieldValue();
+        insert.checkFieldInsertable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -55,50 +43,32 @@ public class UserDaoMyBatisImpl implements UserDao {
         return insert.getUser_id();
     }
 
-    /**
-     *
-     * @param userId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public boolean deleteUser(int userId) throws DaoException {
-        if (User.isValidUserId(userId)) {
-            User user = new User();
-            user.setUser_enabled(false);
-
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
-
-            return userMapper.updateUser(userId, user);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+    public boolean deleteUser(int userId) {
+        if (!User.isValidUserId(userId)) {
+            throw new DaoException(DaoException.Type.INVALID_DELETED_ID);
         }
+
+        User user = new User();
+        user.setUser_enabled(false);
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+
+        return userMapper.updateUser(userId, user);
     }
 
-    /**
-     *
-     * @param userId
-     * @param update
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public boolean updateUser(int userId, User update) throws DomainException, DaoException {
+    public boolean updateUser(int userId, User update) {
         if (update == null) {
             return true;
         }
 
         if (!User.isValidUserId(userId)) {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+            throw new DaoException(DaoException.Type.INVALID_UPDATED_ID);
         }
 
-        try {
-            update.checkFieldUpdatable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        update.checkFieldUpdatable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -106,36 +76,24 @@ public class UserDaoMyBatisImpl implements UserDao {
         return userMapper.updateUser(userId, update);
     }
 
-    /**
-     *
-     * @param userId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public User getUserById(int userId) throws DaoException {
-        if (User.isValidUserId(userId)) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
-
-            return userMapper.getUserById(userId);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+    public User getUserById(int userId) {
+        if (!User.isValidUserId(userId)) {
+            throw new DaoException(DaoException.Type.INVALID_QUERY_ID);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+
+        return userMapper.getUserById(userId);
     }
 
-    /**
-     *
-     * @param credential
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public User getUserByCredential(Credential credential) throws DomainException, DaoException {
+    public User getUserByCredential(Credential credential) {
         if (credential == null) {
-            throw new DaoException(Credential.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
+
         if (!credential.hasIdentifier()) {
             throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
         }
@@ -146,54 +104,38 @@ public class UserDaoMyBatisImpl implements UserDao {
         return userMapper.getUserByCredential(credential);
     }
 
-    /**
-     *
-     * @param userIds
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public List<User> getUsersByIds(int[] userIds) throws DaoException {
+    public List<User> getUsersByIds(int[] userIds) {
         if (userIds == null) {
-            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (userIds.length > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
-
-            return userMapper.getUsersByIds(userIds);
-        } else {
-            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
+        if (userIds.length <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+
+        return userMapper.getUsersByIds(userIds);
     }
 
-    /**
-     *
-     * @param params
-     * @return
-     * @throws DaoException
-     */
     @Override
     public List<User> getUsersByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (params.size() > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            UserMapper userMapper = session.getMapper(UserMapper.class);
-
-            return userMapper.getUsersByCondition(params);
-        } else {
-            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
+        if (params.size() <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+
+        return userMapper.getUsersByCondition(params);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int countAllUser() {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

@@ -4,10 +4,8 @@ import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
 import myblog.domain.Post;
 import myblog.exception.DaoException;
-import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -27,25 +25,14 @@ public class PostDaoMyBatisImpl implements PostDao {
         this.myBatisDaoFactory = factory;
     }
 
-    /**
-     *
-     * @param insert
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public int createPost(Post insert) throws DomainException, DaoException {
+    public int createPost(Post insert) {
         if (insert == null) {
-            throw new DaoException(Post.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.INSERT_NULL_OBJECT);
         }
 
-        try {
-            insert.setDefaultableFieldValue();
-            insert.checkFieldInsertable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        insert.setDefaultableFieldValue();
+        insert.checkFieldInsertable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
@@ -54,50 +41,32 @@ public class PostDaoMyBatisImpl implements PostDao {
         return insert.getPost_id();
     }
 
-    /**
-     *
-     * @param postId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public boolean deletePost(int postId) throws DaoException {
+    public boolean deletePost(int postId) {
         if (Post.isValidPostId(postId)) {
-            Post post = new Post();
-            post.setPost_enabled(false);
-
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.updatePost(postId, post);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+            throw new DaoException(DaoException.Type.INVALID_DELETED_ID);
         }
+
+        Post post = new Post();
+        post.setPost_enabled(false);
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.updatePost(postId, post);
     }
 
-    /**
-     *
-     * @param postId
-     * @param update
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public boolean updatePost(int postId, Post update) throws DomainException, DaoException {
+    public boolean updatePost(int postId, Post update)  {
         if (update == null) {
             return true;
         }
 
         if (!Post.isValidPostId(postId)) {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+            throw new DaoException(DaoException.Type.INVALID_UPDATED_ID);
         }
 
-        try {
-            update.checkFieldUpdatable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        update.checkFieldUpdatable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
@@ -105,72 +74,50 @@ public class PostDaoMyBatisImpl implements PostDao {
         return postMapper.updatePost(postId, update);
     }
 
-    /**
-     *
-     * @param postId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public Post getPostById(int postId) throws DaoException {
-        if (Post.isValidPostId(postId)) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.getPostById(postId);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+    public Post getPostById(int postId) {
+        if (!Post.isValidPostId(postId)) {
+            throw new DaoException(DaoException.Type.INVALID_QUERY_ID);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.getPostById(postId);
     }
 
-    /**
-     *
-     * @param postIds
-     * @return
-     * @throws DaoException
-     */
     @Override
     public List<Post> getPostsByIds(int[] postIds) throws DaoException {
         if (postIds == null) {
-            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (postIds.length > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.getPostsByIds(postIds);
-        } else {
-            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
+        if (postIds.length <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.getPostsByIds(postIds);
     }
 
-    /**
-     *
-     * @param params
-     * @return
-     * @throws DaoException
-     */
     @Override
     public List<Post> getPostsByCondition(Map<String, Object> params) throws DaoException {
         if (params == null) {
-            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (params.size() > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            PostMapper postMapper = session.getMapper(PostMapper.class);
-
-            return postMapper.getPostsByCondition(params);
-        } else {
-            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
+        if (params.size() <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+
+        return postMapper.getPostsByCondition(params);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int countAllPost() {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

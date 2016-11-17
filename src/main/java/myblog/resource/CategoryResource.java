@@ -36,15 +36,8 @@ public class CategoryResource {
         }
 
         int categoryId = CategoryService.createCategory(insert);
-        if (Category.isValidCategoryId(categoryId)) {
-            return Response.created(URI.create("/categories/" + categoryId)).build();
-        } else {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.CREATE_FAILED,
-                    Category.class,
-                    HttpExceptionFactory.Reason.INVALID_PRIMARY_KEY_VALUE);
-        }
+
+        return Response.created(URI.create("/categories/" + categoryId)).build();
     }
 
     @DELETE

@@ -4,10 +4,8 @@ import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
 import myblog.exception.DaoException;
-import myblog.exception.DomainException;
 import org.apache.ibatis.session.SqlSession;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -27,25 +25,14 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         this.myBatisDaoFactory = factory;
     }
 
-    /**
-     *
-     * @param insert
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public int createCategory(Category insert) throws DomainException, DaoException {
+    public int createCategory(Category insert) {
         if (insert == null) {
-            throw new DaoException(Category.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.INSERT_NULL_OBJECT);
         }
 
-        try {
-            insert.setDefaultableFieldValue();
-            insert.checkFieldInsertable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        insert.setDefaultableFieldValue();
+        insert.checkFieldInsertable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
@@ -54,51 +41,33 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         return insert.getCategory_id();
     }
 
-    /**
-     *
-     * @param categoryId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public boolean deleteCategory(int categoryId) throws DaoException {
-        if (Category.isValidCategoryId(categoryId)) {
-            Category delete = new Category();
-            delete.setCategory_enabled(false);
-            delete.setDefaultCategory_updated_at();
-
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-
-            return categoryMapper.deleteCategory(categoryId, delete);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+    public boolean deleteCategory(int categoryId) {
+        if (!Category.isValidCategoryId(categoryId)) {
+            throw new DaoException(DaoException.Type.INVALID_DELETED_ID);
         }
+
+        Category delete = new Category();
+        delete.setCategory_enabled(false);
+        delete.setDefaultCategory_updated_at();
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.deleteCategory(categoryId, delete);
     }
 
-    /**
-     *
-     * @param categoryId
-     * @param update
-     * @return
-     * @throws DomainException
-     * @throws DaoException
-     */
     @Override
-    public boolean updateCategory(int categoryId, Category update) throws DomainException, DaoException {
+    public boolean updateCategory(int categoryId, Category update) {
         if (update == null) {
             return true;
         }
 
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+            throw new DaoException(DaoException.Type.INVALID_UPDATED_ID);
         }
 
-        try {
-            update.checkFieldUpdatable();
-        } catch (DomainException e) {
-            throw e;
-        }
+        update.checkFieldUpdatable();
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
@@ -106,72 +75,50 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         return categoryMapper.updateCategory(categoryId, update);
     }
 
-    /**
-     *
-     * @param categoryId
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public Category getCategoryById(int categoryId) throws DaoException {
-        if (Category.isValidCategoryId(categoryId)) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-
-            return categoryMapper.getCategoryById(categoryId);
-        } else {
-            throw new DaoException(Integer.class, DaoException.Type.INVALID_PARAM);
+    public Category getCategoryById(int categoryId) {
+        if (!Category.isValidCategoryId(categoryId)) {
+            throw new DaoException(DaoException.Type.INVALID_QUERY_ID);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.getCategoryById(categoryId);
     }
 
-    /**
-     *
-     * @param categoryIds
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public List<Category> getCategoriesByIds(int[] categoryIds) throws DaoException {
+    public List<Category> getCategoriesByIds(int[] categoryIds) {
         if (categoryIds == null) {
-            throw new DaoException(Array.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (categoryIds.length > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-
-            return categoryMapper.getCategoriesByIds(categoryIds);
-        } else {
-            throw new DaoException(Array.class, DaoException.Type.EMPTY_VALUE);
+        if (categoryIds.length <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.getCategoriesByIds(categoryIds);
     }
 
-    /**
-     *
-     * @param params
-     * @return
-     * @throws DaoException
-     */
     @Override
-    public List<Category> getCategoriesByCondition(Map<String, Object> params) throws DaoException {
+    public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new DaoException(Map.class, DaoException.Type.NULL_POINTER);
+            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
         }
 
-        if (params.size() > 0) {
-            SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-            CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
-
-            return categoryMapper.getCategoriesByCondition(params);
-        } else {
-            throw new DaoException(Map.class, DaoException.Type.EMPTY_VALUE);
+        if (params.size() <= 0) {
+            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
         }
+
+        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+        CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
+
+        return categoryMapper.getCategoriesByCondition(params);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int countAllCategory() {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
