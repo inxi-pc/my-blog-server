@@ -29,7 +29,7 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         } else if (e instanceof GenericException) {
             ex = new WebApplicationException(e.getMessage(), ((GenericException) e).getStatus());
         } else if (e instanceof JwtException) {
-            ex = new WebApplicationException(e.getMessage(), e);
+            ex = new WebApplicationException(e, Response.Status.UNAUTHORIZED);
         } else {
             ex = new InternalServerErrorException(e.getMessage(), e);
         }
