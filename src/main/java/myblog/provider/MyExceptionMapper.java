@@ -5,7 +5,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import myblog.App;
 import myblog.exception.GenericException;
-import myblog.exception.HttpExceptionFactory;
 import org.apache.logging.log4j.Level;
 
 import javax.ws.rs.BadRequestException;
@@ -26,24 +25,13 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
         } else if (e instanceof JsonMappingException){
-            ex = HttpExceptionFactory.produce(BadRequestException.class, e);
-        } else if (e instanceof JwtException) {
-            if (e instanceof ExpiredJwtException) {
-                ex = HttpExceptionFactory.produce(
-                        Response.Status.UNAUTHORIZED,
-                        HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
-                        HttpExceptionFactory.Reason.BEARER_TOKEN_EXPIRED);
-            } else {
-                ex = HttpExceptionFactory.produce(
-                        Response.Status.UNAUTHORIZED,
-                        HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
-                        HttpExceptionFactory.Reason.INVALID_BEARER_TOKEN);
-            }
+            ex = new BadRequestException(e.getMessage(), e);
         } else if (e instanceof GenericException) {
-            ex = HttpExceptionFactory.produce(
-                    ((GenericException) e).getMeta().getStatus(), e.getMessage());
+            ex = new WebApplicationException(e.getMessage(), ((GenericException) e).getStatus());
+        } else if (e instanceof JwtException) {
+            ex = new WebApplicationException(e.getMessage(), e);
         } else {
-            ex = HttpExceptionFactory.produce(InternalServerErrorException.class, e);
+            ex = new InternalServerErrorException(e.getMessage(), e);
         }
 
         if (App.isDebug()) {

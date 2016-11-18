@@ -2,10 +2,13 @@ package myblog.domain;
 
 import myblog.Helper;
 import myblog.annotation.*;
-import myblog.exception.DomainException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -70,7 +73,7 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public List<Object> getIdentifierValues() throws DomainException {
+    public List<Object> getIdentifierValues() {
         List<Field> fields = getIdentifierFields();
         List<Object> values = new ArrayList<Object>();
         for (Field field : fields) {
@@ -81,7 +84,7 @@ public class User extends Domain implements Principal, Credential {
                     values.add(value);
                 }
             } catch (Exception e) {
-                throw new DomainException(e);
+                throw new GenericException(e);
             }
         }
 
@@ -90,29 +93,15 @@ public class User extends Domain implements Principal, Credential {
 
     @Override
     public boolean hasIdentifier() {
-        try {
-            List<Object> values = getIdentifierValues();
-
-            return values.size() == 1;
-        } catch (DomainException e){
-            return false;
-        }
+        return getIdentifierValues().size() == 1;
     }
 
     @Override
-    public Object getIdentifier() throws DomainException {
-        List<Field> fields = getIdentifierFields();
-        List<Object> values = null;
-        try {
-            values = getIdentifierValues();
-        } catch (DomainException e){
-            throw e;
-        }
-
-        if (values.size() == 1) {
-            return values.get(0);
+    public Object getIdentifier() {
+        if (hasIdentifier()) {
+            return getIdentifierValues().get(0);
         } else {
-            throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_IDENTIFIER);
+            throw new GenericException(LiteralMessageMeta.ILLEGAL_NUMBER_OF_IDENTIFIER, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -122,16 +111,16 @@ public class User extends Domain implements Principal, Credential {
     }
 
     @Override
-    public String getPassword() throws DomainException {
-        if (this.user_password != null) {
+    public String getPassword() {
+        if (hasPassword()) {
             return this.user_password;
         } else {
-            throw new DomainException(DomainException.Type.ILLEGAL_NUMBER_OF_PASSWORD);
+            throw new GenericException(LiteralMessageMeta.ILLEGAL_NUMBER_OF_PASSWORD, Response.Status.BAD_REQUEST);
         }
     }
 
     @Override
-    public void encryptPassword() throws DomainException {
+    public void encryptPassword() {
         try {
             int iterations = 1000;
             byte[] salt = genSalt();
@@ -141,12 +130,12 @@ public class User extends Domain implements Principal, Credential {
 
             this.user_password = iterations + ":" + convertToHex(salt) + ":" + convertToHex(hash);
         } catch (Exception e) {
-            throw new DomainException(e);
+            throw new GenericException(e);
         }
     }
 
     @Override
-    public boolean validPassword(String compared) throws DomainException {
+    public boolean validPassword(String compared) {
         try {
             String[] parts = getPassword().split(":");
             int iterations = Integer.parseInt(parts[0]);
@@ -164,7 +153,7 @@ public class User extends Domain implements Principal, Credential {
 
             return diff == 0;
         } catch (Exception e) {
-            throw new DomainException(e);
+            throw new GenericException(e);
         }
     }
 
@@ -228,79 +217,14 @@ public class User extends Domain implements Principal, Credential {
         return user_enabled;
     }
 
-    public static boolean isValidUserId(Integer userId) {
-        if (userId == null) {
-            return true;
-        } else {
-            return userId > 0;
-        }
-    }
-
-    public static boolean isValidUserName(String userName) {
-        if (userName == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidUserTelephone(Integer userTelephone) {
-        if (userTelephone == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidUserEmail(String userEmail) {
-        if (userEmail == null) {
-            return true;
-        } else {
-            Pattern p = Pattern.compile("[a-zA-Z1-9_-]+@[a-zA-Z1-9_-]+\\.\\w+");
-
-            return p.matcher(userEmail).matches();
-        }
-    }
-
-    public static boolean isValidUserPassword(String userPassword) {
-        if (userPassword == null) {
-            return true;
-        } else {
-            return userPassword.length() > 8;
-        }
-    }
-
-    public static boolean isValidUserCreatedAt(String userCreatedAt) {
-        if (userCreatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidUserUpdatedAt(String userUpdatedAt) {
-        if (userUpdatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidUserEnabled(Boolean userEnabled) {
-        if (userEnabled == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
     public void setUser_id(Integer userId) {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -308,29 +232,25 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserName(userName)) {
             this.user_name = userName;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "username");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "username",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
     public void setUser_telephone(Integer userTelephone) {
-        if (isValidUserTelephone(userTelephone)) {
-            this.user_telephone = userTelephone;
-        } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_telephone");
-        }
+        this.user_telephone = userTelephone;
     }
 
     public void setUser_email(String userEmail) {
         if (isValidUserEmail(userEmail)) {
             this.user_email = userEmail;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_email");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_email",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -338,9 +258,10 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserPassword(userPassword)) {
             this.user_password = userPassword;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_password");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_password",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -348,9 +269,10 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserCreatedAt(userCreatedAt)) {
             this.user_created_at = userCreatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_created_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_created_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -358,20 +280,15 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserUpdatedAt(userUpdatedAt)) {
             this.user_updated_at = userUpdatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_updated_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_updated_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
     public void setUser_enabled(Boolean userEnabled) {
-        if (isValidUserEnabled(userEnabled)) {
-            this.user_enabled = userEnabled;
-        } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_id");
-        }
+        this.user_enabled = userEnabled;
     }
 
     public void setDefaultUser_created_at() {
@@ -384,5 +301,41 @@ public class User extends Domain implements Principal, Credential {
 
     public void setDefaultUser_enabled() {
         this.user_enabled = true;
+    }
+
+    public static boolean isValidUserId(Integer userId) {
+        return userId == null || userId > 0;
+    }
+
+    public static boolean isValidUserName(String userName) {
+        if (userName == null) {
+            return true;
+        } else {
+            Pattern p = Pattern.compile("[a-zA-Z_]+");
+
+            return !userName.isEmpty() && userName.length() < 30 && p.matcher(userName).matches();
+        }
+    }
+
+    public static boolean isValidUserEmail(String userEmail) {
+        if (userEmail == null) {
+            return true;
+        } else {
+            Pattern p = Pattern.compile("[a-zA-Z1-9_-]+@[a-zA-Z1-9_-]+\\.\\w+");
+
+            return !userEmail.isEmpty() && userEmail.length() < 30 && p.matcher(userEmail).matches();
+        }
+    }
+
+    public static boolean isValidUserPassword(String userPassword) {
+        return userPassword == null || (userPassword.length() > 8 && userPassword.length() < 200);
+    }
+
+    public static boolean isValidUserCreatedAt(String userCreatedAt) {
+        return userCreatedAt == null || Helper.isValidDataTimeFormat(userCreatedAt);
+    }
+
+    public static boolean isValidUserUpdatedAt(String userUpdatedAt) {
+        return userUpdatedAt == null || Helper.isValidDataTimeFormat(userUpdatedAt);
     }
 }

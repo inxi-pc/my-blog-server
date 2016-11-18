@@ -3,9 +3,12 @@ package myblog.dao.MyBatis;
 import myblog.dao.CategoryDao;
 import myblog.dao.MyBatis.Mapper.CategoryMapper;
 import myblog.domain.Category;
-import myblog.exception.DaoException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +31,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public int createCategory(Category insert) {
         if (insert == null) {
-            throw new DaoException(DaoException.Type.INSERT_NULL_OBJECT);
+            throw new GenericException(GenericMessageMeta.NULL_INSERTED_OBJECT, Response.Status.BAD_REQUEST);
         }
 
         insert.setDefaultableFieldValue();
@@ -44,7 +47,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public boolean deleteCategory(int categoryId) {
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new DaoException(DaoException.Type.INVALID_DELETED_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_DELETED_ID, Response.Status.BAD_REQUEST);
         }
 
         Category delete = new Category();
@@ -64,7 +67,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         }
 
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new DaoException(DaoException.Type.INVALID_UPDATED_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_UPDATED_ID, Response.Status.BAD_REQUEST);
         }
 
         update.checkFieldUpdatable();
@@ -78,7 +81,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public Category getCategoryById(int categoryId) {
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new DaoException(DaoException.Type.INVALID_QUERY_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_QUERY_ID, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -90,11 +93,11 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByIds(int[] categoryIds) {
         if (categoryIds == null) {
-            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         if (categoryIds.length <= 0) {
-            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -106,11 +109,11 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         if (params.size() <= 0) {
-            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

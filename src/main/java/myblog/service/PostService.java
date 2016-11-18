@@ -2,13 +2,13 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.PostDaoMyBatisImpl;
-import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
 
-import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,11 +42,10 @@ public class PostService {
         if (myBatisPostDao.getPostById(postId) != null) {
             return myBatisPostDao.deletePost(postId);
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
-                    Category.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_DELETED_OBJECT,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -65,11 +64,10 @@ public class PostService {
 
             return myBatisPostDao.updatePost(postId, update);
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
-                    Category.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_UPDATED_OBJECT,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
     }
 

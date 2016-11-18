@@ -5,12 +5,16 @@ import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
-import myblog.exception.DomainException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Category extends Domain {
 
@@ -101,7 +105,7 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new DomainException(DomainException.Type.CATEGORY_HAS_NO_PARENT);
+            throw new GenericException(LiteralMessageMeta.CATEGORY_LACK_PARENT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -145,77 +149,14 @@ public class Category extends Domain {
         return this.children;
     }
 
-    public static boolean isValidCategoryId(Integer categoryId) {
-        if (categoryId == null) {
-            return true;
-        } else {
-            return categoryId > 0;
-        }
-    }
-
-    public static boolean isValidCategoryParentId(Integer categoryParentId) {
-        if (categoryParentId == null) {
-            return true;
-        } else {
-            return categoryParentId > 0;
-        }
-    }
-
-    public static boolean isValidCategoryRootId(Integer categoryRootId) {
-        if (categoryRootId == null) {
-            return true;
-        } else {
-            return categoryRootId > 0;
-        }
-    }
-
-    public static boolean isValidCategoryName(String categoryName) {
-        if (categoryName == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidCategoryLevel(Integer categoryLevel) {
-        if (categoryLevel == null) {
-            return true;
-        } else {
-            return categoryLevel >= 1;
-        }
-    }
-
-    public static boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
-        if (categoryCreatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
-        if (categoryUpdatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidCategoryEnabled(Boolean categoryEnabled) {
-        if (categoryEnabled == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
     public void setCategory_id(Integer categoryId) {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -223,9 +164,10 @@ public class Category extends Domain {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_parent_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_parent_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -233,9 +175,10 @@ public class Category extends Domain {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_root_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_root_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -243,9 +186,10 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_name_en");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_name_en",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -253,9 +197,10 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_name_cn");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_name_cn",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -263,29 +208,25 @@ public class Category extends Domain {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_level");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_level",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
     public void setCategory_enabled(Boolean categoryEnabled) {
-        if (isValidCategoryEnabled(categoryEnabled)) {
-            this.category_enabled = categoryEnabled;
-        } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_enabled");
-        }
+        this.category_enabled = categoryEnabled;
     }
 
     public void setCategory_created_at(String categoryCreatedAt) {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
             this.category_created_at = categoryCreatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_created_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_created_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -293,9 +234,10 @@ public class Category extends Domain {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
             this.category_updated_at = categoryUpdatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_updated_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_updated_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -313,5 +255,39 @@ public class Category extends Domain {
 
     public void setDefaultCategory_updated_at() {
         this.category_updated_at = Helper.formatDatetimeUTC(new Date());
+    }
+
+    public static boolean isValidCategoryId(Integer categoryId) {
+        return categoryId == null || categoryId > 0;
+    }
+
+    public static boolean isValidCategoryParentId(Integer categoryParentId) {
+        return categoryParentId == null || categoryParentId > 0;
+    }
+
+    public static boolean isValidCategoryRootId(Integer categoryRootId) {
+        return categoryRootId == null || categoryRootId > 0;
+    }
+
+    public static boolean isValidCategoryName(String categoryName) {
+        if (categoryName == null) {
+            return true;
+        } else {
+            Pattern p = Pattern.compile("[\\u4E00-\\u9FA5A-Za-z0-9_]{0,100}");
+
+            return p.matcher(categoryName).matches();
+        }
+    }
+
+    public static boolean isValidCategoryLevel(Integer categoryLevel) {
+        return categoryLevel == null || categoryLevel >= 1;
+    }
+
+    public static boolean isValidCategoryCreatedAt(String categoryCreatedAt) {
+        return categoryCreatedAt == null || Helper.isValidDataTimeFormat(categoryCreatedAt);
+    }
+
+    public static boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
+        return categoryUpdatedAt == null || Helper.isValidDataTimeFormat(categoryUpdatedAt);
     }
 }

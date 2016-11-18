@@ -5,8 +5,10 @@ import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
-import myblog.exception.DomainException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
 
+import javax.ws.rs.core.Response;
 import java.util.Date;
 
 public class Post extends Domain {
@@ -98,85 +100,14 @@ public class Post extends Domain {
         return post_updated_at;
     }
 
-    public static boolean isValidPostId(Integer postId) {
-        if (postId == null) {
-            return true;
-        } else {
-            return postId > 0;
-        }
-    }
-
-    public static boolean isValidCategoryId(Integer categoryId) {
-        if (categoryId == null) {
-            return true;
-        } else {
-            return categoryId > 0;
-        }
-    }
-
-    public static boolean isValidUserId(Integer userId) {
-        if (userId == null) {
-            return true;
-        } else {
-            return userId > 0;
-        }
-    }
-
-    public static boolean isValidPostTitle(String postTitle) {
-        if (postTitle == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidPostContent(String postContent) {
-        if (postContent == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidPostPublished(Boolean postPublished) {
-        if (postPublished == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidPostEnabled(Boolean postEnabled) {
-        if (postEnabled == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidPostCreatedAt(String postCreatedAt) {
-        if (postCreatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean isValidPostUpdatedAt(String postUpdatedAt) {
-        if (postUpdatedAt == null) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
     public void setPost_id(Integer postId) {
         if (isValidPostId(postId)) {
             this.post_id = postId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "post_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -184,9 +115,10 @@ public class Post extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "category_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "category_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -194,9 +126,10 @@ public class Post extends Domain {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "user_id");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "user_id",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -204,9 +137,10 @@ public class Post extends Domain {
         if (isValidPostTitle(postTitle)) {
             this.post_title = postTitle;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_title");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "post_title",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -214,39 +148,29 @@ public class Post extends Domain {
         if (isValidPostContent(postContent)) {
             this.post_content = postContent;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_content");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "post_content",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
     public void setPost_published(Boolean postPublished) {
-        if (isValidPostPublished(postPublished)) {
-            this.post_published = postPublished;
-        } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_published");
-        }
+        this.post_published = postPublished;
     }
 
     public void setPost_enabled(Boolean postEnabled) {
-        if (isValidPostEnabled(postEnabled)) {
-            this.post_enabled = postEnabled;
-        } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_enabled");
-        }
+        this.post_enabled = postEnabled;
     }
 
     public void setPost_created_at(String postCreatedAt) {
         if (isValidPostCreatedAt(postCreatedAt)) {
             this.post_created_at = postCreatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_created_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "post_created_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -254,9 +178,10 @@ public class Post extends Domain {
         if (isValidPostUpdatedAt(postUpdatedAt)) {
             this.post_updated_at = postUpdatedAt;
         } else {
-            throw new DomainException(
-                    DomainException.Type.FIELD_NOT_VALID_VALUE,
-                    getClass(), "post_updated_at");
+            throw new GenericException(
+                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    "post_updated_at",
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -274,5 +199,39 @@ public class Post extends Domain {
 
     public void setDefaultPost_updated_at() {
         this.post_updated_at = Helper.formatDatetimeUTC(new Date());
+    }
+
+    public static boolean isValidPostId(Integer postId) {
+        return postId == null || postId > 0;
+    }
+
+    public static boolean isValidCategoryId(Integer categoryId) {
+        return categoryId == null || categoryId > 0;
+    }
+
+    public static boolean isValidUserId(Integer userId) {
+        return userId == null || userId > 0;
+    }
+
+    public static boolean isValidPostTitle(String postTitle) {
+        return postTitle == null || postTitle.length() <= 100;
+    }
+
+    // TODO: 16/11/18
+    // add more validation
+    public static boolean isValidPostContent(String postContent) {
+        if (postContent == null) {
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean isValidPostCreatedAt(String postCreatedAt) {
+        return postCreatedAt == null || Helper.isValidDataTimeFormat(postCreatedAt);
+    }
+
+    public static boolean isValidPostUpdatedAt(String postUpdatedAt) {
+        return postUpdatedAt == null || Helper.isValidDataTimeFormat(postUpdatedAt);
     }
 }

@@ -2,10 +2,9 @@ package myblog.resource;
 
 import myblog.domain.Category;
 import myblog.domain.Pagination;
-import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.DomainException;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
 import myblog.service.CategoryService;
 
 import javax.ws.rs.*;
@@ -22,18 +21,12 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category insert) {
         if (insert == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
+            throw new GenericException(
+                    GenericMessageMeta.NULL_INSERTED_OBJECT,
                     Category.class,
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+                    Response.Status.BAD_REQUEST);
         }
-
-        try {
-            insert.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
-        }
+        insert.checkFieldOuterSettable();
 
         int categoryId = CategoryService.createCategory(insert);
 
@@ -45,29 +38,22 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@PathParam("categoryId") Integer categoryId) {
         if (categoryId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_DELETED_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
+        }
+        if (!Category.isValidCategoryId(categoryId)) {
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_DELETED_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
         }
 
-        if (Category.isValidCategoryId(categoryId)) {
-            if (CategoryService.deleteCategory(categoryId)) {
-                return Response.noContent().build();
-            } else {
-                throw HttpExceptionFactory.produce(
-                        InternalServerErrorException.class,
-                        HttpExceptionFactory.Type.DELETE_FAILED,
-                        Category.class,
-                        HttpExceptionFactory.Reason.UNDEFINED_ERROR);
-            }
+        if (CategoryService.deleteCategory(categoryId)) {
+            return Response.noContent().build();
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+            throw new InternalServerErrorException();
         }
     }
 
@@ -77,39 +63,26 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category update) {
         if (categoryId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_UPDATED_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
         }
-
-        if (Category.isValidCategoryId(categoryId)) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+        if (!Category.isValidCategoryId(categoryId)) {
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_UPDATED_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
         }
-
         if (update == null) {
             return Response.noContent().build();
         }
 
-        try {
-            update.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
-        }
-
+        update.checkFieldOuterSettable();
         if (CategoryService.updateCategory(categoryId, update)) {
             return Response.noContent().build();
         } else {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.UPDATE_FAILED,
-                    Category.class,
-                    HttpExceptionFactory.Reason.UNDEFINED_ERROR);
+            throw new InternalServerErrorException();
         }
     }
 
@@ -118,30 +91,26 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Category getCategoryById(@PathParam("categoryId") Integer categoryId) {
         if (categoryId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_QUERY_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
         }
-
         if (!Category.isValidCategoryId(categoryId)) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "categoryId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_QUERY_ID,
+                    Category.class,
+                    Response.Status.BAD_REQUEST);
         }
 
         Category category = CategoryService.getCategoryById(categoryId);
         if (category != null) {
             return category;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
                     Category.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+                    Response.Status.NOT_FOUND);
         }
     }
 
@@ -157,67 +126,54 @@ public class CategoryResource {
             if (Category.isValidCategoryParentId(categoryParentId)) {
                 category.setCategory_parent_id(categoryParentId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_parent_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryRootId != null) {
             if (Category.isValidCategoryRootId(categoryRootId)) {
                 category.setCategory_root_id(categoryRootId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_root_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryName != null) {
             if (Category.isValidCategoryName(categoryName)) {
                 category.setCategory_name_en(categoryName);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_name",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryLevel != null) {
             if (Category.isValidCategoryLevel(categoryLevel)) {
                 category.setCategory_level(categoryLevel);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_level",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryEnabled != null) {
-            if (Category.isValidCategoryEnabled(categoryEnabled)) {
-                category.setCategory_enabled(categoryEnabled);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "category_enabled",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            category.setCategory_enabled(categoryEnabled);
         }
 
         List<Category> categories = CategoryService.getCategories(category);
         if (categories != null && categories.size() > 0) {
             return categories;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
                     Category.class,
-                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
+                    Response.Status.NOT_FOUND);
         }
     }
 
@@ -239,56 +195,44 @@ public class CategoryResource {
             if (Category.isValidCategoryParentId(categoryParentId)) {
                 category.setCategory_parent_id(categoryParentId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_parent_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryRootId != null) {
             if (Category.isValidCategoryRootId(categoryRootId)) {
                 category.setCategory_root_id(categoryRootId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_root_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryName != null) {
             if (Category.isValidCategoryName(categoryName)) {
                 category.setCategory_name_en(categoryName);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_name",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryLevel != null) {
             if (Category.isValidCategoryLevel(categoryLevel)) {
                 category.setCategory_level(categoryLevel);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_level",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryEnabled != null) {
-            if (Category.isValidCategoryEnabled(categoryEnabled)) {
-                category.setCategory_enabled(categoryEnabled);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "category_enbabled",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            category.setCategory_enabled(categoryEnabled);
         }
 
         Pagination<Category> page = new Pagination<Category>(limit, offset);
@@ -303,11 +247,10 @@ public class CategoryResource {
         if (page != null && page.getData().size() > 0) {
             return page;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
-                    Post.class,
-                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
+                    Category.class,
+                    Response.Status.NOT_FOUND);
         }
     }
 }

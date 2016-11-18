@@ -3,10 +3,11 @@ package myblog.domain;
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
-import myblog.exception.DaoException;
-import myblog.exception.DomainException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
 import myblog.exception.MessageFactory;
 
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -85,7 +86,7 @@ public abstract class Domain {
                     field.setAccessible(true);
                     value = field.get(this);
                 } catch (Exception e) {
-                    throw new DaoException(e);
+                    throw new GenericException(e);
                 }
 
                 if (value == null) {
@@ -94,7 +95,7 @@ public abstract class Domain {
                         Method method = getClass().getDeclaredMethod(setterName);
                         method.invoke(this);
                     } catch (Exception e) {
-                        throw new DaoException(e);
+                        throw new GenericException(e);
                     }
                 }
             }
@@ -108,17 +109,17 @@ public abstract class Domain {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new DomainException(e);
+                throw new GenericException(e);
             }
 
             if (isInsertable(field)) {
                 if (!isDefaultable(field)) {
                     if (!isNullable(field) && value == null) {
-                        throw new DomainException(DomainException.Type.FIELD_NOT_NULLABLE, field);
+                        throw new GenericException(GenericMessageMeta.FIELD_NOT_NULLABLE, field, Response.Status.BAD_REQUEST);
                     }
                 }
             } else if (value != null) {
-                throw new DomainException(DomainException.Type.FIELD_NOT_INSERTABLE, field);
+                throw new GenericException(GenericMessageMeta.FIELD_NOT_INSERTABLE, field, Response.Status.BAD_REQUEST);
             }
         }
     }
@@ -130,11 +131,11 @@ public abstract class Domain {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new DomainException(e);
+                throw new GenericException(e);
             }
 
             if (!isUpdatable(field) && value != null) {
-                throw new DomainException(DomainException.Type.FIELD_NOT_UPDATABLE, field);
+                throw new GenericException(GenericMessageMeta.FIELD_NOT_UPDATABLE, field, Response.Status.BAD_REQUEST);
             }
         }
     }
@@ -146,11 +147,11 @@ public abstract class Domain {
                 field.setAccessible(true);
                 value = field.get(this);
             } catch (Exception e) {
-                throw new DomainException(e);
+                throw new GenericException(e);
             }
 
             if (!isOuterSettable(field) && value != null) {
-                throw new DomainException(DomainException.Type.FIELD_NOT_OUTER_SETTABLE, field);
+                throw new GenericException(GenericMessageMeta.FIELD_NOT_OUTER_SETTABLE, field, Response.Status.BAD_REQUEST);
             }
         }
     }
@@ -188,7 +189,7 @@ public abstract class Domain {
                 Object value = field.get(this);
                 params.put(field.getName(), value);
             } catch (Exception e) {
-                throw new DomainException(e);
+                throw new GenericException(e);
             }
         }
 
@@ -207,7 +208,7 @@ public abstract class Domain {
         try {
             instance = clazz.newInstance();
         } catch (Exception e) {
-            throw new DomainException(e);
+            throw new GenericException(e);
         }
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -218,7 +219,7 @@ public abstract class Domain {
                     try {
                         field.set(instance, entry.getValue());
                     } catch (Exception e) {
-                        throw new DomainException(e);
+                        throw new GenericException(e);
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package myblog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import myblog.exception.DomainException;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -12,19 +11,19 @@ public interface Credential {
     List<Field> getIdentifierFields();
 
     @JsonIgnore
-    List<Object> getIdentifierValues() throws DomainException;
+    List<Object> getIdentifierValues();
 
     boolean hasIdentifier();
 
     @JsonIgnore
-    Object getIdentifier() throws DomainException;
+    Object getIdentifier();
 
     boolean hasPassword();
 
     @JsonIgnore
-    String getPassword() throws DomainException;
+    String getPassword();
 
-    void encryptPassword() throws DomainException;
+    void encryptPassword();
 
-    boolean validPassword(String compared) throws DomainException;
+    boolean validPassword(String compared);
 }

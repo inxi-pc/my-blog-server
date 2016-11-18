@@ -5,9 +5,11 @@ import myblog.dao.MyBatis.CategoryDaoMyBatisImpl;
 import myblog.domain.Category;
 import myblog.domain.Pagination;
 import myblog.domain.Sort;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 
-import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,11 +31,7 @@ public class CategoryService {
                 insert.setCategory_level(parent.getCategory_level() + 1);
                 insert.setCategory_root_id(parent.getCategory_root_id());
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.NOT_FOUND,
-                        Category.class,
-                        HttpExceptionFactory.Reason.NOT_EXIST_PARENT_CATEGORY);
+                throw new GenericException(LiteralMessageMeta.NOT_FOUND_CATEGORY_PARENT, Response.Status.BAD_REQUEST);
             }
         } else {
             insert.setCategory_level(1);
@@ -60,11 +58,7 @@ public class CategoryService {
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
             return myBatisCategoryDao.deleteCategory(categoryId);
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
-                    Category.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_DELETED_OBJECT, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -84,11 +78,7 @@ public class CategoryService {
 
             return myBatisCategoryDao.updateCategory(categoryId, update);
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
-                    Category.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_UPDATED_OBJECT, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -167,6 +157,7 @@ public class CategoryService {
      */
     public static Pagination<Category> getCategoryListTree(Category category, Pagination<Category> page, Sort sort) {
         getCategoryList(category, page, sort);
+
         List<Category> categories = Category.formatCategoryTree(page.getData());
         page.setData(categories);
 

@@ -1,9 +1,6 @@
 package myblog.auth;
 
-import myblog.exception.AuthenticationException;
-
 import javax.annotation.Priority;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -137,13 +134,7 @@ public abstract class AuthFilter<C, P extends Principal> implements ContainerReq
             return false;
         }
 
-        final Optional<P> principal;
-        try {
-            principal = this.authenticator.authenticate(credentials);
-        } catch (AuthenticationException e) {
-            throw new InternalServerErrorException(e.getMessage(), e);
-        }
-
+        final Optional<P> principal = this.authenticator.authenticate(credentials);
         if (!principal.isPresent()) {
             return false;
         }

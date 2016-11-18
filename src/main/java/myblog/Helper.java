@@ -22,4 +22,20 @@ public class Helper {
 
         return formatUTC.format(date);
     }
+
+    /**
+     * Validate string if is DateFormat
+     *
+     * @param datetime
+     * @return
+     */
+    public static boolean isValidDataTimeFormat(String datetime) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            return format.parse(datetime) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

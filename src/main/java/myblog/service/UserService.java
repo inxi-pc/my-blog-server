@@ -6,9 +6,10 @@ import myblog.App;
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.UserDaoMyBatisImpl;
 import myblog.domain.User;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +33,10 @@ public class UserService {
 
             return userDao.createUser(register);
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.CONFLICT,
+            throw new GenericException(
+                    GenericMessageMeta.EXIST_OBJECT,
                     User.class,
-                    HttpExceptionFactory.Reason.EXIST_ALREADY);
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -50,12 +50,16 @@ public class UserService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
         User user = userDao.getUserByCredential(login);
-
-        if (user == null || !user.validPassword(login.getPassword())) {
-            throw HttpExceptionFactory.produce(
-                    Response.Status.UNAUTHORIZED,
-                    HttpExceptionFactory.Type.AUTHENTICATE_FAILED,
-                    HttpExceptionFactory.Reason.INVALID_USERNAME_OR_PASSWORD);
+        if (user == null) {
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
+                    User.class,
+                    Response.Status.UNAUTHORIZED);
+        }
+        if (!user.validPassword(login.getPassword())) {
+            throw new GenericException(
+                    LiteralMessageMeta.INCORRECT_PASSWORD,
+                    Response.Status.UNAUTHORIZED);
         }
 
         Map<String, Object> header = new HashMap<String, Object>();

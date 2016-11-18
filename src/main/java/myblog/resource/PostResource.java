@@ -3,8 +3,8 @@ package myblog.resource;
 import myblog.domain.Pagination;
 import myblog.domain.Post;
 import myblog.domain.Sort;
-import myblog.exception.DomainException;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
 import myblog.service.PostService;
 
 import javax.ws.rs.*;
@@ -21,29 +21,16 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post insert) {
         if (insert == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
+            throw new GenericException(
+                    GenericMessageMeta.NULL_INSERTED_OBJECT,
                     Post.class,
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+                    Response.Status.BAD_REQUEST);
         }
-
-        try {
-            insert.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
-        }
+        insert.checkFieldOuterSettable();
 
         int postId = PostService.createPost(insert);
-        if (Post.isValidPostId(postId)) {
-            return Response.created(URI.create("/posts/" + postId)).build();
-        } else {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.CREATE_FAILED,
-                    Post.class,
-                    HttpExceptionFactory.Reason.INVALID_PRIMARY_KEY_VALUE);
-        }
+
+        return Response.created(URI.create("/posts/" + postId)).build();
     }
 
     @DELETE
@@ -51,29 +38,22 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePost(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_DELETED_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
+        }
+        if (!Post.isValidPostId(postId)) {
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_DELETED_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
 
-        if (Post.isValidPostId(postId)) {
-            if (PostService.deletePost(postId)) {
-                return Response.noContent().build();
-            } else {
-                throw HttpExceptionFactory.produce(
-                        InternalServerErrorException.class,
-                        HttpExceptionFactory.Type.DELETE_FAILED,
-                        Post.class,
-                        HttpExceptionFactory.Reason.UNDEFINED_ERROR);
-            }
+        if (PostService.deletePost(postId)) {
+            return Response.noContent().build();
         } else {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+            throw new InternalServerErrorException();
         }
     }
 
@@ -83,39 +63,26 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_UPDATED_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
-
         if (!Post.isValidPostId(postId)) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_UPDATED_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
-
         if (update == null) {
             return Response.noContent().build();
         }
-
-        try {
-            update.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
-        }
+        update.checkFieldOuterSettable();
 
         if (PostService.updatePost(postId, update)) {
             return Response.noContent().build();
         } else {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.UPDATE_FAILED,
-                    Post.class,
-                    HttpExceptionFactory.Reason.UNDEFINED_ERROR);
+            throw new InternalServerErrorException();
         }
     }
 
@@ -124,30 +91,26 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPostById(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.NULL_QUERY_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
-
         if (!Post.isValidPostId(postId)) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    "postId",
-                    HttpExceptionFactory.Reason.INVALID_VALUE);
+            throw new GenericException(
+                    GenericMessageMeta.INVALID_UPDATED_ID,
+                    Post.class,
+                    Response.Status.BAD_REQUEST);
         }
 
         Post post = PostService.getPostById(postId);
         if (post != null) {
             return post;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
                     Post.class,
-                    HttpExceptionFactory.Reason.NOT_EXIST);
+                    Response.Status.BAD_REQUEST);
         }
     }
 
@@ -163,67 +126,47 @@ public class PostResource {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "user_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "post_title",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (postPublished != null) {
-            if (Post.isValidPostPublished(postPublished)) {
-                post.setPost_published(postPublished);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "post_published",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            post.setPost_published(postPublished);
         }
         if (postEnabled != null) {
-            if (Post.isValidPostEnabled(postEnabled)) {
-                post.setPost_enabled(postEnabled);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "post_enabled",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            post.setPost_enabled(postEnabled);
         }
 
         List<Post> posts = PostService.getPosts(post);
         if (posts != null && posts.size() > 0) {
             return posts;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
                     Post.class,
-                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
+                    Response.Status.NOT_FOUND);
         }
     }
 
@@ -244,56 +187,37 @@ public class PostResource {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "user_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "category_id",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
             } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
+                throw new GenericException(
+                        GenericMessageMeta.INVALID_QUERY_PARAM,
                         "post_title",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
+                        Response.Status.BAD_REQUEST);
             }
         }
         if (postPublished != null) {
-            if (Post.isValidPostPublished(postPublished)) {
-                post.setPost_published(postPublished);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "post_published",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            post.setPost_published(postPublished);
         }
         if (postEnabled != null) {
-            if (Post.isValidPostEnabled(postEnabled)) {
-                post.setPost_enabled(postEnabled);
-            } else {
-                throw HttpExceptionFactory.produce(
-                        BadRequestException.class,
-                        HttpExceptionFactory.Type.UNEXPECTED,
-                        "post_enabled",
-                        HttpExceptionFactory.Reason.INVALID_VALUE);
-            }
+            post.setPost_enabled(postEnabled);
         }
 
         Pagination<Post> page = new Pagination<Post>(limit, offset);
@@ -303,11 +227,10 @@ public class PostResource {
         if (page != null && page.getData().size() > 0) {
             return page;
         } else {
-            throw HttpExceptionFactory.produce(
-                    NotFoundException.class,
-                    HttpExceptionFactory.Type.NOT_FOUND,
+            throw new GenericException(
+                    GenericMessageMeta.NOT_FOUND_OBJECT,
                     Post.class,
-                    HttpExceptionFactory.Reason.NOT_ELIGIBLE);
+                    Response.Status.NOT_FOUND);
         }
     }
 }

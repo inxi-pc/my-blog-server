@@ -3,9 +3,12 @@ package myblog.dao.MyBatis;
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
 import myblog.domain.Post;
-import myblog.exception.DaoException;
+import myblog.exception.GenericException;
+import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +31,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public int createPost(Post insert) {
         if (insert == null) {
-            throw new DaoException(DaoException.Type.INSERT_NULL_OBJECT);
+            throw new GenericException(GenericMessageMeta.NULL_INSERTED_OBJECT, Response.Status.BAD_REQUEST);
         }
 
         insert.setDefaultableFieldValue();
@@ -44,7 +47,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public boolean deletePost(int postId) {
         if (Post.isValidPostId(postId)) {
-            throw new DaoException(DaoException.Type.INVALID_DELETED_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_DELETED_ID, Response.Status.BAD_REQUEST);
         }
 
         Post post = new Post();
@@ -57,13 +60,13 @@ public class PostDaoMyBatisImpl implements PostDao {
     }
 
     @Override
-    public boolean updatePost(int postId, Post update)  {
+    public boolean updatePost(int postId, Post update) {
         if (update == null) {
             return true;
         }
 
         if (!Post.isValidPostId(postId)) {
-            throw new DaoException(DaoException.Type.INVALID_UPDATED_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_UPDATED_ID, Response.Status.BAD_REQUEST);
         }
 
         update.checkFieldUpdatable();
@@ -77,7 +80,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public Post getPostById(int postId) {
         if (!Post.isValidPostId(postId)) {
-            throw new DaoException(DaoException.Type.INVALID_QUERY_ID);
+            throw new GenericException(GenericMessageMeta.INVALID_QUERY_ID, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -87,13 +90,13 @@ public class PostDaoMyBatisImpl implements PostDao {
     }
 
     @Override
-    public List<Post> getPostsByIds(int[] postIds) throws DaoException {
+    public List<Post> getPostsByIds(int[] postIds) {
         if (postIds == null) {
-            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         if (postIds.length <= 0) {
-            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -103,13 +106,13 @@ public class PostDaoMyBatisImpl implements PostDao {
     }
 
     @Override
-    public List<Post> getPostsByCondition(Map<String, Object> params) throws DaoException {
+    public List<Post> getPostsByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new DaoException(DaoException.Type.NULL_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         if (params.size() <= 0) {
-            throw new DaoException(DaoException.Type.EMPTY_QUERY_PARAM);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

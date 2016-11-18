@@ -1,12 +1,15 @@
 package myblog.resource;
 
 import myblog.domain.User;
-import myblog.exception.DomainException;
-import myblog.exception.HttpExceptionFactory;
+import myblog.exception.GenericException;
+import myblog.exception.LiteralMessageMeta;
 import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -20,32 +23,17 @@ public class UserResource {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userRegister(User user) {
+    public Response registerUser(User user) {
         if (user == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    User.class,
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    LiteralMessageMeta.NULL_REGISTERED_USER,
+                    Response.Status.BAD_REQUEST);
         }
-
-        try {
-            user.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw new BadRequestException(e.getMessage(), e);
-        }
+        user.checkFieldOuterSettable();
 
         int userId = UserService.registerUser(user);
 
-        if (User.isValidUserId(userId)) {
-            return Response.created(URI.create("/users/" + userId)).build();
-        } else {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.CREATE_FAILED,
-                    User.class,
-                    HttpExceptionFactory.Reason.INVALID_PRIMARY_KEY_VALUE);
-        }
+        return Response.created(URI.create("/users/" + userId)).build();
     }
 
     @PermitAll
@@ -53,29 +41,16 @@ public class UserResource {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(User user) {
+    public Response loginUser(User user) {
         if (user == null) {
-            throw HttpExceptionFactory.produce(
-                    BadRequestException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    User.class,
-                    HttpExceptionFactory.Reason.ABSENCE_VALUE);
+            throw new GenericException(
+                    LiteralMessageMeta.NULL_LOGIN_USER,
+                    Response.Status.BAD_REQUEST);
         }
-
-        try {
-            user.checkFieldOuterSettable();
-        } catch (DomainException e) {
-            throw HttpExceptionFactory.produce(BadRequestException.class, e);
-        }
+        user.checkFieldOuterSettable();
 
         Map<String, Object> result = UserService.loginUser(user);
-        if (result == null) {
-            throw HttpExceptionFactory.produce(
-                    InternalServerErrorException.class,
-                    HttpExceptionFactory.Type.UNEXPECTED,
-                    HttpExceptionFactory.Reason.UNDEFINED_ERROR);
-        } else {
-            return Response.ok(result).build();
-        }
+
+        return Response.ok(result).build();
     }
 }

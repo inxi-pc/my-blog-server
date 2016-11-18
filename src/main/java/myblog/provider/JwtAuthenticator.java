@@ -7,8 +7,6 @@ import myblog.App;
 import myblog.auth.Authenticator;
 import myblog.domain.Domain;
 import myblog.domain.User;
-import myblog.exception.AuthenticationException;
-import myblog.exception.DomainException;
 
 import javax.ws.rs.ext.Provider;
 import java.util.Optional;
@@ -17,16 +15,11 @@ import java.util.Optional;
 public class JwtAuthenticator implements Authenticator<String, User> {
 
     @Override
-    public Optional<User> authenticate(String jwtCredentials) throws AuthenticationException {
+    public Optional<User> authenticate(String jwtCredentials) {
         Jwt jwt = Jwts.parser().setSigningKey(App.getJwtKey()).parse(jwtCredentials);
         Claims body = (Claims) jwt.getBody();
+        User user = Domain.fromHashMap(User.class, body);
 
-        try {
-            User user = Domain.fromHashMap(User.class, body);
-
-            return Optional.of(user);
-        } catch (DomainException e) {
-            throw new AuthenticationException(e.getMessage(), e);
-        }
+        return Optional.of(user);
     }
 }
