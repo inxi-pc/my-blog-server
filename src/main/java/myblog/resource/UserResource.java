@@ -26,7 +26,7 @@ public class UserResource {
     public Response registerUser(User user) {
         if (user == null) {
             throw new GenericException(
-                    LiteralMessageMeta.NULL_REGISTERED_USER,
+                    LiteralMessageMeta.NULL_USER_TO_REGISTER,
                     Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();
@@ -44,7 +44,7 @@ public class UserResource {
     public Response loginUser(User user) {
         if (user == null) {
             throw new GenericException(
-                    LiteralMessageMeta.NULL_LOGIN_USER,
+                    LiteralMessageMeta.NULL_USER_TO_LOGIN,
                     Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();

@@ -16,12 +16,6 @@ public abstract class Domain {
 
     /**
      *
-     * Exception MessageMeta factory
-     */
-    protected static MessageFactory messageFactory = new MessageFactory();
-
-    /**
-     *
      * @param field
      * @return
      */
@@ -115,11 +109,11 @@ public abstract class Domain {
             if (isInsertable(field)) {
                 if (!isDefaultable(field)) {
                     if (!isNullable(field) && value == null) {
-                        throw new GenericException(GenericMessageMeta.FIELD_NOT_NULLABLE, field, Response.Status.BAD_REQUEST);
+                        throw new GenericException(GenericMessageMeta.NOT_NULLABLE_FIELD, field, Response.Status.BAD_REQUEST);
                     }
                 }
             } else if (value != null) {
-                throw new GenericException(GenericMessageMeta.FIELD_NOT_INSERTABLE, field, Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.NOT_INSERTABLE_FIELD, field, Response.Status.BAD_REQUEST);
             }
         }
     }
@@ -135,7 +129,7 @@ public abstract class Domain {
             }
 
             if (!isUpdatable(field) && value != null) {
-                throw new GenericException(GenericMessageMeta.FIELD_NOT_UPDATABLE, field, Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.NOT_UPDATABLE_FIELD, field, Response.Status.BAD_REQUEST);
             }
         }
     }
@@ -151,7 +145,7 @@ public abstract class Domain {
             }
 
             if (!isOuterSettable(field) && value != null) {
-                throw new GenericException(GenericMessageMeta.FIELD_NOT_OUTER_SETTABLE, field, Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.NOT_OUTER_SETTABLE_FIELD, field, Response.Status.BAD_REQUEST);
             }
         }
     }

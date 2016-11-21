@@ -1,7 +1,6 @@
 package myblog.provider;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import myblog.App;
 import myblog.exception.GenericException;
@@ -26,10 +25,10 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
             ex = (WebApplicationException) e;
         } else if (e instanceof JsonMappingException){
             ex = new BadRequestException(e.getMessage(), e);
-        } else if (e instanceof GenericException) {
-            ex = new WebApplicationException(e.getMessage(), ((GenericException) e).getStatus());
         } else if (e instanceof JwtException) {
             ex = new WebApplicationException(e, Response.Status.UNAUTHORIZED);
+        } else if (e instanceof GenericException) {
+            ex = new WebApplicationException(e.getMessage(), ((GenericException) e).getStatus());
         } else {
             ex = new InternalServerErrorException(e.getMessage(), e);
         }

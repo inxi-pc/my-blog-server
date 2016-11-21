@@ -2,23 +2,25 @@ package myblog.exception;
 
 public enum LiteralMessageMeta implements MessageMeta {
 
-    ILLEGAL_NUMBER_OF_IDENTIFIER("Illegal number of identifier"),
+    ILLEGAL_QUANTITY_IDENTIFIER("Illegal quantity of identifier"),
 
-    ILLEGAL_NUMBER_OF_PASSWORD("Illegal number of password"),
+    ILLEGAL_QUANTITY_PASSWORD("Illegal quantity of password"),
 
-    NULL_REGISTERED_USER("Null user for register"),
+    NULL_CREDENTIAL_TO_QUERY("Null credential to query"),
 
-    NULL_LOGIN_USER("Null user for login"),
+    INCORRECT_PASSWORD("Incorrect password"),
 
-    NULL_QUERY_PARAM("Query param is null"),
+    NULL_USER_TO_REGISTER("Null user to register"),
 
-    NOT_FOUND_CATEGORY_PARENT("Not found category parent"),
+    NULL_USER_TO_LOGIN("Null user to login"),
 
-    CATEGORY_LACK_PARENT("Category lack parent"),
+    NULL_PARAM_TO_QUERY("Null param to query"),
 
-    EMPTY_QUERY_PARAM("Query param is empty"),
+    EMPTY_PARAM_TO_QUERY("Empty param to query"),
 
-    INCORRECT_PASSWORD("Incorrect password");
+    NOT_FOUND_PARENT_CATEGORY("Not found parent category"),
+
+    LACK_PARENT_CATEGORY_TO_GEN_TREE("Lack parent category to gen tree");
 
     private String format;
 
@@ -28,5 +30,9 @@ public enum LiteralMessageMeta implements MessageMeta {
 
     public String getFormat() {
         return this.format;
+    }
+
+    public boolean hasPlaceholder() {
+        return false;
     }
 }

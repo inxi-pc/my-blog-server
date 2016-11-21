@@ -2,39 +2,39 @@ package myblog.exception;
 
 public enum GenericMessageMeta implements MessageMeta {
 
-    FIELD_NOT_INSERTABLE("Unexpected %s: Not insertabled"),
+    NOT_INSERTABLE_FIELD("Filed %s: Not insertabled"),
 
-    FIELD_NOT_NULLABLE("Unexpected %s: Not nullable"),
+    NOT_NULLABLE_FIELD("Field %s: Not nullable"),
 
-    FIELD_NOT_OUTER_SETTABLE("Unexpected %s: Not outer settable"),
+    NOT_OUTER_SETTABLE_FIELD("Field %s: Not outer settable"),
 
-    FIELD_NOT_UPDATABLE("Unexpected %s: Not updatable"),
+    NOT_UPDATABLE_FIELD("Field %s: Not updatable"),
 
-    FIELD_NOT_VALID_VALUE("Unexpected %s: Not valid value"),
+    NOT_VALID_VALUE_FIELD("Field %s: Not valid value"),
 
-    NULL_INSERTED_OBJECT("Null %s for inserting"),
+    NULL_OBJECT_TO_INSERT("Object %s: Null to do insert"),
 
-    NULL_DELETED_ID("Null %s id for deleting"),
+    NULL_ID_TO_DELETE("Id %s: Null to do delete"),
 
-    NULL_UPDATED_ID("Null %s id for updating"),
+    NULL_ID_TO_UPDATE("Id %s: Null to do update"),
 
-    NULL_QUERY_ID("Null %s id for querying"),
+    NULL_ID_TO_QUERY("Id %s: Null to do query"),
 
-    INVALID_DELETED_ID("Invalid %s id for deleting"),
+    INVALID_ID_TO_DELETE("Id %s: Invalid value to do delete"),
 
-    INVALID_UPDATED_ID("Invalid %s id for updating"),
+    INVALID_ID_TO_UPDATE("Id %s: Invalid value to do update"),
 
-    INVALID_QUERY_ID("Invalid %s id for querying"),
+    INVALID_ID_TO_QUERY("Id %s: Invalid value to do query"),
 
-    INVALID_QUERY_PARAM("Invalid param %s for querying"),
+    INVALID_PARAM_TO_QUERY("Param %s: Invalid value to do query"),
 
-    NOT_FOUND_OBJECT("Not found %s"),
+    NOT_FOUND_OBJECT("Object %s: Not found"),
 
-    NOT_FOUND_DELETED_OBJECT("Not found deleted %s"),
+    NOT_FOUND_OBJECT_TO_DELETE("Object %s: Not found to do delete"),
 
-    NOT_FOUND_UPDATED_OBJECT("Not found updated %s"),
+    NOT_FOUND_OBJECT_TO_UPDATE("Object %s: Not found to do update"),
 
-    EXIST_OBJECT("Exist %s already");
+    EXIST_OBJECT("Object %s: Exist already");
 
     private String format;
 
@@ -44,5 +44,9 @@ public enum GenericMessageMeta implements MessageMeta {
 
     public String getFormat() {
         return this.format;
+    }
+
+    public boolean hasPlaceholder() {
+        return true;
     }
 }

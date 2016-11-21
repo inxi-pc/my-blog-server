@@ -101,7 +101,7 @@ public class User extends Domain implements Principal, Credential {
         if (hasIdentifier()) {
             return getIdentifierValues().get(0);
         } else {
-            throw new GenericException(LiteralMessageMeta.ILLEGAL_NUMBER_OF_IDENTIFIER, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.ILLEGAL_QUANTITY_IDENTIFIER, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -115,7 +115,7 @@ public class User extends Domain implements Principal, Credential {
         if (hasPassword()) {
             return this.user_password;
         } else {
-            throw new GenericException(LiteralMessageMeta.ILLEGAL_NUMBER_OF_PASSWORD, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.ILLEGAL_QUANTITY_PASSWORD, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -222,7 +222,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_id = userId;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_id",
                     Response.Status.BAD_REQUEST);
         }
@@ -233,7 +233,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_name = userName;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "username",
                     Response.Status.BAD_REQUEST);
         }
@@ -248,7 +248,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_email = userEmail;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_email",
                     Response.Status.BAD_REQUEST);
         }
@@ -259,7 +259,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_password = userPassword;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_password",
                     Response.Status.BAD_REQUEST);
         }
@@ -270,7 +270,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_created_at = userCreatedAt;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_created_at",
                     Response.Status.BAD_REQUEST);
         }
@@ -281,7 +281,7 @@ public class User extends Domain implements Principal, Credential {
             this.user_updated_at = userUpdatedAt;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_updated_at",
                     Response.Status.BAD_REQUEST);
         }

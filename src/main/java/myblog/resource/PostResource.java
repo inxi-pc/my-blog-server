@@ -22,7 +22,7 @@ public class PostResource {
     public Response createPost(Post insert) {
         if (insert == null) {
             throw new GenericException(
-                    GenericMessageMeta.NULL_INSERTED_OBJECT,
+                    GenericMessageMeta.NULL_OBJECT_TO_INSERT,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
@@ -39,13 +39,13 @@ public class PostResource {
     public Response deletePost(@PathParam("postId") Integer postId) {
         if (postId == null) {
             throw new GenericException(
-                    GenericMessageMeta.NULL_DELETED_ID,
+                    GenericMessageMeta.NULL_ID_TO_DELETE,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
             throw new GenericException(
-                    GenericMessageMeta.INVALID_DELETED_ID,
+                    GenericMessageMeta.INVALID_ID_TO_DELETE,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
@@ -64,13 +64,13 @@ public class PostResource {
     public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
             throw new GenericException(
-                    GenericMessageMeta.NULL_UPDATED_ID,
+                    GenericMessageMeta.NULL_ID_TO_UPDATE,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
             throw new GenericException(
-                    GenericMessageMeta.INVALID_UPDATED_ID,
+                    GenericMessageMeta.INVALID_ID_TO_UPDATE,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
@@ -92,13 +92,13 @@ public class PostResource {
     public Post getPostById(@PathParam("postId") Integer postId) {
         if (postId == null) {
             throw new GenericException(
-                    GenericMessageMeta.NULL_QUERY_ID,
+                    GenericMessageMeta.NULL_ID_TO_QUERY,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
             throw new GenericException(
-                    GenericMessageMeta.INVALID_UPDATED_ID,
+                    GenericMessageMeta.INVALID_ID_TO_QUERY,
                     Post.class,
                     Response.Status.BAD_REQUEST);
         }
@@ -127,7 +127,7 @@ public class PostResource {
                 post.setUser_id(userId);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "user_id",
                         Response.Status.BAD_REQUEST);
             }
@@ -137,7 +137,7 @@ public class PostResource {
                 post.setCategory_id(categoryId);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "category_id",
                         Response.Status.BAD_REQUEST);
             }
@@ -147,7 +147,7 @@ public class PostResource {
                 post.setPost_title(postTitle);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "post_title",
                         Response.Status.BAD_REQUEST);
             }
@@ -188,7 +188,7 @@ public class PostResource {
                 post.setUser_id(userId);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "user_id",
                         Response.Status.BAD_REQUEST);
             }
@@ -198,7 +198,7 @@ public class PostResource {
                 post.setCategory_id(categoryId);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "category_id",
                         Response.Status.BAD_REQUEST);
             }
@@ -208,7 +208,7 @@ public class PostResource {
                 post.setPost_title(postTitle);
             } else {
                 throw new GenericException(
-                        GenericMessageMeta.INVALID_QUERY_PARAM,
+                        GenericMessageMeta.INVALID_PARAM_TO_QUERY,
                         "post_title",
                         Response.Status.BAD_REQUEST);
             }

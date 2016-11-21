@@ -105,7 +105,7 @@ public class Post extends Domain {
             this.post_id = postId;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "post_id",
                     Response.Status.BAD_REQUEST);
         }
@@ -116,7 +116,7 @@ public class Post extends Domain {
             this.category_id = categoryId;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "category_id",
                     Response.Status.BAD_REQUEST);
         }
@@ -127,7 +127,7 @@ public class Post extends Domain {
             this.user_id = userId;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "user_id",
                     Response.Status.BAD_REQUEST);
         }
@@ -138,7 +138,7 @@ public class Post extends Domain {
             this.post_title = postTitle;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "post_title",
                     Response.Status.BAD_REQUEST);
         }
@@ -149,7 +149,7 @@ public class Post extends Domain {
             this.post_content = postContent;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "post_content",
                     Response.Status.BAD_REQUEST);
         }
@@ -168,7 +168,7 @@ public class Post extends Domain {
             this.post_created_at = postCreatedAt;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "post_created_at",
                     Response.Status.BAD_REQUEST);
         }
@@ -179,7 +179,7 @@ public class Post extends Domain {
             this.post_updated_at = postUpdatedAt;
         } else {
             throw new GenericException(
-                    GenericMessageMeta.FIELD_NOT_VALID_VALUE,
+                    GenericMessageMeta.NOT_VALID_VALUE_FIELD,
                     "post_updated_at",
                     Response.Status.BAD_REQUEST);
         }

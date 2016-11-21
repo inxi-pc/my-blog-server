@@ -5,18 +5,34 @@ import java.lang.reflect.Field;
 public class MessageFactory {
 
     public static String getFormattedMessage(MessageMeta meta) {
-        return meta.getFormat();
+        if (!meta.hasPlaceholder()) {
+            return meta.getFormat();
+        } else {
+            throw new IllegalArgumentException("Require literal meta but got generic meta");
+        }
     }
 
     public static String getFormattedMessage(MessageMeta meta, String wrap) {
-        return String.format(meta.getFormat(), wrap);
+        if (meta.hasPlaceholder()) {
+            return String.format(meta.getFormat(), wrap);
+        } else {
+            throw new IllegalArgumentException("Require generic meta but got literal meta");
+        }
     }
 
     public static String getFormattedMessage(MessageMeta meta, Class clazz) {
-        return String.format(meta.getFormat(), clazz.getName());
+        if (meta.hasPlaceholder()) {
+            return String.format(meta.getFormat(), clazz.getName());
+        } else {
+            throw new IllegalArgumentException("Require generic meta but got literal meta");
+        }
     }
 
     public static String getFormattedMessage(MessageMeta meta, Field field) {
-        return String.format(meta.getFormat(), field.getName().replace("_", " "));
+        if (meta.hasPlaceholder()) {
+            return String.format(meta.getFormat(), field.getName().replace("_", " "));
+        } else {
+            throw new IllegalArgumentException("Require generic meta but got literal meta");
+        }
     }
 }
