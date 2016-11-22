@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.xml.bind.DatatypeConverter;
@@ -51,7 +52,7 @@ public class App extends ResourceConfig {
      * Register component
      *
      */
-    private App() {
+    public App() {
         packages("myblog.resource");
 
         register(MyExceptionMapper.class);

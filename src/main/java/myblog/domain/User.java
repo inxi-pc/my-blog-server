@@ -1,5 +1,6 @@
 package myblog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import myblog.Helper;
 import myblog.annotation.*;
 import myblog.exception.GenericException;
@@ -56,6 +57,7 @@ public class User extends Domain implements Principal, Credential {
     private Boolean user_enabled;
 
     @Override
+    @JsonIgnore
     public String getName() {
         return this.user_name;
     }
@@ -213,7 +215,7 @@ public class User extends Domain implements Principal, Credential {
         return user_updated_at;
     }
 
-    public boolean getUser_enabled() {
+    public Boolean getUser_enabled() {
         return user_enabled;
     }
 
@@ -228,7 +230,7 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
-    public void setUser_username(String userName) {
+    public void setUser_name(String userName) {
         if (isValidUserName(userName)) {
             this.user_name = userName;
         } else {
