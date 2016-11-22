@@ -51,4 +51,19 @@ public class UserResourceTest extends JerseyTest {
         Response response = target("/users/register").request().post(userEntity);
         Assert.assertEquals(Response.Status.Family.SUCCESSFUL, response.getStatusInfo().getFamily());
     }
+
+    @Test
+    public void userLoginTest() {
+        User user = new User();
+        user.setUser_name("test");
+        user.setUser_password("testtestt");
+        Entity<User> userEntity = Entity.entity(user, MediaType.APPLICATION_JSON_TYPE);
+        Response response = target("/users/login").request().post(userEntity);
+        Assert.assertEquals(Response.Status.Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+        String tokenAndUser = response.readEntity(String.class);
+        if (tokenAndUser.length() <= 0) {
+            Assert.fail("Invalid response entity");
+        }
+    }
 }
