@@ -25,9 +25,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(User user) {
         if (user == null) {
-            throw new GenericException(
-                    LiteralMessageMeta.NULL_USER_TO_REGISTER,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_USER_TO_REGISTER, Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();
 
@@ -43,9 +41,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUser(User user) {
         if (user == null) {
-            throw new GenericException(
-                    LiteralMessageMeta.NULL_USER_TO_LOGIN,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_USER_TO_LOGIN, Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();
 

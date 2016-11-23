@@ -32,9 +32,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public int createUser(User insert) {
         if (insert == null) {
-            throw new GenericException(
-                    GenericMessageMeta.NULL_OBJECT_TO_INSERT,
-                    User.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT_TO_INSERT, User.class, Response.Status.BAD_REQUEST);
         }
 
         insert.setDefaultableFieldValue();
@@ -50,9 +48,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public boolean deleteUser(int userId) {
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(
-                    GenericMessageMeta.INVALID_ID_TO_DELETE,
-                    "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_DELETE, "user_id", Response.Status.BAD_REQUEST);
         }
 
         User user = new User();
@@ -71,9 +67,7 @@ public class UserDaoMyBatisImpl implements UserDao {
         }
 
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(
-                    GenericMessageMeta.INVALID_ID_TO_UPDATE,
-                    "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_UPDATE, "user_id", Response.Status.BAD_REQUEST);
         }
 
         update.checkFieldUpdatable();
@@ -87,9 +81,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public User getUserById(int userId) {
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(
-                    GenericMessageMeta.INVALID_ID_TO_QUERY,
-                    "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_QUERY, "user_id", Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -101,15 +93,11 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public User getUserByCredential(Credential credential) {
         if (credential == null) {
-            throw new GenericException(
-                    LiteralMessageMeta.NULL_CREDENTIAL_TO_QUERY,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_CREDENTIAL_TO_QUERY, Response.Status.BAD_REQUEST);
         }
 
         if (!credential.hasIdentifier()) {
-            throw new GenericException(
-                    LiteralMessageMeta.ILLEGAL_QUANTITY_IDENTIFIER,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.ILLEGAL_QUANTITY_IDENTIFIER, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -121,15 +109,11 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public List<User> getUsersByIds(int[] userIds) {
         if (userIds == null) {
-            throw new GenericException(
-                    LiteralMessageMeta.NULL_PARAM_TO_QUERY,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
         }
 
         if (userIds.length <= 0) {
-            throw new GenericException(
-                    LiteralMessageMeta.EMPTY_PARAM_TO_QUERY,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -141,15 +125,11 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public List<User> getUsersByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new GenericException(
-                    LiteralMessageMeta.NULL_PARAM_TO_QUERY,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
         }
 
         if (params.size() <= 0) {
-            throw new GenericException(
-                    LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, 
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

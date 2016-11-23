@@ -15,7 +15,6 @@ import java.util.List;
 public class PostService {
 
     /**
-     *
      * @param insert
      * @return
      */
@@ -31,7 +30,6 @@ public class PostService {
     }
 
     /**
-     *
      * @param postId
      * @return
      */
@@ -42,15 +40,11 @@ public class PostService {
         if (myBatisPostDao.getPostById(postId) != null) {
             return myBatisPostDao.deletePost(postId);
         } else {
-            throw new GenericException(
-                    GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE,
-                    Post.class,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE, Post.class, Response.Status.BAD_REQUEST);
         }
     }
 
     /**
-     *
      * @param postId
      * @param update
      * @return
@@ -64,15 +58,11 @@ public class PostService {
 
             return myBatisPostDao.updatePost(postId, update);
         } else {
-            throw new GenericException(
-                    GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE,
-                    Post.class,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE, Post.class, Response.Status.BAD_REQUEST);
         }
     }
 
     /**
-     *
      * @param postId
      * @return
      */
@@ -85,7 +75,6 @@ public class PostService {
     }
 
     /**
-     *
      * @param post
      * @return
      */
@@ -99,7 +88,6 @@ public class PostService {
     }
 
     /**
-     *
      * @param post
      * @param page
      * @param sort

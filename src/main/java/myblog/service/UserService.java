@@ -17,9 +17,10 @@ import java.util.Map;
 public class UserService {
 
     /**
+     * Register a user
      *
-     * @param register
-     * @return
+     * @param register an {@link User}
+     * @return return the created user id
      */
     public static int registerUser(User register) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
@@ -33,17 +34,15 @@ public class UserService {
 
             return userDao.createUser(register);
         } else {
-            throw new GenericException(
-                    GenericMessageMeta.EXISTED_OBJECT,
-                    User.class,
-                    Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.EXISTED_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
     }
 
     /**
+     * Login by user object provided information
      *
-     * @param login
-     * @return
+     * @param login an {@link User}
+     * @return return the success token and user object
      */
     public static Map<String, Object> loginUser(User login) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
@@ -51,15 +50,10 @@ public class UserService {
 
         User user = userDao.getUserByCredential(login);
         if (user == null) {
-            throw new GenericException(
-                    GenericMessageMeta.NOT_FOUND_OBJECT,
-                    User.class,
-                    Response.Status.UNAUTHORIZED);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, User.class, Response.Status.UNAUTHORIZED);
         }
-        if (!user.validPassword(login.getPassword())) {
-            throw new GenericException(
-                    LiteralMessageMeta.INCORRECT_PASSWORD,
-                    Response.Status.UNAUTHORIZED);
+        if (!user.validatePassword(login.getPassword())) {
+            throw new GenericException(LiteralMessageMeta.INCORRECT_PASSWORD, Response.Status.UNAUTHORIZED);
         }
 
         Map<String, Object> header = new HashMap<String, Object>();

@@ -31,9 +31,7 @@ public class CategoryService {
                 insert.setCategory_level(parent.getCategory_level() + 1);
                 insert.setCategory_root_id(parent.getCategory_root_id());
             } else {
-                throw new GenericException(
-                        LiteralMessageMeta.NOT_FOUND_PARENT_CATEGORY,
-                        Response.Status.BAD_REQUEST);
+                throw new GenericException(LiteralMessageMeta.NOT_FOUND_PARENT_CATEGORY, Response.Status.BAD_REQUEST);
             }
         } else {
             insert.setCategory_level(1);
@@ -60,9 +58,7 @@ public class CategoryService {
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
             return myBatisCategoryDao.deleteCategory(categoryId);
         } else {
-            throw new GenericException(
-                    GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE,
-                    Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -82,9 +78,7 @@ public class CategoryService {
 
             return myBatisCategoryDao.updateCategory(categoryId, update);
         } else {
-            throw new GenericException(
-                    GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE,
-                    Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 

@@ -25,5 +25,5 @@ public interface Credential {
 
     void encryptPassword();
 
-    boolean validPassword(String compared);
+    boolean validatePassword(String compared);
 }
