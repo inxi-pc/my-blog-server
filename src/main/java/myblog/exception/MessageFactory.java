@@ -30,7 +30,7 @@ public class MessageFactory {
 
     public static String getFormattedMessage(MessageMeta meta, Field field) {
         if (meta.hasPlaceholder()) {
-            return String.format(meta.getFormat(), field.getName().replace("_", " "));
+            return String.format(meta.getFormat(), field.getName());
         } else {
             throw new IllegalArgumentException("Require generic meta but got literal meta");
         }
