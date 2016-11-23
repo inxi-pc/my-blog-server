@@ -34,7 +34,7 @@ public class UserService {
             return userDao.createUser(register);
         } else {
             throw new GenericException(
-                    GenericMessageMeta.EXIST_OBJECT,
+                    GenericMessageMeta.EXISTED_OBJECT,
                     User.class,
                     Response.Status.BAD_REQUEST);
         }

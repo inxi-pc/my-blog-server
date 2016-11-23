@@ -34,7 +34,7 @@ public enum GenericMessageMeta implements MessageMeta {
 
     NOT_FOUND_OBJECT_TO_UPDATE("Object %s: Not found to do update"),
 
-    EXIST_OBJECT("Object %s: Exist already");
+    EXISTED_OBJECT("Object %s: Exist already");
 
     private String format;
 
