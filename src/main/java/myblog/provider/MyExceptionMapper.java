@@ -34,7 +34,7 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         }
 
         if (App.isDebug()) {
-            e.printStackTrace();
+            ex.printStackTrace();
             return Response.status(ex.getResponse().getStatus())
                     .entity(ex)
                     .type(MediaType.APPLICATION_JSON)

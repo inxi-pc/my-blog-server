@@ -69,4 +69,16 @@ public class UserService {
 
         return result;
     }
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    public static User getUserById(int userId) {
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        return userDao.getUserById(userId);
+    }
 }
