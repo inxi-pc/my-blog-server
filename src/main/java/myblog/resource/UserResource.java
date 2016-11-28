@@ -1,9 +1,11 @@
 package myblog.resource;
 
+import myblog.domain.Post;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.exception.LiteralMessageMeta;
+import myblog.service.PostService;
 import myblog.service.UserService;
 
 import javax.annotation.security.PermitAll;
@@ -15,6 +17,61 @@ import java.util.Map;
 
 @Path("/users")
 public class UserResource {
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(User insert) {
+        if (insert == null) {
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, User.class, Response.Status.BAD_REQUEST);
+        }
+        insert.checkFieldOuterSettable();
+
+        int userId = UserService.createUser(insert);
+
+        return Response.ok(userId).build();
+    }
+
+    @DELETE
+    @Path("/{postId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser(Integer userId) {
+        if (userId == null) {
+            throw new GenericException(GenericMessageMeta.NULL_ID, User.class, Response.Status.BAD_REQUEST);
+        }
+        if (!User.isValidUserId(userId)) {
+            throw new GenericException(GenericMessageMeta.INVALID_ID, User.class, Response.Status.BAD_REQUEST);
+        }
+
+        if (UserService.deleteUser(userId)) {
+            return Response.noContent().build();
+        } else {
+            throw new InternalServerErrorException();
+        }
+    }
+
+    @PUT
+    @Path("/{userId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@PathParam("userId") Integer userId, User update) {
+        if (userId == null) {
+            throw new GenericException(GenericMessageMeta.NULL_ID, User.class, Response.Status.BAD_REQUEST);
+        }
+        if (!User.isValidUserId(userId)) {
+            throw new GenericException(GenericMessageMeta.INVALID_ID, User.class, Response.Status.BAD_REQUEST);
+        }
+        if (update == null) {
+            return Response.noContent().build();
+        }
+        update.checkFieldOuterSettable();
+
+        if (UserService.updateUser(userId, update)) {
+            return Response.noContent().build();
+        } else {
+            throw new InternalServerErrorException();
+        }
+    }
 
     @GET
     @Path("/{userId}")

@@ -40,7 +40,7 @@ public class PostService {
         if (myBatisPostDao.getPostById(postId) != null) {
             return myBatisPostDao.deletePost(postId);
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, Post.class, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -58,7 +58,7 @@ public class PostService {
 
             return myBatisPostDao.updatePost(postId, update);
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, Post.class, Response.Status.BAD_REQUEST);
         }
     }
 

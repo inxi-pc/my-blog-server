@@ -21,7 +21,7 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category insert) {
         if (insert == null) {
-            throw new GenericException(GenericMessageMeta.NULL_OBJECT_TO_INSERT, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, Category.class, Response.Status.BAD_REQUEST);
         }
         insert.checkFieldOuterSettable();
 
@@ -35,10 +35,10 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@PathParam("categoryId") Integer categoryId) {
         if (categoryId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_DELETE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Category.class, Response.Status.BAD_REQUEST);
         }
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_DELETE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Category.class, Response.Status.BAD_REQUEST);
         }
 
         if (CategoryService.deleteCategory(categoryId)) {
@@ -54,10 +54,10 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@PathParam("categoryId") Integer categoryId, Category update) {
         if (categoryId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_UPDATE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Category.class, Response.Status.BAD_REQUEST);
         }
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_UPDATE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Category.class, Response.Status.BAD_REQUEST);
         }
         if (update == null) {
             return Response.noContent().build();
@@ -76,10 +76,10 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Category getCategoryById(@PathParam("categoryId") Integer categoryId) {
         if (categoryId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_QUERY, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Category.class, Response.Status.BAD_REQUEST);
         }
         if (!Category.isValidCategoryId(categoryId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_QUERY, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Category.class, Response.Status.BAD_REQUEST);
         }
 
         Category category = CategoryService.getCategoryById(categoryId);
@@ -102,28 +102,28 @@ public class CategoryResource {
             if (Category.isValidCategoryParentId(categoryParentId)) {
                 category.setCategory_parent_id(categoryParentId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_parent_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_parent_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryRootId != null) {
             if (Category.isValidCategoryRootId(categoryRootId)) {
                 category.setCategory_root_id(categoryRootId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_root_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_root_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryName != null) {
             if (Category.isValidCategoryName(categoryName)) {
                 category.setCategory_name_en(categoryName);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_name", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_name", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryLevel != null) {
             if (Category.isValidCategoryLevel(categoryLevel)) {
                 category.setCategory_level(categoryLevel);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_level", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_level", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryEnabled != null) {
@@ -156,28 +156,28 @@ public class CategoryResource {
             if (Category.isValidCategoryParentId(categoryParentId)) {
                 category.setCategory_parent_id(categoryParentId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_parent_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_parent_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryRootId != null) {
             if (Category.isValidCategoryRootId(categoryRootId)) {
                 category.setCategory_root_id(categoryRootId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_root_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_root_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryName != null) {
             if (Category.isValidCategoryName(categoryName)) {
                 category.setCategory_name_en(categoryName);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_name", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_name", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryLevel != null) {
             if (Category.isValidCategoryLevel(categoryLevel)) {
                 category.setCategory_level(categoryLevel);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_level", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_level", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryEnabled != null) {

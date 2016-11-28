@@ -17,6 +17,21 @@ import java.util.Map;
 public class UserService {
 
     /**
+     *
+     * @param insert
+     * @return
+     */
+    public static int createUser(User insert) {
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        insert.setDefaultableFieldValue();
+
+        return userDao.createUser(insert);
+    }
+
+
+    /**
      * Register a user
      *
      * @param register an {@link User}
@@ -27,15 +42,61 @@ public class UserService {
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
         if (userDao.getUserByCredential(register) == null) {
-            register.setDefaultUser_enabled();
             register.setDefaultUser_created_at();
             register.setDefaultUser_updated_at();
-            register.encryptPassword();
+            register.setDefaultUser_enabled();
 
             return userDao.createUser(register);
         } else {
             throw new GenericException(GenericMessageMeta.EXISTED_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
+    }
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    public static boolean deleteUser(int userId) {
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        if (userDao.getUserById(userId) != null) {
+            return userDao.deleteUser(userId);
+        } else {
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, User.class, Response.Status.BAD_REQUEST);
+        }
+    }
+
+    /**
+     *
+     * @param userId
+     * @param update
+     * @return
+     */
+    public static boolean updateUser(int userId, User update) {
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        if (userDao.getUserById(userId) != null) {
+            update.setDefaultUser_updated_at();
+
+            return userDao.updateUser(userId, update);
+        } else {
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, User.class, Response.Status.BAD_REQUEST);
+        }
+    }
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    public static User getUserById(int userId) {
+        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        return userDao.getUserById(userId);
     }
 
     /**
@@ -68,17 +129,5 @@ public class UserService {
         result.put("user", user);
 
         return result;
-    }
-
-    /**
-     *
-     * @param userId
-     * @return
-     */
-    public static User getUserById(int userId) {
-        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
-                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
-
-        return userDao.getUserById(userId);
     }
 }

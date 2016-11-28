@@ -223,7 +223,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserId(userId)) {
             this.user_id = userId;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_id", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -231,7 +231,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserName(userName)) {
             this.user_name = userName;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "username", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "username", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -243,7 +243,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserEmail(userEmail)) {
             this.user_email = userEmail;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "user_email", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_email", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -251,7 +251,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserPassword(userPassword)) {
             this.user_password = userPassword;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "user_password", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_password", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -259,7 +259,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserCreatedAt(userCreatedAt)) {
             this.user_created_at = userCreatedAt;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "user_created_at", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_created_at", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -267,7 +267,7 @@ public class User extends Domain implements Principal, Credential {
         if (isValidUserUpdatedAt(userUpdatedAt)) {
             this.user_updated_at = userUpdatedAt;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "user_updated_at", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_updated_at", Response.Status.BAD_REQUEST);
         }
     }
 

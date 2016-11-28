@@ -153,7 +153,7 @@ public class Category extends Domain {
         if (isValidCategoryId(categoryId)) {
             this.category_id = categoryId;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -161,7 +161,7 @@ public class Category extends Domain {
         if (isValidCategoryParentId(categoryParentId)) {
             this.category_parent_id = categoryParentId;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_parent_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_parent_id", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -169,7 +169,7 @@ public class Category extends Domain {
         if (isValidCategoryRootId(categoryRootId)) {
             this.category_root_id = categoryRootId;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_root_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_root_id", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -177,7 +177,7 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameEn)) {
             this.category_name_en = categoryNameEn;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_name_en", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_en", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -185,7 +185,7 @@ public class Category extends Domain {
         if (isValidCategoryName(categoryNameCn)) {
             this.category_name_cn = categoryNameCn;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_name_cn", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_cn", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -193,7 +193,7 @@ public class Category extends Domain {
         if (isValidCategoryLevel(categoryLevel)) {
             this.category_level = categoryLevel;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_level", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_level", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -205,7 +205,7 @@ public class Category extends Domain {
         if (isValidCategoryCreatedAt(categoryCreatedAt)) {
             this.category_created_at = categoryCreatedAt;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_created_at", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_created_at", Response.Status.BAD_REQUEST);
         }
     }
 
@@ -213,7 +213,7 @@ public class Category extends Domain {
         if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
             this.category_updated_at = categoryUpdatedAt;
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_VALID_VALUE_FIELD, "category_updated_at", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_updated_at", Response.Status.BAD_REQUEST);
         }
     }
 

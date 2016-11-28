@@ -32,7 +32,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public int createUser(User insert) {
         if (insert == null) {
-            throw new GenericException(GenericMessageMeta.NULL_OBJECT_TO_INSERT, User.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
 
         insert.setDefaultableFieldValue();
@@ -48,7 +48,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public boolean deleteUser(int userId) {
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_DELETE, "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "user_id", Response.Status.BAD_REQUEST);
         }
 
         User user = new User();
@@ -67,7 +67,7 @@ public class UserDaoMyBatisImpl implements UserDao {
         }
 
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_UPDATE, "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "user_id", Response.Status.BAD_REQUEST);
         }
 
         update.checkFieldUpdatable();
@@ -81,7 +81,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public User getUserById(int userId) {
         if (!User.isValidUserId(userId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_QUERY, "user_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "user_id", Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

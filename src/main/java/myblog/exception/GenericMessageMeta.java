@@ -10,29 +10,17 @@ public enum GenericMessageMeta implements MessageMeta {
 
     NOT_UPDATABLE_FIELD("Field %s: Not updatable"),
 
-    NOT_VALID_VALUE_FIELD("Field %s: Not valid value"),
+    INVALID_VALUE_FIELD("Field %s: Not valid value"),
 
-    NULL_OBJECT_TO_INSERT("Object %s: Null to do insert"),
+    NULL_OBJECT("Object %s: Null"),
 
-    NULL_ID_TO_DELETE("Id %s: Null to do delete"),
+    NULL_ID("Id %s: Null"),
 
-    NULL_ID_TO_UPDATE("Id %s: Null to do update"),
+    INVALID_ID("Id %s: Invalid value"),
 
-    NULL_ID_TO_QUERY("Id %s: Null to do query"),
-
-    INVALID_ID_TO_DELETE("Id %s: Invalid value to do delete"),
-
-    INVALID_ID_TO_UPDATE("Id %s: Invalid value to do update"),
-
-    INVALID_ID_TO_QUERY("Id %s: Invalid value to do query"),
-
-    INVALID_PARAM_TO_QUERY("Param %s: Invalid value to do query"),
+    INVALID_PARAM("Param %s: Invalid value"),
 
     NOT_FOUND_OBJECT("Object %s: Not found"),
-
-    NOT_FOUND_OBJECT_TO_DELETE("Object %s: Not found to do delete"),
-
-    NOT_FOUND_OBJECT_TO_UPDATE("Object %s: Not found to do update"),
 
     EXISTED_OBJECT("Object %s: Exist already");
 

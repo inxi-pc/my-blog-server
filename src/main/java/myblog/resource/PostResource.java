@@ -21,7 +21,7 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPost(Post insert) {
         if (insert == null) {
-            throw new GenericException(GenericMessageMeta.NULL_OBJECT_TO_INSERT, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, Post.class, Response.Status.BAD_REQUEST);
         }
         insert.checkFieldOuterSettable();
 
@@ -35,10 +35,10 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePost(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_DELETE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Post.class, Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_DELETE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Post.class, Response.Status.BAD_REQUEST);
         }
 
         if (PostService.deletePost(postId)) {
@@ -54,10 +54,10 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePost(@PathParam("postId") Integer postId, Post update) {
         if (postId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_UPDATE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Post.class, Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_UPDATE, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Post.class, Response.Status.BAD_REQUEST);
         }
         if (update == null) {
             return Response.noContent().build();
@@ -76,10 +76,10 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Post getPostById(@PathParam("postId") Integer postId) {
         if (postId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_ID_TO_QUERY, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, Post.class, Response.Status.BAD_REQUEST);
         }
         if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_QUERY, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, Post.class, Response.Status.BAD_REQUEST);
         }
 
         Post post = PostService.getPostById(postId);
@@ -102,21 +102,21 @@ public class PostResource {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "user_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "user_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_id", Response.Status.BAD_REQUEST);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "post_title", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "post_title", Response.Status.BAD_REQUEST);
             }
         }
         if (postPublished != null) {
@@ -151,21 +151,21 @@ public class PostResource {
             if (Post.isValidUserId(userId)) {
                 post.setUser_id(userId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "user_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "user_id", Response.Status.BAD_REQUEST);
             }
         }
         if (categoryId != null) {
             if (Post.isValidCategoryId(categoryId)) {
                 post.setCategory_id(categoryId);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "category_id", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_id", Response.Status.BAD_REQUEST);
             }
         }
         if (postTitle != null) {
             if (Post.isValidPostTitle(postTitle)) {
                 post.setPost_title(postTitle);
             } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM_TO_QUERY, "post_title", Response.Status.BAD_REQUEST);
+                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "post_title", Response.Status.BAD_REQUEST);
             }
         }
         if (postPublished != null) {

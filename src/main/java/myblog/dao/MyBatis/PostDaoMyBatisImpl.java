@@ -31,7 +31,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public int createPost(Post insert) {
         if (insert == null) {
-            throw new GenericException(GenericMessageMeta.NULL_OBJECT_TO_INSERT, Post.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, Post.class, Response.Status.BAD_REQUEST);
         }
 
         insert.setDefaultableFieldValue();
@@ -47,7 +47,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public boolean deletePost(int postId) {
         if (Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_DELETE, "post_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
         }
 
         Post post = new Post();
@@ -66,7 +66,7 @@ public class PostDaoMyBatisImpl implements PostDao {
         }
 
         if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_UPDATE, "post_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
         }
 
         update.checkFieldUpdatable();
@@ -80,7 +80,7 @@ public class PostDaoMyBatisImpl implements PostDao {
     @Override
     public Post getPostById(int postId) {
         if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID_TO_QUERY, "post_id", Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

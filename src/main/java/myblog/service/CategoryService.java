@@ -58,7 +58,7 @@ public class CategoryService {
         if (myBatisCategoryDao.getCategoryById(categoryId) != null) {
             return myBatisCategoryDao.deleteCategory(categoryId);
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_DELETE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -78,7 +78,7 @@ public class CategoryService {
 
             return myBatisCategoryDao.updateCategory(categoryId, update);
         } else {
-            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT_TO_UPDATE, Category.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, Category.class, Response.Status.BAD_REQUEST);
         }
     }
 
