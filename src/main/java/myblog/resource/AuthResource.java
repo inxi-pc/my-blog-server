@@ -1,13 +1,8 @@
 package myblog.resource;
 
-
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
-import myblog.App;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
-import myblog.exception.LiteralMessageMeta;
 import myblog.service.AuthService;
 
 import javax.annotation.security.PermitAll;
@@ -25,13 +20,13 @@ public class AuthResource {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerUser(User user) {
+    public Response register(User user) {
         if (user == null) {
             throw new GenericException(GenericMessageMeta.NULL_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();
 
-        int userId = AuthService.registerUser(user);
+        int userId = AuthService.register(user);
 
         return Response.created(URI.create("/users/" + userId)).build();
     }
@@ -41,26 +36,31 @@ public class AuthResource {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response loginUser(User user) {
+    public Response login(User user) {
         if (user == null) {
             throw new GenericException(GenericMessageMeta.NULL_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
         user.checkFieldOuterSettable();
 
-        Map<String, Object> result = AuthService.loginUser(user);
+        Map<String, Object> result = AuthService.login(user);
 
         return Response.ok(result).build();
     }
 
-    @PermitAll
     @POST
     @Path("/ping/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response refreshToken(@PathParam("userId") Integer userId) {
+    public Response ping(@PathParam("userId") Integer userId) {
         if (userId == null) {
-            throw new GenericException(GenericMessageMeta.NULL_OBJECT, User.class, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_ID, User.class, Response.Status.BAD_REQUEST);
         }
 
-        return Response.noContent().build();
+        if (!User.isValidUserId(userId)) {
+            throw new GenericException(GenericMessageMeta.INVALID_ID, User.class, Response.Status.BAD_REQUEST);
+        }
+
+        Map<String, Object> result = AuthService.ping(userId);
+
+        return Response.ok(result).build();
     }
 }

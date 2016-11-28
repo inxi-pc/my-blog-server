@@ -22,7 +22,7 @@ public class AuthService {
      * @param register an {@link User}
      * @return return the created user id
      */
-    public static int registerUser(User register) {
+    public static int register(User register) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
@@ -38,12 +38,30 @@ public class AuthService {
     }
 
     /**
+     * Generate a new token by user
+     *
+     * @param token an {@link User}
+     * @return return the token
+     */
+    private static String refreshToken(User token) {
+        Map<String, Object> header = new HashMap<String, Object>();
+        header.put("typ", "JWT");
+        User tokenUser = new User();
+        tokenUser.setUser_id(token.getUser_id());
+
+        return Jwts.builder().setHeader(header)
+                .setClaims(tokenUser.convertToHashMap(null))
+                .setExpiration(App.getJwtExpiredTime())
+                .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
+    }
+
+    /**
      * Login by user object provided information
      *
      * @param login an {@link User}
      * @return return the success token and user object
      */
-    public static Map<String, Object> loginUser(User login) {
+    public static Map<String, Object> login(User login) {
         UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
@@ -63,20 +81,16 @@ public class AuthService {
     }
 
     /**
-     * Generate a new token by user
-     *
-     * @param token an {@link User}
-     * @return return the token
+     * @param userId
+     * @return
      */
-    public static String refreshToken(User token) {
-        Map<String, Object> header = new HashMap<String, Object>();
-        header.put("typ", "JWT");
-        User tokenUser = new User();
-        tokenUser.setUser_id(token.getUser_id());
+    public static Map<String, Object> ping(int userId) {
+        User user = new User();
+        user.setUser_id(userId);
 
-        return Jwts.builder().setHeader(header)
-                .setClaims(tokenUser.convertToHashMap(null))
-                .setExpiration(App.getJwtExpiredTime())
-                .signWith(SignatureAlgorithm.HS256, App.getJwtKey()).compact();
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("token", refreshToken(user));
+
+        return result;
     }
 }

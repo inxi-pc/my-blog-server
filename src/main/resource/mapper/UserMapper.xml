@@ -3,22 +3,22 @@
 <mapper namespace="myblog.dao.MyBatis.Mapper.UserMapper">
     <insert id="createUser" useGeneratedKeys="true" keyProperty="user_id">
         INSERT INTO user(
-            user_name,
-            user_telephone,
-            user_email,
-            user_password,
-            user_enabled,
-            user_created_at,
-            user_updated_at
+        user_name,
+        user_telephone,
+        user_email,
+        user_password,
+        user_enabled,
+        user_created_at,
+        user_updated_at
         )
         VALUES(
-            #{user_name},
-            #{user_telephone},
-            #{user_email},
-            #{user_password},
-            #{user_enabled},
-            #{user_created_at},
-            #{user_updated_at}
+        #{user_name},
+        #{user_telephone},
+        #{user_email},
+        #{user_password},
+        #{user_enabled},
+        #{user_created_at},
+        #{user_updated_at}
         )
     </insert>
 
