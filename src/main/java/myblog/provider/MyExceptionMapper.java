@@ -23,7 +23,7 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         WebApplicationException ex;
         if (e instanceof WebApplicationException) {
             ex = (WebApplicationException) e;
-        } else if (e instanceof JsonMappingException){
+        } else if (e instanceof JsonMappingException) {
             ex = new BadRequestException(e.getMessage(), e);
         } else if (e instanceof JwtException) {
             ex = new WebApplicationException(e, Response.Status.UNAUTHORIZED);

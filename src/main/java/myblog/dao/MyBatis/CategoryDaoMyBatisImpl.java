@@ -16,12 +16,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
 
     /**
      * Reference of MyBatisDaoFactory instance
-     *
      */
     private MyBatisDaoFactory myBatisDaoFactory;
 
     /**
-     *
      * @param factory
      */
     CategoryDaoMyBatisImpl(MyBatisDaoFactory factory) {
@@ -93,11 +91,11 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByIds(int[] categoryIds) {
         if (categoryIds == null) {
-            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_IDS, Category.class, Response.Status.BAD_REQUEST);
         }
 
         if (categoryIds.length <= 0) {
-            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.EMPTY_IDS, Category.class, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -109,11 +107,11 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     @Override
     public List<Category> getCategoriesByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
         if (params.size() <= 0) {
-            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

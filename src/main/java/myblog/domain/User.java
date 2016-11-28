@@ -56,6 +56,70 @@ public class User extends Domain implements Principal, Credential {
     @Updatable
     private Boolean user_enabled;
 
+    private static byte[] genSalt() throws NoSuchAlgorithmException {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+
+        return salt;
+    }
+
+    private static String convertToHex(byte[] array) {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if (paddingLength > 0) {
+            return String.format("%0" + paddingLength + "d", 0) + hex;
+        } else {
+            return hex;
+        }
+    }
+
+    private static byte[] fromHex(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        }
+
+        return bytes;
+    }
+
+    public static boolean isValidUserId(Integer userId) {
+        return userId == null || userId > 0;
+    }
+
+    public static boolean isValidUserName(String userName) {
+        if (userName == null) {
+            return true;
+        } else {
+            Pattern p = Pattern.compile("[a-zA-Z_]+");
+
+            return !userName.isEmpty() && userName.length() < 30 && p.matcher(userName).matches();
+        }
+    }
+
+    public static boolean isValidUserEmail(String userEmail) {
+        if (userEmail == null) {
+            return true;
+        } else {
+            Pattern p = Pattern.compile("[a-zA-Z1-9_-]+@[a-zA-Z1-9_-]+\\.\\w+");
+
+            return !userEmail.isEmpty() && userEmail.length() < 30 && p.matcher(userEmail).matches();
+        }
+    }
+
+    public static boolean isValidUserPassword(String userPassword) {
+        return userPassword == null || (userPassword.length() > 8 && userPassword.length() < 200);
+    }
+
+    public static boolean isValidUserCreatedAt(String userCreatedAt) {
+        return userCreatedAt == null || Helper.isValidDataTimeFormat(userCreatedAt);
+    }
+
+    public static boolean isValidUserUpdatedAt(String userUpdatedAt) {
+        return userUpdatedAt == null || Helper.isValidDataTimeFormat(userUpdatedAt);
+    }
+
     @Override
     @JsonIgnore
     public String getName() {
@@ -149,7 +213,7 @@ public class User extends Domain implements Principal, Credential {
             byte[] testHash = skf.generateSecret(spec).getEncoded();
 
             int diff = hash.length ^ testHash.length;
-            for(int i = 0; i < hash.length && i < testHash.length; i++) {
+            for (int i = 0; i < hash.length && i < testHash.length; i++) {
                 diff |= hash[i] ^ testHash[i];
             }
 
@@ -159,64 +223,8 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
-    private static byte[] genSalt() throws NoSuchAlgorithmException {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        byte[] salt = new byte[16];
-        sr.nextBytes(salt);
-
-        return salt;
-    }
-
-    private static String convertToHex(byte[] array) {
-        BigInteger bi = new BigInteger(1, array);
-        String hex = bi.toString(16);
-        int paddingLength = (array.length * 2) - hex.length();
-        if(paddingLength > 0) {
-            return String.format("%0" + paddingLength + "d", 0) + hex;
-        } else {
-            return hex;
-        }
-    }
-
-    private static byte[] fromHex(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for(int i = 0; i<bytes.length ;i++) {
-            bytes[i] = (byte)Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
-        }
-
-        return bytes;
-    }
-
     public Integer getUser_id() {
         return user_id;
-    }
-
-    public String getUser_name() {
-        return user_name;
-    }
-
-    public Integer getUser_telephone() {
-        return user_telephone;
-    }
-
-    public String getUser_email() {
-        return user_email;
-    }
-
-    public String getUser_password() {
-        return user_password;
-    }
-
-    public String getUser_created_at() {
-        return user_created_at;
-    }
-
-    public String getUser_updated_at() {
-        return user_updated_at;
-    }
-
-    public Boolean getUser_enabled() {
-        return user_enabled;
     }
 
     public void setUser_id(Integer userId) {
@@ -227,6 +235,10 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
+    public String getUser_name() {
+        return user_name;
+    }
+
     public void setUser_name(String userName) {
         if (isValidUserName(userName)) {
             this.user_name = userName;
@@ -235,8 +247,16 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
+    public Integer getUser_telephone() {
+        return user_telephone;
+    }
+
     public void setUser_telephone(Integer userTelephone) {
         this.user_telephone = userTelephone;
+    }
+
+    public String getUser_email() {
+        return user_email;
     }
 
     public void setUser_email(String userEmail) {
@@ -247,12 +267,20 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
+    public String getUser_password() {
+        return user_password;
+    }
+
     public void setUser_password(String userPassword) {
         if (isValidUserPassword(userPassword)) {
             this.user_password = userPassword;
         } else {
             throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_password", Response.Status.BAD_REQUEST);
         }
+    }
+
+    public String getUser_created_at() {
+        return user_created_at;
     }
 
     public void setUser_created_at(String userCreatedAt) {
@@ -263,12 +291,20 @@ public class User extends Domain implements Principal, Credential {
         }
     }
 
+    public String getUser_updated_at() {
+        return user_updated_at;
+    }
+
     public void setUser_updated_at(String userUpdatedAt) {
         if (isValidUserUpdatedAt(userUpdatedAt)) {
             this.user_updated_at = userUpdatedAt;
         } else {
             throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_updated_at", Response.Status.BAD_REQUEST);
         }
+    }
+
+    public Boolean getUser_enabled() {
+        return user_enabled;
     }
 
     public void setUser_enabled(Boolean userEnabled) {
@@ -285,41 +321,5 @@ public class User extends Domain implements Principal, Credential {
 
     public void setDefaultUser_enabled() {
         this.user_enabled = true;
-    }
-
-    public static boolean isValidUserId(Integer userId) {
-        return userId == null || userId > 0;
-    }
-
-    public static boolean isValidUserName(String userName) {
-        if (userName == null) {
-            return true;
-        } else {
-            Pattern p = Pattern.compile("[a-zA-Z_]+");
-
-            return !userName.isEmpty() && userName.length() < 30 && p.matcher(userName).matches();
-        }
-    }
-
-    public static boolean isValidUserEmail(String userEmail) {
-        if (userEmail == null) {
-            return true;
-        } else {
-            Pattern p = Pattern.compile("[a-zA-Z1-9_-]+@[a-zA-Z1-9_-]+\\.\\w+");
-
-            return !userEmail.isEmpty() && userEmail.length() < 30 && p.matcher(userEmail).matches();
-        }
-    }
-
-    public static boolean isValidUserPassword(String userPassword) {
-        return userPassword == null || (userPassword.length() > 8 && userPassword.length() < 200);
-    }
-
-    public static boolean isValidUserCreatedAt(String userCreatedAt) {
-        return userCreatedAt == null || Helper.isValidDataTimeFormat(userCreatedAt);
-    }
-
-    public static boolean isValidUserUpdatedAt(String userUpdatedAt) {
-        return userUpdatedAt == null || Helper.isValidDataTimeFormat(userUpdatedAt);
     }
 }

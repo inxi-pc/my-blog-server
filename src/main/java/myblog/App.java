@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.xml.bind.DatatypeConverter;
@@ -27,30 +26,24 @@ import java.util.Properties;
 
 /**
  * My blog main class
- *
  */
 public class App extends ResourceConfig {
 
     /**
      * Server root URI
-     *
      */
     private static final URI BASE_URI = URI.create("http://localhost:8888/");
-
-    /**
-     * App config
-     *
-     */
-    private static Properties config;
-
     /**
      * App logger
      */
     public static Logger logger = LogManager.getLogger(App.class);
+    /**
+     * App config
+     */
+    private static Properties config;
 
     /**
      * Register component
-     *
      */
     public App() {
         packages("myblog.resource");

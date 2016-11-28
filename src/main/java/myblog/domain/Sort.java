@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 
 /**
  * Sql Sort statement
- *
  */
 public class Sort<T> extends Domain {
 
@@ -42,6 +41,14 @@ public class Sort<T> extends Domain {
         }
     }
 
+    public String getOrder_by() {
+        return this.order_by;
+    }
+
+    public String getOrder_type() {
+        return this.order_type;
+    }
+
     /**
      * Guarantee this.order_type is valid
      *
@@ -57,14 +64,6 @@ public class Sort<T> extends Domain {
         } else {
             this.order_type = "DESC";
         }
-    }
-
-    public String getOrder_by() {
-        return this.order_by;
-    }
-
-    public String getOrder_type() {
-        return this.order_type;
     }
 }
 

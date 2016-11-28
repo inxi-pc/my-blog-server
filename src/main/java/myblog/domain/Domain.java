@@ -5,7 +5,6 @@ import myblog.annotation.OuterSettable;
 import myblog.annotation.Updatable;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
-import myblog.exception.MessageFactory;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
@@ -15,7 +14,6 @@ import java.util.*;
 public abstract class Domain {
 
     /**
-     *
      * @param field
      * @return
      */
@@ -24,7 +22,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param field
      * @return
      */
@@ -33,7 +30,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param field
      * @return
      */
@@ -42,7 +38,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param field
      * @return
      */
@@ -51,7 +46,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param field
      * @return
      */
@@ -60,7 +54,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param field
      * @return
      */
@@ -68,8 +61,50 @@ public abstract class Domain {
         String fieldName = field.getName();
         String prefix = "setDefault";
 
-        return  prefix + fieldName.substring(0, 1).toUpperCase()
+        return prefix + fieldName.substring(0, 1).toUpperCase()
                 + fieldName.substring(1, fieldName.length());
+    }
+
+    /**
+     * @param field
+     * @return
+     */
+    private static String getSetterName(Field field) {
+        String fieldName = field.getName();
+        String prefix = "set";
+
+        return prefix + fieldName.substring(0, 1).toUpperCase()
+                + fieldName.substring(1, fieldName.length());
+    }
+
+    /**
+     * @param clazz
+     * @param map
+     * @param <T>
+     * @return
+     */
+    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map) {
+        T instance;
+        try {
+            instance = clazz.newInstance();
+        } catch (Exception e) {
+            throw new GenericException(e);
+        }
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (final Field field : instance.getClass().getDeclaredFields()) {
+                if (field.getName().equals(entry.getKey())) {
+                    try {
+                        Method method = clazz.getDeclaredMethod(getSetterName(field), field.getType());
+                        method.invoke(instance, entry.getValue());
+                    } catch (Exception e) {
+                        throw new GenericException(e);
+                    }
+                }
+            }
+        }
+
+        return instance;
     }
 
     public void setDefaultableFieldValue() {
@@ -151,7 +186,6 @@ public abstract class Domain {
     }
 
     /**
-     *
      * @param unless
      * @return
      */
@@ -188,37 +222,5 @@ public abstract class Domain {
         }
 
         return params;
-    }
-
-    /**
-     *
-     * @param clazz
-     * @param map
-     * @param <T>
-     * @return
-     */
-    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map) {
-        T instance;
-        try {
-            instance = clazz.newInstance();
-        } catch (Exception e) {
-            throw new GenericException(e);
-        }
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            for (final Field field : instance.getClass().getDeclaredFields()) {
-                if (field.getName().equals(entry.getKey())) {
-                    field.setAccessible(true);
-
-                    try {
-                        field.set(instance, entry.getValue());
-                    } catch (Exception e) {
-                        throw new GenericException(e);
-                    }
-                }
-            }
-        }
-
-        return instance;
     }
 }

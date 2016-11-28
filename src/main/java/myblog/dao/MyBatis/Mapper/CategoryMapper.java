@@ -9,22 +9,19 @@ import java.util.Map;
 public interface CategoryMapper {
 
     /**
-     *
      * @param insert
      * @return
      */
     int createCategory(Category insert);
 
     /**
-     *
      * @param categoryId
      * @param delete
      * @return
      */
-    boolean deleteCategory(@Param("categoryId")int categoryId, @Param("delete") Category delete);
+    boolean deleteCategory(@Param("categoryId") int categoryId, @Param("delete") Category delete);
 
     /**
-     *
      * @param categoryId
      * @param update
      * @return
@@ -32,28 +29,24 @@ public interface CategoryMapper {
     boolean updateCategory(@Param("categoryId") int categoryId, @Param("update") Category update);
 
     /**
-     *
      * @param categoryId
      * @return
      */
     Category getCategoryById(int categoryId);
 
     /**
-     *
      * @param categoryIds
      * @return
      */
     List<Category> getCategoriesByIds(int[] categoryIds);
 
     /**
-     *
      * @param params
      * @return
      */
     List<Category> getCategoriesByCondition(Map<String, Object> params);
 
     /**
-     *
      * @return
      */
     int countAllCategory();

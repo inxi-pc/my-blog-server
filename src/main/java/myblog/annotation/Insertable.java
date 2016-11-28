@@ -18,6 +18,7 @@ public @interface Insertable {
 
     /**
      * Indicate field can be a default value, when insert to db
+     *
      * @return
      */
     boolean defaultable() default false;

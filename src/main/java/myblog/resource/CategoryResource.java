@@ -96,35 +96,20 @@ public class CategoryResource {
                                         @QueryParam("category_root_id") Integer categoryRootId,
                                         @QueryParam("category_name") String categoryName,
                                         @QueryParam("category_level") Integer categoryLevel,
-                                        @QueryParam("category_enabled") Boolean categoryEnabled) {;
+                                        @QueryParam("category_enabled") Boolean categoryEnabled) {
+        ;
         Category category = new Category();
         if (categoryParentId != null) {
-            if (Category.isValidCategoryParentId(categoryParentId)) {
-                category.setCategory_parent_id(categoryParentId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_parent_id", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_parent_id(categoryParentId);
         }
         if (categoryRootId != null) {
-            if (Category.isValidCategoryRootId(categoryRootId)) {
-                category.setCategory_root_id(categoryRootId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_root_id", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_root_id(categoryRootId);
         }
         if (categoryName != null) {
-            if (Category.isValidCategoryName(categoryName)) {
-                category.setCategory_name_en(categoryName);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_name", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_name_en(categoryName);
         }
         if (categoryLevel != null) {
-            if (Category.isValidCategoryLevel(categoryLevel)) {
-                category.setCategory_level(categoryLevel);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_level", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_level(categoryLevel);
         }
         if (categoryEnabled != null) {
             category.setCategory_enabled(categoryEnabled);
@@ -153,32 +138,16 @@ public class CategoryResource {
                                                 @QueryParam("tree_enabled") Boolean treeEnabled) {
         Category category = new Category();
         if (categoryParentId != null) {
-            if (Category.isValidCategoryParentId(categoryParentId)) {
-                category.setCategory_parent_id(categoryParentId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_parent_id", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_parent_id(categoryParentId);
         }
         if (categoryRootId != null) {
-            if (Category.isValidCategoryRootId(categoryRootId)) {
-                category.setCategory_root_id(categoryRootId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_root_id", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_root_id(categoryRootId);
         }
         if (categoryName != null) {
-            if (Category.isValidCategoryName(categoryName)) {
-                category.setCategory_name_en(categoryName);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_name", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_name_en(categoryName);
         }
         if (categoryLevel != null) {
-            if (Category.isValidCategoryLevel(categoryLevel)) {
-                category.setCategory_level(categoryLevel);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_level", Response.Status.BAD_REQUEST);
-            }
+            category.setCategory_level(categoryLevel);
         }
         if (categoryEnabled != null) {
             category.setCategory_enabled(categoryEnabled);

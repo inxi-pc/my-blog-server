@@ -1,19 +1,13 @@
 package myblog.resource;
 
-import myblog.domain.Post;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
-import myblog.exception.LiteralMessageMeta;
-import myblog.service.PostService;
 import myblog.service.UserService;
 
-import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
-import java.util.Map;
 
 @Path("/users")
 public class UserResource {

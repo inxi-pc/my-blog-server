@@ -6,7 +6,6 @@ import java.util.TimeZone;
 
 /**
  * My blog helper class
- *
  */
 public class Helper {
 

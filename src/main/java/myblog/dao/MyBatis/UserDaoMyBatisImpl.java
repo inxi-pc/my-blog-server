@@ -17,13 +17,11 @@ public class UserDaoMyBatisImpl implements UserDao {
 
     /**
      * Reference of MyBatisDaoFactory instance
-     *
      */
     private MyBatisDaoFactory myBatisDaoFactory;
 
     /**
      * @param factory
-     *
      */
     UserDaoMyBatisImpl(MyBatisDaoFactory factory) {
         this.myBatisDaoFactory = factory;
@@ -93,7 +91,7 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public User getUserByCredential(Credential credential) {
         if (credential == null) {
-            throw new GenericException(LiteralMessageMeta.NULL_CREDENTIAL_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_OBJECT, Credential.class, Response.Status.BAD_REQUEST);
         }
 
         if (!credential.hasIdentifier()) {
@@ -109,11 +107,11 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public List<User> getUsersByIds(int[] userIds) {
         if (userIds == null) {
-            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.NULL_IDS, User.class, Response.Status.BAD_REQUEST);
         }
 
         if (userIds.length <= 0) {
-            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(GenericMessageMeta.EMPTY_IDS, User.class, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
@@ -125,11 +123,11 @@ public class UserDaoMyBatisImpl implements UserDao {
     @Override
     public List<User> getUsersByCondition(Map<String, Object> params) {
         if (params == null) {
-            throw new GenericException(LiteralMessageMeta.NULL_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
         if (params.size() <= 0) {
-            throw new GenericException(LiteralMessageMeta.EMPTY_PARAM_TO_QUERY, Response.Status.BAD_REQUEST);
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);

@@ -99,25 +99,13 @@ public class PostResource {
                                @QueryParam("post_enabled") Boolean postEnabled) {
         Post post = new Post();
         if (userId != null) {
-            if (Post.isValidUserId(userId)) {
-                post.setUser_id(userId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "user_id", Response.Status.BAD_REQUEST);
-            }
+            post.setUser_id(userId);
         }
         if (categoryId != null) {
-            if (Post.isValidCategoryId(categoryId)) {
-                post.setCategory_id(categoryId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_id", Response.Status.BAD_REQUEST);
-            }
+            post.setCategory_id(categoryId);
         }
         if (postTitle != null) {
-            if (Post.isValidPostTitle(postTitle)) {
-                post.setPost_title(postTitle);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "post_title", Response.Status.BAD_REQUEST);
-            }
+            post.setPost_title(postTitle);
         }
         if (postPublished != null) {
             post.setPost_published(postPublished);
@@ -148,25 +136,13 @@ public class PostResource {
                                         @QueryParam("order_type") String orderType) {
         Post post = new Post();
         if (userId != null) {
-            if (Post.isValidUserId(userId)) {
-                post.setUser_id(userId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "user_id", Response.Status.BAD_REQUEST);
-            }
+            post.setUser_id(userId);
         }
         if (categoryId != null) {
-            if (Post.isValidCategoryId(categoryId)) {
-                post.setCategory_id(categoryId);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "category_id", Response.Status.BAD_REQUEST);
-            }
+            post.setCategory_id(categoryId);
         }
         if (postTitle != null) {
-            if (Post.isValidPostTitle(postTitle)) {
-                post.setPost_title(postTitle);
-            } else {
-                throw new GenericException(GenericMessageMeta.INVALID_PARAM, "post_title", Response.Status.BAD_REQUEST);
-            }
+            post.setPost_title(postTitle);
         }
         if (postPublished != null) {
             post.setPost_published(postPublished);

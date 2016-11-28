@@ -64,122 +64,6 @@ public class Post extends Domain {
         this.post_updated_at = null;
     }
 
-    public Integer getPost_id() {
-        return post_id;
-    }
-
-    public Integer getCategory_id() {
-        return category_id;
-    }
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public String getPost_title() {
-        return post_title;
-    }
-
-    public String getPost_content() {
-        return post_content;
-    }
-
-    public Boolean getPost_published() {
-        return post_published;
-    }
-
-    public Boolean getPost_enabled() {
-        return post_enabled;
-    }
-
-    public String getPost_created_at() {
-        return post_created_at;
-    }
-
-    public String getPost_updated_at() {
-        return post_updated_at;
-    }
-
-    public void setPost_id(Integer postId) {
-        if (isValidPostId(postId)) {
-            this.post_id = postId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_id(Integer categoryId) {
-        if (isValidCategoryId(categoryId)) {
-            this.category_id = categoryId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setUser_id(Integer userId) {
-        if (isValidUserId(userId)) {
-            this.user_id = userId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setPost_title(String postTitle) {
-        if (isValidPostTitle(postTitle)) {
-            this.post_title = postTitle;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_title", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setPost_content(String postContent) {
-        if (isValidPostContent(postContent)) {
-            this.post_content = postContent;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_content", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setPost_published(Boolean postPublished) {
-        this.post_published = postPublished;
-    }
-
-    public void setPost_enabled(Boolean postEnabled) {
-        this.post_enabled = postEnabled;
-    }
-
-    public void setPost_created_at(String postCreatedAt) {
-        if (isValidPostCreatedAt(postCreatedAt)) {
-            this.post_created_at = postCreatedAt;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_created_at", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setPost_updated_at(String postUpdatedAt) {
-        if (isValidPostUpdatedAt(postUpdatedAt)) {
-            this.post_updated_at = postUpdatedAt;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_updated_at", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setDefaultPost_published() {
-        this.post_published = false;
-    }
-
-    public void setDefaultPost_enabled() {
-        this.post_enabled = true;
-    }
-
-    public void setDefaultPost_created_at() {
-        this.post_created_at = Helper.formatDatetimeUTC(new Date());
-    }
-
-    public void setDefaultPost_updated_at() {
-        this.post_updated_at = Helper.formatDatetimeUTC(new Date());
-    }
-
     public static boolean isValidPostId(Integer postId) {
         return postId == null || postId > 0;
     }
@@ -212,5 +96,121 @@ public class Post extends Domain {
 
     public static boolean isValidPostUpdatedAt(String postUpdatedAt) {
         return postUpdatedAt == null || Helper.isValidDataTimeFormat(postUpdatedAt);
+    }
+
+    public Integer getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(Integer postId) {
+        if (isValidPostId(postId)) {
+            this.post_id = postId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Integer getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(Integer categoryId) {
+        if (isValidCategoryId(categoryId)) {
+            this.category_id = categoryId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer userId) {
+        if (isValidUserId(userId)) {
+            this.user_id = userId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "user_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getPost_title() {
+        return post_title;
+    }
+
+    public void setPost_title(String postTitle) {
+        if (isValidPostTitle(postTitle)) {
+            this.post_title = postTitle;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_title", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getPost_content() {
+        return post_content;
+    }
+
+    public void setPost_content(String postContent) {
+        if (isValidPostContent(postContent)) {
+            this.post_content = postContent;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_content", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Boolean getPost_published() {
+        return post_published;
+    }
+
+    public void setPost_published(Boolean postPublished) {
+        this.post_published = postPublished;
+    }
+
+    public Boolean getPost_enabled() {
+        return post_enabled;
+    }
+
+    public void setPost_enabled(Boolean postEnabled) {
+        this.post_enabled = postEnabled;
+    }
+
+    public String getPost_created_at() {
+        return post_created_at;
+    }
+
+    public void setPost_created_at(String postCreatedAt) {
+        if (isValidPostCreatedAt(postCreatedAt)) {
+            this.post_created_at = postCreatedAt;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_created_at", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getPost_updated_at() {
+        return post_updated_at;
+    }
+
+    public void setPost_updated_at(String postUpdatedAt) {
+        if (isValidPostUpdatedAt(postUpdatedAt)) {
+            this.post_updated_at = postUpdatedAt;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_updated_at", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public void setDefaultPost_published() {
+        this.post_published = false;
+    }
+
+    public void setDefaultPost_enabled() {
+        this.post_enabled = true;
+    }
+
+    public void setDefaultPost_created_at() {
+        this.post_created_at = Helper.formatDatetimeUTC(new Date());
+    }
+
+    public void setDefaultPost_updated_at() {
+        this.post_updated_at = Helper.formatDatetimeUTC(new Date());
     }
 }

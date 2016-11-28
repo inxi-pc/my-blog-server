@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * Sql pagination statement
- *
  */
 public class Pagination<T> extends Domain {
 
@@ -21,13 +20,11 @@ public class Pagination<T> extends Domain {
 
     /**
      * total of records
-     *
      */
     private Integer recordsTotal;
 
     /**
      * Records
-     *
      */
     private List<T> data;
 
@@ -36,6 +33,10 @@ public class Pagination<T> extends Domain {
         this.setOffset(offset);
         this.setRecordsTotal(0);
         this.setData(new ArrayList<T>());
+    }
+
+    public int getLimit() {
+        return limit;
     }
 
     /**
@@ -51,6 +52,10 @@ public class Pagination<T> extends Domain {
         }
     }
 
+    public int getOffset() {
+        return offset;
+    }
+
     /**
      * Guarantee this.offset is valid
      *
@@ -62,6 +67,10 @@ public class Pagination<T> extends Domain {
         } else {
             this.offset = 0;
         }
+    }
+
+    public int getRecordsTotal() {
+        return this.recordsTotal;
     }
 
     /**
@@ -77,6 +86,10 @@ public class Pagination<T> extends Domain {
         }
     }
 
+    public List<T> getData() {
+        return this.data;
+    }
+
     /**
      * Guarantee this.data is valid
      *
@@ -88,21 +101,5 @@ public class Pagination<T> extends Domain {
         } else {
             this.data = new ArrayList<T>();
         }
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public int getRecordsTotal() {
-        return this.recordsTotal;
-    }
-
-    public List<T> getData() {
-        return this.data;
     }
 }

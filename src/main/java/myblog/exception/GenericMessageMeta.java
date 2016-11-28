@@ -12,9 +12,13 @@ public enum GenericMessageMeta implements MessageMeta {
 
     INVALID_VALUE_FIELD("Field %s: Not valid value"),
 
-    NULL_OBJECT("Object %s: Null"),
+    NULL_OBJECT("Object %s: Null pointer"),
 
-    NULL_ID("Id %s: Null"),
+    NULL_ID("Id %s: Null pointer"),
+
+    NULL_IDS("List of %s id: Null pointer"),
+
+    EMPTY_IDS("List of %s id: No value"),
 
     INVALID_ID("Id %s: Invalid value"),
 

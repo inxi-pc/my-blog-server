@@ -21,6 +21,44 @@ public abstract class AuthFilter<C, P extends Principal> implements ContainerReq
 
     protected UnauthorizedHandler unauthorizedHandler;
 
+    protected boolean authenticate(ContainerRequestContext requestContext, C credentials, String scheme) {
+        if (credentials == null) {
+            return false;
+        }
+
+        final Optional<P> principal = this.authenticator.authenticate(credentials);
+        if (!principal.isPresent()) {
+            return false;
+        }
+
+        final SecurityContext securityContext = requestContext.getSecurityContext();
+        final boolean secure = securityContext != null && securityContext.isSecure();
+
+        requestContext.setSecurityContext(new SecurityContext() {
+            @Override
+            public Principal getUserPrincipal() {
+                return principal.get();
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return AuthFilter.this.authorizer.authorize(principal.get(), role);
+            }
+
+            @Override
+            public boolean isSecure() {
+                return secure;
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return scheme;
+            }
+        });
+
+        return true;
+    }
+
     public abstract static class AuthFilterBuilder<C, P extends Principal, T extends AuthFilter<C, P>> {
 
         private String realm = "realm";
@@ -127,43 +165,5 @@ public abstract class AuthFilter<C, P extends Principal> implements ContainerReq
         }
 
         protected abstract T newInstance();
-    }
-
-    protected boolean authenticate(ContainerRequestContext requestContext, C credentials, String scheme) {
-        if (credentials == null) {
-            return false;
-        }
-
-        final Optional<P> principal = this.authenticator.authenticate(credentials);
-        if (!principal.isPresent()) {
-            return false;
-        }
-
-        final SecurityContext securityContext = requestContext.getSecurityContext();
-        final boolean secure = securityContext != null && securityContext.isSecure();
-
-        requestContext.setSecurityContext(new SecurityContext() {
-            @Override
-            public Principal getUserPrincipal() {
-                return principal.get();
-            }
-
-            @Override
-            public boolean isUserInRole(String role) {
-                return AuthFilter.this.authorizer.authorize(principal.get(), role);
-            }
-
-            @Override
-            public boolean isSecure() {
-                return secure;
-            }
-
-            @Override
-            public String getAuthenticationScheme() {
-                return scheme;
-            }
-        });
-
-        return true;
     }
 }

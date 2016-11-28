@@ -105,132 +105,8 @@ public class Category extends Domain {
         }
 
         if (children.hasNext()) {
-            throw new GenericException(LiteralMessageMeta.LACK_PARENT_CATEGORY_TO_GEN_TREE, Response.Status.INTERNAL_SERVER_ERROR);
+            throw new GenericException(LiteralMessageMeta.NOT_FOUND_PARENT_CATEGORY, Response.Status.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    public Integer getCategory_id() {
-        return category_id;
-    }
-
-    public Integer getCategory_parent_id() {
-        return category_parent_id;
-    }
-
-    public Integer getCategory_root_id() {
-        return category_root_id;
-    }
-
-    public String getCategory_name_en() {
-        return category_name_en;
-    }
-
-    public String getCategory_name_cn() {
-        return category_name_cn;
-    }
-
-    public Integer getCategory_level() {
-        return category_level;
-    }
-
-    public String getCategory_created_at() {
-        return category_created_at;
-    }
-
-    public String getCategory_updated_at() {
-        return category_updated_at;
-    }
-
-    public Boolean getCategory_enabled() {
-        return category_enabled;
-    }
-
-    public List getChildren() {
-        return this.children;
-    }
-
-    public void setCategory_id(Integer categoryId) {
-        if (isValidCategoryId(categoryId)) {
-            this.category_id = categoryId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_parent_id(Integer categoryParentId) {
-        if (isValidCategoryParentId(categoryParentId)) {
-            this.category_parent_id = categoryParentId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_parent_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_root_id(Integer categoryRootId) {
-        if (isValidCategoryRootId(categoryRootId)) {
-            this.category_root_id = categoryRootId;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_root_id", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_name_en(String categoryNameEn) {
-        if (isValidCategoryName(categoryNameEn)) {
-            this.category_name_en = categoryNameEn;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_en", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_name_cn(String categoryNameCn) {
-        if (isValidCategoryName(categoryNameCn)) {
-            this.category_name_cn = categoryNameCn;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_cn", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_level(Integer categoryLevel) {
-        if (isValidCategoryLevel(categoryLevel)) {
-            this.category_level = categoryLevel;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_level", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_enabled(Boolean categoryEnabled) {
-        this.category_enabled = categoryEnabled;
-    }
-
-    public void setCategory_created_at(String categoryCreatedAt) {
-        if (isValidCategoryCreatedAt(categoryCreatedAt)) {
-            this.category_created_at = categoryCreatedAt;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_created_at", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setCategory_updated_at(String categoryUpdatedAt) {
-        if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
-            this.category_updated_at = categoryUpdatedAt;
-        } else {
-            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_updated_at", Response.Status.BAD_REQUEST);
-        }
-    }
-
-    public void setChildren(List<Category> children) {
-        this.children = children;
-    }
-
-    public void setDefaultCategory_enabled() {
-        this.category_enabled = true;
-    }
-
-    public void setDefaultCategory_created_at() {
-        this.category_created_at = Helper.formatDatetimeUTC(new Date());
-    }
-
-    public void setDefaultCategory_updated_at() {
-        this.category_updated_at = Helper.formatDatetimeUTC(new Date());
     }
 
     public static boolean isValidCategoryId(Integer categoryId) {
@@ -265,5 +141,129 @@ public class Category extends Domain {
 
     public static boolean isValidCategoryUpdatedAt(String categoryUpdatedAt) {
         return categoryUpdatedAt == null || Helper.isValidDataTimeFormat(categoryUpdatedAt);
+    }
+
+    public Integer getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(Integer categoryId) {
+        if (isValidCategoryId(categoryId)) {
+            this.category_id = categoryId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Integer getCategory_parent_id() {
+        return category_parent_id;
+    }
+
+    public void setCategory_parent_id(Integer categoryParentId) {
+        if (isValidCategoryParentId(categoryParentId)) {
+            this.category_parent_id = categoryParentId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_parent_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Integer getCategory_root_id() {
+        return category_root_id;
+    }
+
+    public void setCategory_root_id(Integer categoryRootId) {
+        if (isValidCategoryRootId(categoryRootId)) {
+            this.category_root_id = categoryRootId;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_root_id", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getCategory_name_en() {
+        return category_name_en;
+    }
+
+    public void setCategory_name_en(String categoryNameEn) {
+        if (isValidCategoryName(categoryNameEn)) {
+            this.category_name_en = categoryNameEn;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_en", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getCategory_name_cn() {
+        return category_name_cn;
+    }
+
+    public void setCategory_name_cn(String categoryNameCn) {
+        if (isValidCategoryName(categoryNameCn)) {
+            this.category_name_cn = categoryNameCn;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_name_cn", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Integer getCategory_level() {
+        return category_level;
+    }
+
+    public void setCategory_level(Integer categoryLevel) {
+        if (isValidCategoryLevel(categoryLevel)) {
+            this.category_level = categoryLevel;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_level", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getCategory_created_at() {
+        return category_created_at;
+    }
+
+    public void setCategory_created_at(String categoryCreatedAt) {
+        if (isValidCategoryCreatedAt(categoryCreatedAt)) {
+            this.category_created_at = categoryCreatedAt;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_created_at", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public String getCategory_updated_at() {
+        return category_updated_at;
+    }
+
+    public void setCategory_updated_at(String categoryUpdatedAt) {
+        if (isValidCategoryUpdatedAt(categoryUpdatedAt)) {
+            this.category_updated_at = categoryUpdatedAt;
+        } else {
+            throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "category_updated_at", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public Boolean getCategory_enabled() {
+        return category_enabled;
+    }
+
+    public void setCategory_enabled(Boolean categoryEnabled) {
+        this.category_enabled = categoryEnabled;
+    }
+
+    public List getChildren() {
+        return this.children;
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
+
+    public void setDefaultCategory_enabled() {
+        this.category_enabled = true;
+    }
+
+    public void setDefaultCategory_created_at() {
+        this.category_created_at = Helper.formatDatetimeUTC(new Date());
+    }
+
+    public void setDefaultCategory_updated_at() {
+        this.category_updated_at = Helper.formatDatetimeUTC(new Date());
     }
 }

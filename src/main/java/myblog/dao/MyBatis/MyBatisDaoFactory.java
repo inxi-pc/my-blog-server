@@ -10,18 +10,15 @@ import java.io.InputStream;
 
 public class MyBatisDaoFactory extends DaoFactory {
 
+    /**
+     * mybatis-config file name
+     */
+    private static final String resource = "mybatis-config.xml";
     private static MyBatisDaoFactory instance = new MyBatisDaoFactory();
     /**
      * mybatis session factory instance
-     *
      */
     private SqlSessionFactory defaultSqlSessionFactory;
-
-    /**
-     * mybatis-config file name
-     *
-     */
-    private static final String resource = "mybatis-config.xml";
 
     private MyBatisDaoFactory() {
         try {
@@ -41,7 +38,6 @@ public class MyBatisDaoFactory extends DaoFactory {
     }
 
     /**
-     *
      * @return
      */
     // TODO: 8/18/16 use configuration class to new factory
@@ -50,7 +46,6 @@ public class MyBatisDaoFactory extends DaoFactory {
     }
 
     /**
-     *
      * @return
      */
     public SqlSessionFactory getDefaultSqlSessionFactory() {
