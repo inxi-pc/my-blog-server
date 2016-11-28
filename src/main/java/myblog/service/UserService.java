@@ -2,11 +2,15 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.UserDaoMyBatisImpl;
+import myblog.domain.Pagination;
+import myblog.domain.Sort;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.List;
 
 public class UserService {
 
@@ -15,12 +19,12 @@ public class UserService {
      * @return
      */
     public static int createUser(User insert) {
-        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
         insert.setDefaultableFieldValue();
 
-        return userDao.createUser(insert);
+        return myBatisUserDao.createUser(insert);
     }
 
     /**
@@ -28,11 +32,11 @@ public class UserService {
      * @return
      */
     public static boolean deleteUser(int userId) {
-        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
-        if (userDao.getUserById(userId) != null) {
-            return userDao.deleteUser(userId);
+        if (myBatisUserDao.getUserById(userId) != null) {
+            return myBatisUserDao.deleteUser(userId);
         } else {
             throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
@@ -44,13 +48,13 @@ public class UserService {
      * @return
      */
     public static boolean updateUser(int userId, User update) {
-        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
-        if (userDao.getUserById(userId) != null) {
+        if (myBatisUserDao.getUserById(userId) != null) {
             update.setDefaultUser_updated_at();
 
-            return userDao.updateUser(userId, update);
+            return myBatisUserDao.updateUser(userId, update);
         } else {
             throw new GenericException(GenericMessageMeta.NOT_FOUND_OBJECT, User.class, Response.Status.BAD_REQUEST);
         }
@@ -61,9 +65,45 @@ public class UserService {
      * @return
      */
     public static User getUserById(int userId) {
-        UserDaoMyBatisImpl userDao = (UserDaoMyBatisImpl)
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
 
-        return userDao.getUserById(userId);
+        return myBatisUserDao.getUserById(userId);
+    }
+
+    /**
+     * @param user
+     * @return
+     */
+    public static List<User> getUsers(User user) {
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        HashMap<String, Object> params = user.convertToHashMap(null);
+
+        return myBatisUserDao.getUsersByCondition(params);
+    }
+
+    /**
+     * @param user
+     * @param page
+     * @param sort
+     * @return
+     */
+    public static Pagination<User> getUserList(User user, Pagination<User> page, Sort<User> sort) {
+        UserDaoMyBatisImpl myBatisUserDao = (UserDaoMyBatisImpl)
+                DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getUserDao();
+
+        HashMap<String, Object> params = user.convertToHashMap(null);
+        params.put("limit", page.getLimit());
+        params.put("offset", page.getOffset());
+        params.put("orderBy", sort.getOrder_by());
+        params.put("orderType", sort.getOrder_type());
+        List<User> users = myBatisUserDao.getUsersByCondition(params);
+
+        page.setData(users);
+        page.setRecordsTotal(myBatisUserDao.countAllUser());
+
+        return page;
     }
 }
