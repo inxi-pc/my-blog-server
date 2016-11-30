@@ -1,4 +1,7 @@
-.idea
-target
 .DS_Store
-*iml
+.idea/
+target/
+*.iml
+
+config.properties
+database.properties
