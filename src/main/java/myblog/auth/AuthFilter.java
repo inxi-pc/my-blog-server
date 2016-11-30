@@ -21,7 +21,7 @@ public abstract class AuthFilter<C, P extends Principal> implements ContainerReq
 
     protected UnauthorizedHandler unauthorizedHandler;
 
-    protected boolean authenticate(ContainerRequestContext requestContext, C credentials, String scheme) {
+    protected boolean authenticate(ContainerRequestContext requestContext, C credentials, final String scheme) {
         if (credentials == null) {
             return false;
         }
