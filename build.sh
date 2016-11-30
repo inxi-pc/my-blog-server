@@ -36,14 +36,17 @@ jwtExpiredTime=600000'
 
 cd $conf_dir
 if [ $env = 'production' ]; then
-    echo 'Begin set production config'
+    echo 'Begin set production config......'
     echo -e $prod_db > $conf_dir/database.properties
     echo -e $prod_app > $conf_dir/config.properties
 else
-    echo 'Begin set development config'
+    echo 'Begin set development config......'
     echo -e $dev_db > $conf_dir/database.properties
     echo -e $dev_app > $conf_dir/config.properties
 fi
+
+echo 'Build Successful'
+exit
 
 
 
