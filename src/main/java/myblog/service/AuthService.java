@@ -30,6 +30,7 @@ public class AuthService {
             register.setDefaultUser_created_at();
             register.setDefaultUser_updated_at();
             register.setDefaultUser_enabled();
+            register.encryptPassword();
 
             return userDao.createUser(register);
         } else {
