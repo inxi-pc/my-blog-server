@@ -1,0 +1,14 @@
+{
+  "name": "my-blog-server",
+  "version": "1.0.0",
+  "description": "my blog server side",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://inxi-pc@github.com/inxi-pc/my-blog-server.git"
+  },
+  "author": "Owen",
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
+}
