@@ -6,11 +6,15 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="TRACE">
+        <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
 
-        <Logger name="App" level="INFO" additivity="TRUE">
+        <Logger name="myblog.App" level="INFO" additivity="FALSE">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="myblog.provider.ThrowableMapper" level="ERROR" additivity="FALSE">
             <AppenderRef ref="Console"/>
         </Logger>
     </Loggers>

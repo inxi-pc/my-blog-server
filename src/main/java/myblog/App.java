@@ -10,12 +10,11 @@ import myblog.provider.CORSFilter;
 import myblog.provider.JwtAuthenticator;
 import myblog.provider.MyErrorMapper;
 import myblog.provider.MyExceptionMapper;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -33,10 +32,12 @@ public class App extends ResourceConfig {
      * Server root URI
      */
     private static final URI BASE_URI = URI.create("http://localhost:8888/");
+
     /**
      * App logger
      */
-    public static Logger logger = LogManager.getLogger(App.class);
+    public static Logger logger = LoggerFactory.getLogger(App.class);
+
     /**
      * App config
      */
@@ -64,7 +65,7 @@ public class App extends ResourceConfig {
     }
 
     public static void main(String[] args) {
-        logger.log(Level.INFO, "Hello World!Blog server");
+        logger.info("Hello World!Blog server");
 
         loadApplicationConfig();
 
@@ -72,7 +73,7 @@ public class App extends ResourceConfig {
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, new App(), false);
             server.start();
         } catch (Exception e) {
-            logger.log(Level.ERROR, e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -88,10 +89,8 @@ public class App extends ResourceConfig {
             config.load(in);
             in.close();
         } catch (IOException e) {
-            logger.log(Level.ERROR, e);
+            logger.error(e.getMessage(), e);
         }
-
-        logger.log(Level.INFO, config);
     }
 
     /**

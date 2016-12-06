@@ -4,21 +4,19 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.jsonwebtoken.JwtException;
 import myblog.App;
 import myblog.exception.GenericException;
-import org.apache.logging.log4j.Level;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class MyExceptionMapper implements ExceptionMapper<Exception> {
+public class MyExceptionMapper extends ThrowableMapper<Exception> {
 
     public Response toResponse(Exception e) {
-        App.logger.log(Level.ERROR, e);
+        logger.error(e.getMessage(), e);
 
         WebApplicationException ex;
         if (e instanceof WebApplicationException) {
@@ -34,7 +32,6 @@ public class MyExceptionMapper implements ExceptionMapper<Exception> {
         }
 
         if (App.isDebug()) {
-            ex.printStackTrace();
             return Response.status(ex.getResponse().getStatus())
                     .entity(ex)
                     .type(MediaType.APPLICATION_JSON)
