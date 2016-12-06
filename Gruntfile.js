@@ -19,8 +19,6 @@ module.exports = function(grunt) {
 
         var appConfig = "";
         var dbConfig = "";
-        var appConfigName = grunt.config('env.appConfigName');
-        var dbConfigName = grunt.config('env.dbConfigName');
         if (env == 'prod') {
             appConfig = genProperties(envProd['app']);
             dbConfig = genProperties(envProd['db']);
@@ -28,8 +26,8 @@ module.exports = function(grunt) {
             appConfig = genProperties(envDev['app']);
             dbConfig = genProperties(envDev['db']);
         }
-        grunt.file.write(pathToConfig + appConfigName , appConfig);
-        grunt.file.write(pathToConfig + dbConfigName, dbConfig);
+        grunt.file.write(pathToConfig + grunt.config('env.appConfigName') , appConfig);
+        grunt.file.write(pathToConfig + grunt.config('env.dbConfigName'), dbConfig);
     })
 };
 
