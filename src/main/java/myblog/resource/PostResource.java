@@ -7,6 +7,8 @@ import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.service.PostService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -71,6 +73,7 @@ public class PostResource {
         }
     }
 
+    @PermitAll
     @GET
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,6 +93,7 @@ public class PostResource {
         }
     }
 
+	@PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Post> getPosts(@QueryParam("user_id") Integer userId,
@@ -122,6 +126,7 @@ public class PostResource {
         }
     }
 
+	@PermitAll
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)

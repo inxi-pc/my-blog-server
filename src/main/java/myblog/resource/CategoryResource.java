@@ -7,6 +7,7 @@ import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.service.CategoryService;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -71,6 +72,7 @@ public class CategoryResource {
         }
     }
 
+	@PermitAll
     @GET
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,6 +92,7 @@ public class CategoryResource {
         }
     }
 
+	@PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> getCategories(@QueryParam("category_parent_id") Integer categoryParentId,
@@ -97,7 +100,6 @@ public class CategoryResource {
                                         @QueryParam("category_name") String categoryName,
                                         @QueryParam("category_level") Integer categoryLevel,
                                         @QueryParam("category_enabled") Boolean categoryEnabled) {
-        ;
         Category category = new Category();
         if (categoryParentId != null) {
             category.setCategory_parent_id(categoryParentId);
@@ -123,6 +125,7 @@ public class CategoryResource {
         }
     }
 
+	@PermitAll
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
