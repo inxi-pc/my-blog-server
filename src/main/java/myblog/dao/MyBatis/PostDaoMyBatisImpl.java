@@ -44,7 +44,7 @@ public class PostDaoMyBatisImpl implements PostDao {
 
     @Override
     public boolean deletePost(int postId) {
-        if (Post.isValidPostId(postId)) {
+        if (!Post.isValidPostId(postId)) {
             throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
         }
 
