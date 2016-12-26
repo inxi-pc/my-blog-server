@@ -41,7 +41,11 @@ public class App extends ResourceConfig {
     /**
      * App config
      */
-    private static Properties config;
+    private static final Properties config = new Properties();
+
+    static {
+        loadApplicationConfig();
+    }
 
     /**
      * Register component
@@ -83,7 +87,6 @@ public class App extends ResourceConfig {
      * @return
      */
     private static void loadApplicationConfig() {
-        config = new Properties();
         try {
             InputStream in = App.class.getClassLoader().getResourceAsStream("config.properties");
             config.load(in);
@@ -99,16 +102,12 @@ public class App extends ResourceConfig {
      * @return
      */
     public static boolean isDebug() {
-        if (config != null) {
-            String debug;
-            if ((debug = config.getProperty("debug")) != null) {
-                return Boolean.parseBoolean(debug);
-            } else {
-                throw new RuntimeException("Not found configuration key: `jwtKey`");
-            }
-        } else {
-            throw new RuntimeException("Not found configuration");
-        }
+		String debug;
+		if ((debug = config.getProperty("debug")) != null) {
+			return Boolean.parseBoolean(debug);
+		} else {
+			throw new RuntimeException("Not found configuration key: `jwtKey`");
+		}
     }
 
     /**
@@ -117,18 +116,14 @@ public class App extends ResourceConfig {
      * @return
      */
     public static byte[] getJwtKey() {
-        if (config != null) {
-            String jwtKey;
-            if ((jwtKey = config.getProperty("jwtKey")) != null) {
-                String base64Key = DatatypeConverter.printBase64Binary(jwtKey.getBytes());
+		String jwtKey;
+		if ((jwtKey = config.getProperty("jwtKey")) != null) {
+			String base64Key = DatatypeConverter.printBase64Binary(jwtKey.getBytes());
 
-                return DatatypeConverter.parseBase64Binary(base64Key);
-            } else {
-                throw new RuntimeException("Not found configuration key: `jwtKey`");
-            }
-        } else {
-            throw new RuntimeException("Not found configuration");
-        }
+			return DatatypeConverter.parseBase64Binary(base64Key);
+		} else {
+			throw new RuntimeException("Not found configuration key: `jwtKey`");
+		}
     }
 
     /**
@@ -137,18 +132,14 @@ public class App extends ResourceConfig {
      * @return
      */
     public static Date getJwtExpiredTime() {
-        if (config != null) {
-            String jwtKey;
-            if ((jwtKey = config.getProperty("jwtExpiredTime")) != null) {
-                Long expiredAtLong = System.currentTimeMillis() + Long.parseLong(jwtKey);
+		String jwtKey;
+		if ((jwtKey = config.getProperty("jwtExpiredTime")) != null) {
+			Long expiredAtLong = System.currentTimeMillis() + Long.parseLong(jwtKey);
 
-                return new Date(expiredAtLong);
-            } else {
-                throw new RuntimeException("Not found configuration key: `jwtExpiredTime`");
-            }
-        } else {
-            throw new RuntimeException("Not found configuration");
-        }
+			return new Date(expiredAtLong);
+		} else {
+			throw new RuntimeException("Not found configuration key: `jwtExpiredTime`");
+		}
     }
 }
 
