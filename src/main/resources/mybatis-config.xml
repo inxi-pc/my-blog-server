@@ -14,7 +14,7 @@
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
-		<property name="poolPingConnectionsNotUsedFor" value="3600000"/>
+		        <property name="poolPingConnectionsNotUsedFor" value="3600000"/>
                 <property name="poolPingEnabled" value="true"/>
                 <property name="poolPingQuery" value="SELECT 1"/>
                 <property name="poolMaximumActiveConnections" value="120"/>
