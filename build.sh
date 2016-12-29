@@ -26,26 +26,26 @@ function echo_with_date {
     echo "`date "+%Y-%m-%d% %H:%M:%S"` Info: $1"
 }
 
-i=0
-while [ $i -le $# ];do
-    case ${!i} in
+paramIndex=0
+while [ $paramIndex -le $# ];do
+    case ${!paramIndex} in
         -env)
             shift
-            env=${!i}
+            env=${!paramIndex}
             check_env $env
             env=${env:-development}
         ;;
     esac
-    i=$(expr $i + 1)
+    paramIndex=$(expr $paramIndex + 1)
 done
 
 echo_with_date "Grunt.js task running..."
 if [ $env = 'development' ]; then
     grunt build:dev
-    mvn clean package
+#    mvn clean package
 else
     grunt build:prod
-    mvn clean package
+#    mvn clean package
 fi
 
 echo_with_date 'End task with success status'
