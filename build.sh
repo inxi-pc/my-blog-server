@@ -42,10 +42,10 @@ done
 echo_with_date "Grunt.js task running..."
 if [ $env = 'development' ]; then
     grunt build:dev
-#    mvn clean package
+    mvn clean package
 else
     grunt build:prod
-#    mvn clean package
+    mvn clean package
 fi
 
 echo_with_date 'End task with success status'
