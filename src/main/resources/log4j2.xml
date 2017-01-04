@@ -4,10 +4,32 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+
+        <RollingFile name="RollingFile" fileName="/var/log/myblog-server.log" createOnDemand="true"
+                     filePattern="/var/log/myblog-server-%d{MM-dd-yyyy}-%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingFile>
+
+        <Failover name="Failover" primary="RollingFile">
+            <Failovers>
+                <AppenderRef ref="Console"/>
+            </Failovers>
+        </Failover>
+
+        <Async name="Async">
+            <AppenderRef ref="Failover"/>
+        </Async>
     </Appenders>
     <Loggers>
         <Root level="INFO">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Failover"/>
         </Root>
 
         <Logger name="myblog.App" level="INFO" additivity="FALSE">
@@ -15,7 +37,7 @@
         </Logger>
 
         <Logger name="myblog.provider.ThrowableMapper" level="ERROR" additivity="FALSE">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Failover"/>
         </Logger>
     </Loggers>
 </Configuration>
