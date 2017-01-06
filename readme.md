@@ -52,5 +52,22 @@ LAST_INSERT_ID()，该函数要在insert语句成功后才触发
 情况1: 如果jsoncreator定义2个字段，a, b，当json数据里面传来多余的的字段，
 该字段会被setter方法调用设置。
 
+4. Mybatis工作在Pooled模式下，如果连接长时间未活跃，连接将被关闭，导致latest package successful received (time)错误
+mysqld配置：
+`wait_timeout=28800`
+`interactive_timeout=28800`
+
+mybatis配置：
+```xml
+// belong datasource
+<property name="poolPingConnectionsNotUsedFor" value="3600"/>
+<property name="poolPingEnabled" value="true"/>
+<property name="poolPingQuery" value="SELECT 1"/>
+<property name="poolMaximumActiveConnections" value="20"/>
+<property name="poolMaximumIdleConnections" value="5"/>
+```
+
+注意poolPingConnectionsNotUsedFor要小于 < mysqld.timeout
+
 
 
