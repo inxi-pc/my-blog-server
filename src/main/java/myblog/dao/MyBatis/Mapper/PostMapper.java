@@ -1,5 +1,6 @@
 package myblog.dao.MyBatis.Mapper;
 
+import myblog.dao.Condition;
 import myblog.domain.Post;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,10 +25,13 @@ public interface PostMapper {
      */
     boolean updatePost(@Param("postId") int postId, @Param("update") Post update);
 
-    /**
+	/**
+     *
+     * @param postId
+     * @param condition
      * @return
      */
-    Post getPostById(int postId);
+    Post getPostById(@Param("postId") int postId, @Param("condition") Condition condition);
 
     /**
      * @return

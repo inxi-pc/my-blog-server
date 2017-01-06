@@ -2,9 +2,9 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.PostDaoMyBatisImpl;
-import myblog.domain.Pagination;
+import myblog.dao.Pagination;
 import myblog.domain.Post;
-import myblog.domain.Sort;
+import myblog.dao.Sort;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 
@@ -66,11 +66,11 @@ public class PostService {
      * @param postId
      * @return
      */
-    public static Post getPostById(int postId) {
+    public static Post getPostById(int postId, boolean withCategory, boolean withUser) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
-        return myBatisPostDao.getPostById(postId);
+        return myBatisPostDao.getPostById(postId, withCategory, withUser);
 
     }
 

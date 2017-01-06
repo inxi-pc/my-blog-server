@@ -1,7 +1,7 @@
 package myblog.resource;
 
-import myblog.domain.Pagination;
-import myblog.domain.Sort;
+import myblog.dao.Pagination;
+import myblog.dao.Sort;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;

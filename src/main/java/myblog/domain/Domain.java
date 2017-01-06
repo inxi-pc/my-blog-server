@@ -2,14 +2,18 @@ package myblog.domain;
 
 import myblog.annotation.Insertable;
 import myblog.annotation.OuterSettable;
+import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
+import myblog.exception.LiteralMessageMeta;
+import sun.misc.Regexp;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public abstract class Domain {
 
@@ -77,80 +81,66 @@ public abstract class Domain {
                 + fieldName.substring(1, fieldName.length());
     }
 
-    /**
-     * @param clazz
-     * @param map
-     * @param <T>
-     * @return
-     */
-    public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map) {
-        T instance;
-        try {
-            instance = clazz.newInstance();
-        } catch (Exception e) {
-            throw new GenericException(e);
-        }
+    public static String getTableName(Class<? extends Domain> clazz) {
+		return clazz.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+	}
 
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            for (final Field field : instance.getClass().getDeclaredFields()) {
-                if (field.getName().equals(entry.getKey())) {
-                    try {
-                        Method method = clazz.getDeclaredMethod(getSetterName(field), field.getType());
-                        method.invoke(instance, entry.getValue());
-                    } catch (Exception e) {
-                        throw new GenericException(e);
-                    }
-                }
-            }
-        }
+	public static Field getPrimaryKeyField(Class<? extends Domain> clazz) {
+		Field[] fields = Arrays.stream(clazz.getDeclaredFields())
+				.filter((field) -> field.isAnnotationPresent(PrimaryKey.class))
+				.toArray(Field[]::new);
 
-        return instance;
-    }
+		if (fields == null || fields.length != 1) {
+			throw new GenericException(GenericMessageMeta.NOT_EXIST_PRIMARKEY, clazz, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+
+		return fields[0];
+	}
 
     public void setDefaultableFieldValue() {
-        for (Field field : getClass().getDeclaredFields()) {
-            if (isDefaultable(field)) {
-                Object value;
-                try {
-                    field.setAccessible(true);
-                    value = field.get(this);
-                } catch (Exception e) {
-                    throw new GenericException(e);
-                }
+		Arrays.stream(getClass().getDeclaredFields()).forEach((Field field) -> {
+			if (isDefaultable(field)) {
+				Object value;
+				try {
+					field.setAccessible(true);
+					value = field.get(this);
+				} catch (Exception e) {
+					throw new GenericException(e);
+				}
 
-                if (value == null) {
-                    String setterName = getDefaultValueSetterName(field);
-                    try {
-                        Method method = getClass().getDeclaredMethod(setterName);
-                        method.invoke(this);
-                    } catch (Exception e) {
-                        throw new GenericException(e);
-                    }
-                }
-            }
-        }
+				if (value == null) {
+					String setterName = getDefaultValueSetterName(field);
+					try {
+						Method method = getClass().getDeclaredMethod(setterName);
+						method.invoke(this);
+					} catch (Exception e) {
+						throw new GenericException(e);
+					}
+				}
+			}
+		});
     }
 
     public void checkFieldInsertable() {
-        for (Field field : getClass().getDeclaredFields()) {
-            Object value;
-            try {
-                field.setAccessible(true);
-                value = field.get(this);
-            } catch (Exception e) {
-                throw new GenericException(e);
-            }
+		Arrays.stream(getClass().getDeclaredFields()).forEach((Field field) -> {
+			Object value;
+			try {
+				field.setAccessible(true);
+				value = field.get(this);
+			} catch (Exception e) {
+				throw new GenericException(e);
+			}
 
-            if (isInsertable(field)) {
-                if (!isDefaultable(field)) {
-                    if (!isNullable(field) && value == null) {
-                        throw new GenericException(GenericMessageMeta.NOT_NULLABLE_FIELD, field, Response.Status.BAD_REQUEST);
-                    }
-                }
-            } else if (value != null) {
-                throw new GenericException(GenericMessageMeta.NOT_INSERTABLE_FIELD, field, Response.Status.BAD_REQUEST);
-            }
-        }
+			if (isInsertable(field)) {
+				if (!isDefaultable(field)) {
+					if (!isNullable(field) && value == null) {
+						throw new GenericException(GenericMessageMeta.NOT_NULLABLE_FIELD, field, Response.Status.BAD_REQUEST);
+					}
+				}
+			} else if (value != null) {
+				throw new GenericException(GenericMessageMeta.NOT_INSERTABLE_FIELD, field, Response.Status.BAD_REQUEST);
+			}
+		});
     }
 
     public void checkFieldUpdatable() {
@@ -184,6 +174,36 @@ public abstract class Domain {
             }
         }
     }
+
+	/**
+	 * @param clazz
+	 * @param map
+	 * @param <T>
+	 * @return
+	 */
+	public static <T extends Domain> T fromHashMap(Class<T> clazz, Map<String, Object> map) {
+		T instance;
+		try {
+			instance = clazz.newInstance();
+		} catch (Exception e) {
+			throw new GenericException(e);
+		}
+
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
+			for (final Field field : instance.getClass().getDeclaredFields()) {
+				if (field.getName().equals(entry.getKey())) {
+					try {
+						Method method = clazz.getDeclaredMethod(getSetterName(field), field.getType());
+						method.invoke(instance, entry.getValue());
+					} catch (Exception e) {
+						throw new GenericException(e);
+					}
+				}
+			}
+		}
+
+		return instance;
+	}
 
     /**
      * @param unless

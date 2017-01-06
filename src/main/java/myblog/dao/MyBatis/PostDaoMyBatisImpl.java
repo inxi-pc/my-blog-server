@@ -1,8 +1,12 @@
 package myblog.dao.MyBatis;
 
+import myblog.dao.Condition;
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
+import myblog.domain.Category;
+import myblog.domain.Domain;
 import myblog.domain.Post;
+import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.exception.LiteralMessageMeta;
@@ -84,8 +88,28 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.getPostById(postId);
+        return postMapper.getPostById(postId, null);
     }
+
+	@Override
+	public Post getPostById(int postId, boolean withCategory, boolean withUser) {
+		if (!Post.isValidPostId(postId)) {
+			throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
+		}
+
+		Condition condition = new Condition();
+		if (withCategory) {
+			condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
+		}
+		if (withUser) {
+			condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
+		}
+
+		SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+		PostMapper postMapper = session.getMapper(PostMapper.class);
+
+		return postMapper.getPostById(postId, condition);
+	}
 
     @Override
     public List<Post> getPostsByIds(int[] postIds) {

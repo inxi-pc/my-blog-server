@@ -1,4 +1,4 @@
-package myblog.domain;
+package myblog.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Sql pagination statement
  */
-public class Pagination<T> extends Domain {
+public class Pagination<T> {
 
     /**
      * Pagination length

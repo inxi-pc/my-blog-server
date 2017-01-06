@@ -1,14 +1,13 @@
 package myblog.resource;
 
-import myblog.domain.Pagination;
+import myblog.dao.Pagination;
 import myblog.domain.Post;
-import myblog.domain.Sort;
+import myblog.dao.Sort;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.service.PostService;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -77,7 +76,9 @@ public class PostResource {
     @GET
     @Path("/{postId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Post getPostById(@PathParam("postId") Integer postId) {
+    public Post getPostById(@PathParam("postId") Integer postId,
+                            @QueryParam("withCategory") Boolean withCategory,
+							@QueryParam("withUser") Boolean withUser) {
         if (postId == null) {
             throw new GenericException(GenericMessageMeta.NULL_ID, Post.class, Response.Status.BAD_REQUEST);
         }
@@ -85,7 +86,9 @@ public class PostResource {
             throw new GenericException(GenericMessageMeta.INVALID_ID, Post.class, Response.Status.BAD_REQUEST);
         }
 
-        Post post = PostService.getPostById(postId);
+        Post post = PostService.getPostById(postId,
+				withCategory == null ? false : withCategory,
+				withUser == null ? false : withUser);
         if (post != null) {
             return post;
         } else {

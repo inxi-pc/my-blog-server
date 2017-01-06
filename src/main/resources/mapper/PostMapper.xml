@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
+    <resultMap id="postWithExtra" type="Post">
+        <constructor>
+            <idArg column="post_id"/>
+        </constructor>
+        <result property="post_title" column="post_title"/>
+        <result property="post_content" column=""></result>
+    </resultMap>
+    
     <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id">
         INSERT INTO post(
         user_id,
@@ -53,7 +61,23 @@
     </update>
 
     <select id="getPostById" resultType="Post">
-        SELECT * FROM post WHERE post_id = #{postId}
+        SELECT * FROM post
+        <if test="condition.leftJoinList.size > 0">
+            <foreach collection="condition.leftJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.rightJoinList.size > 0">
+            <foreach collection="condition.rightJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.innerJoinList.size > 0">
+            <foreach collection="condition.innerJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        WHERE post_id = #{postId}
     </select>
 
     <!-- Basic way to find list -->

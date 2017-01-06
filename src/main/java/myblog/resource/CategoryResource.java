@@ -1,8 +1,8 @@
 package myblog.resource;
 
 import myblog.domain.Category;
-import myblog.domain.Pagination;
-import myblog.domain.Sort;
+import myblog.dao.Pagination;
+import myblog.dao.Sort;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.service.CategoryService;

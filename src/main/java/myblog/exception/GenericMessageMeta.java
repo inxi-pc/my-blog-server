@@ -8,6 +8,8 @@ public enum GenericMessageMeta implements MessageMeta {
 
     NOT_OUTER_SETTABLE_FIELD("Field %s: Not outer settable"),
 
+	NOT_EXIST_PRIMARKEY("Domain %s: Not exist primary key"),
+
     NOT_UPDATABLE_FIELD("Field %s: Not updatable"),
 
     INVALID_VALUE_FIELD("Field %s: Not valid value"),

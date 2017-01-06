@@ -32,6 +32,15 @@ public interface PostDao {
      */
     Post getPostById(int postId);
 
+	/**
+	 *
+	 * @param postId
+	 * @param withCategory
+	 * @param withUser
+	 * @return
+	 */
+	Post getPostById(int postId, boolean withCategory, boolean withUser);
+
     /**
      * @param postIds
      * @return

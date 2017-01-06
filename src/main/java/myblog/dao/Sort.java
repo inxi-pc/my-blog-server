@@ -1,4 +1,4 @@
-package myblog.domain;
+package myblog.dao;
 
 import myblog.annotation.PrimaryKey;
 
@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 /**
  * Sql Sort statement
  */
-public class Sort<T> extends Domain {
+public class Sort<T> {
 
     /**
      * Sort By any column
