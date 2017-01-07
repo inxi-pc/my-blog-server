@@ -38,6 +38,7 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
         categoryMapper.createCategory(insert);
+        session.close();
 
         return insert.getCategory_id();
     }
@@ -55,7 +56,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.deleteCategory(categoryId, delete);
+        boolean isSucceed = categoryMapper.deleteCategory(categoryId, delete);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -73,7 +77,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.updateCategory(categoryId, update);
+        boolean isSucceed = categoryMapper.updateCategory(categoryId, update);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -85,7 +92,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.getCategoryById(categoryId);
+        Category category = categoryMapper.getCategoryById(categoryId);
+        session.close();
+
+        return category;
     }
 
     @Override
@@ -101,7 +111,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.getCategoriesByIds(categoryIds);
+        List<Category> categories = categoryMapper.getCategoriesByIds(categoryIds);
+        session.close();
+
+        return categories;
     }
 
     @Override
@@ -117,7 +130,10 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.getCategoriesByCondition(params);
+        List<Category> categories = categoryMapper.getCategoriesByCondition(params);
+        session.close();
+
+        return categories;
     }
 
     @Override
@@ -125,6 +141,9 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        return categoryMapper.countAllCategory();
+        int count = categoryMapper.countAllCategory();
+        session.close();
+
+        return count;
     }
 }

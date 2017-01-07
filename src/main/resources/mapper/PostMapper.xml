@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
-    <resultMap id="postWithExtra" type="Post">
-        <constructor>
-            <idArg column="post_id"/>
-        </constructor>
+    <resultMap id="postView" type="Post">
+        <id property="post_id" column="post_id"/>
         <result property="post_title" column="post_title"/>
-        <result property="post_content" column=""></result>
+        <result property="post_content" column="post_content"/>
+        <result property="post_published" column="post_published"/>
+        <result property="post_enabled" column="post_enabled"/>
+        <result property="post_created_at" column="post_created_at"/>
+        <result property="post_updated_at" column="post_updated_at"/>
+        <result property="user_id" column="user_id"/>
+        <result property="category_id" column="category_id"/>
+        <association property="user" resultMap="userView"/>
+        <association property="category" resultMap="categoryView"/>
+    </resultMap>
+
+    <resultMap id="userView" type="User">
+        <id property="user_id" column="user_id"/>
+        <result property="user_name" column="user_name"/>
+    </resultMap>
+
+    <resultMap id="categoryView" type="Category">
+        <id property="category_id" column="category_id"/>
+        <result property="category_name_en" column="category_name_en"/>
+        <result property="category_name_cn" column="category_name_cn"/>
+        <result property="category_parent_id" column="category_parent_id"/>
+        <result property="category_level" column="category_level"/>
     </resultMap>
     
     <insert id="createPost" useGeneratedKeys="true" keyProperty="post_id">
@@ -60,7 +79,7 @@
         WHERE post_id = #{postId}
     </update>
 
-    <select id="getPostById" resultType="Post">
+    <select id="getPostById" resultMap="postView">
         SELECT * FROM post
         <if test="condition.leftJoinList.size > 0">
             <foreach collection="condition.leftJoinList" item="item" index="index">
@@ -77,49 +96,80 @@
                 LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
             </foreach>
         </if>
-        WHERE post_id = #{postId}
+        WHERE post.post_id = #{postId}
     </select>
 
     <!-- Basic way to find list -->
-    <select id="getPostsByIds" resultType="Post">
-        SELECT * FROM post WHERE post_id IN
-        <foreach collection="list" item="post_id" index="index"
+    <select id="getPostsByIds" resultMap="postView">
+        SELECT * FROM post
+        <if test="condition.leftJoinList.size > 0">
+            <foreach collection="condition.leftJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.rightJoinList.size > 0">
+            <foreach collection="condition.rightJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.innerJoinList.size > 0">
+            <foreach collection="condition.innerJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        WHERE post.post_id IN
+        <foreach collection="postIds" item="post_id" index="index"
                  open="(" separator="," close=")">
             #{post_id}
         </foreach>
     </select>
 
     <!-- More ways to find list -->
-    <select id="getPostsByCondition" resultType="Post">
+    <select id="getPostsByCondition" resultMap="postView">
         SELECT * FROM post
+        <if test="condition.leftJoinList.size > 0">
+            <foreach collection="condition.leftJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.rightJoinList.size > 0">
+            <foreach collection="condition.rightJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.innerJoinList.size > 0">
+            <foreach collection="condition.innerJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
         <where>
             <!-- find by post title -->
-            <if test="post_title != null">
-                <bind name="titlePattern" value="'%' + post_title + '%'"/>
-                AND post_title LIKE #{titlePattern}
+            <if test="params.post_title != null">
+                <bind name="titlePattern" value="'%' + params.post_title + '%'"/>
+                AND post.post_title LIKE #{titlePattern}
             </if>
             <!-- find by user id -->
-            <if test="user_id != null">
-                AND user_id = #{user_id}
+            <if test="params.user_id != null">
+                AND post.user_id = #{params.user_id}
             </if>
             <!-- find by published-->
-            <if test="post_published != null">
-                AND post_published = #{post_published}
+            <if test="params.post_published != null">
+                AND post.post_published = #{params.post_published}
             </if>
             <!-- find by enabled-->
-            <if test="post_enabled != null">
-                AND post_enabled = #{post_enabled}
+            <if test="params.post_enabled != null">
+                AND post.post_enabled = #{params.post_enabled}
             </if>
             <!-- find by category-->
-            <if test="category_id != null">
-                AND category_id = #{category_id}
+            <if test="params.category_id != null">
+                AND post.category_id = #{params.category_id}
             </if>
         </where>
-        <if test="orderBy != null and orderType != null">
-            ORDER BY ${orderBy} ${orderType}
+        <if test="params.orderBy != null and params.orderType != null">
+            ORDER BY ${params.orderBy} ${params.orderType}
         </if>
-        <if test="offset != null and limit != null">
-            LIMIT #{limit} OFFSET #{offset}
+        <if test="params.offset != null and params.limit != null">
+            LIMIT #{params.limit} OFFSET #{params.offset}
         </if>
     </select>
 

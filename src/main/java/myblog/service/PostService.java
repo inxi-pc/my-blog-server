@@ -63,7 +63,10 @@ public class PostService {
     }
 
     /**
+     *
      * @param postId
+     * @param withCategory
+     * @param withUser
      * @return
      */
     public static Post getPostById(int postId, boolean withCategory, boolean withUser) {
@@ -75,25 +78,35 @@ public class PostService {
     }
 
     /**
+     *
      * @param post
+     * @param withCategory
+     * @param withUser
      * @return
      */
-    public static List<Post> getPosts(Post post) {
+    public static List<Post> getPosts(Post post, boolean withCategory, boolean withUser) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
         HashMap<String, Object> params = post.convertToHashMap(null);
 
-        return myBatisPostDao.getPostsByCondition(params);
+        return myBatisPostDao.getPostsByCondition(params, withCategory, withUser);
     }
 
     /**
+     *
      * @param post
      * @param page
      * @param sort
+     * @param withCategory
+     * @param withUser
      * @return
      */
-    public static Pagination<Post> getPostList(Post post, Pagination<Post> page, Sort sort) {
+    public static Pagination<Post> getPostList(Post post,
+                                               Pagination<Post> page,
+                                               Sort sort,
+                                               boolean withCategory,
+                                               boolean withUser) {
         PostDaoMyBatisImpl myBatisPostDao = (PostDaoMyBatisImpl)
                 DaoFactory.getDaoFactory(DaoFactory.DaoBackend.MYBATIS).getPostDao();
 
@@ -102,7 +115,7 @@ public class PostService {
         params.put("offset", page.getOffset());
         params.put("orderBy", sort.getOrder_by());
         params.put("orderType", sort.getOrder_type());
-        List<Post> posts = myBatisPostDao.getPostsByCondition(params);
+        List<Post> posts = myBatisPostDao.getPostsByCondition(params, withCategory, withUser);
 
         page.setData(posts);
         page.setRecordsTotal(myBatisPostDao.countAllPost());

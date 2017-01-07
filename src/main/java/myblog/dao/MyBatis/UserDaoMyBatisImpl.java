@@ -39,6 +39,7 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
         userMapper.createUser(insert);
+        session.close();
 
         return insert.getUser_id();
     }
@@ -55,7 +56,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.updateUser(userId, user);
+        boolean isSucceed = userMapper.updateUser(userId, user);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -73,7 +77,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.updateUser(userId, update);
+        boolean isSucceed = userMapper.updateUser(userId, update);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -85,7 +92,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.getUserById(userId);
+        User user = userMapper.getUserById(userId);
+        session.close();
+
+        return user;
     }
 
     @Override
@@ -101,7 +111,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.getUserByCredential(credential);
+        User user = userMapper.getUserByCredential(credential);
+        session.close();
+
+        return user;
     }
 
     @Override
@@ -117,7 +130,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.getUsersByIds(userIds);
+        List<User> users = userMapper.getUsersByIds(userIds);
+        session.close();
+
+        return users;
     }
 
     @Override
@@ -133,7 +149,10 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.getUsersByCondition(params);
+        List<User> users = userMapper.getUsersByCondition(params);
+        session.close();
+
+        return users;
     }
 
     @Override
@@ -141,6 +160,9 @@ public class UserDaoMyBatisImpl implements UserDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        return userMapper.countAllUser();
+        int count = userMapper.countAllUser();
+        session.close();
+
+        return count;
     }
 }

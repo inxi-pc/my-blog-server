@@ -42,6 +42,7 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
         postMapper.createPost(insert);
+        session.close();
 
         return insert.getPost_id();
     }
@@ -58,7 +59,10 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.updatePost(postId, post);
+        boolean isSucceed = postMapper.updatePost(postId, post);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -76,7 +80,10 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.updatePost(postId, update);
+        boolean isSucceed = postMapper.updatePost(postId, update);
+        session.close();
+
+        return isSucceed;
     }
 
     @Override
@@ -88,7 +95,10 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.getPostById(postId, null);
+        Post post = postMapper.getPostById(postId, null);
+        session.close();
+
+        return post;
     }
 
 	@Override
@@ -108,11 +118,14 @@ public class PostDaoMyBatisImpl implements PostDao {
 		SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
 		PostMapper postMapper = session.getMapper(PostMapper.class);
 
-		return postMapper.getPostById(postId, condition);
+		Post post = postMapper.getPostById(postId, condition);
+        session.close();
+
+        return post;
 	}
 
     @Override
-    public List<Post> getPostsByIds(int[] postIds) {
+    public List<Post> getPostsByIds(int[] postIds, boolean withCategory, boolean withUser) {
         if (postIds == null) {
             throw new GenericException(GenericMessageMeta.NULL_IDS, Post.class, Response.Status.BAD_REQUEST);
         }
@@ -121,14 +134,25 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new GenericException(GenericMessageMeta.EMPTY_IDS, Post.class, Response.Status.BAD_REQUEST);
         }
 
+        Condition condition = new Condition();
+        if (withCategory) {
+            condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
+        }
+        if (withUser) {
+            condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
+        }
+
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.getPostsByIds(postIds);
+        List<Post> posts = postMapper.getPostsByIds(postIds, condition);
+        session.close();
+
+        return posts;
     }
 
     @Override
-    public List<Post> getPostsByCondition(Map<String, Object> params) {
+    public List<Post> getPostsByCondition(Map<String, Object> params, boolean withCategory, boolean withUser) {
         if (params == null) {
             throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
@@ -137,10 +161,21 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
+        Condition condition = new Condition();
+        if (withCategory) {
+            condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
+        }
+        if (withUser) {
+            condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
+        }
+
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.getPostsByCondition(params);
+        List<Post> posts = postMapper.getPostsByCondition(params, condition);
+        session.close();
+
+        return posts;
     }
 
     @Override
@@ -148,6 +183,9 @@ public class PostDaoMyBatisImpl implements PostDao {
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        return postMapper.countAllPost();
+        int count = postMapper.countAllPost();
+        session.close();
+
+        return count;
     }
 }

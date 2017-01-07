@@ -34,15 +34,20 @@ public interface PostMapper {
     Post getPostById(@Param("postId") int postId, @Param("condition") Condition condition);
 
     /**
+     *
+     * @param postIds
+     * @param condition
      * @return
      */
-    List<Post> getPostsByIds(int[] postIds);
+    List<Post> getPostsByIds(@Param("postIds") int[] postIds, @Param("condition") Condition condition);
 
     /**
+     *
      * @param params
+     * @param condition
      * @return
      */
-    List<Post> getPostsByCondition(Map<String, Object> params);
+    List<Post> getPostsByCondition(@Param("params") Map<String, Object> params, @Param("condition") Condition condition);
 
     /**
      * @return

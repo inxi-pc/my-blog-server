@@ -42,16 +42,23 @@ public interface PostDao {
 	Post getPostById(int postId, boolean withCategory, boolean withUser);
 
     /**
+     *
      * @param postIds
+     * @param withCategory
+     * @param withUser
      * @return
      */
-    List<Post> getPostsByIds(int[] postIds);
+    List<Post> getPostsByIds(int[] postIds, boolean withCategory, boolean withUser);
+
 
     /**
+     *
      * @param params
+     * @param withCategory
+     * @param withUser
      * @return
      */
-    List<Post> getPostsByCondition(Map<String, Object> params);
+    List<Post> getPostsByCondition(Map<String, Object> params, boolean withCategory, boolean withUser);
 
     /**
      * @return

@@ -52,6 +52,10 @@ public class Post extends Domain {
     @Updatable
     private String post_updated_at;
 
+    private User user;
+
+    private Category category;
+
     public Post() {
         this.post_id = null;
         this.category_id = null;
@@ -196,6 +200,22 @@ public class Post extends Domain {
         } else {
             throw new GenericException(GenericMessageMeta.INVALID_VALUE_FIELD, "post_updated_at", Response.Status.BAD_REQUEST);
         }
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public void setDefaultPost_published() {

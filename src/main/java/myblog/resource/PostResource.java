@@ -103,7 +103,9 @@ public class PostResource {
                                @QueryParam("category_id") Integer categoryId,
                                @QueryParam("post_title") String postTitle,
                                @QueryParam("post_published") Boolean postPublished,
-                               @QueryParam("post_enabled") Boolean postEnabled) {
+                               @QueryParam("post_enabled") Boolean postEnabled,
+                               @QueryParam("withCategory") Boolean withCategory,
+                               @QueryParam("withUser") Boolean withUser) {
         Post post = new Post();
         if (userId != null) {
             post.setUser_id(userId);
@@ -121,7 +123,9 @@ public class PostResource {
             post.setPost_enabled(postEnabled);
         }
 
-        List<Post> posts = PostService.getPosts(post);
+        List<Post> posts = PostService.getPosts(post,
+                withCategory == null ? false : withCategory,
+                withUser == null ? false : withUser);
         if (posts != null && posts.size() > 0) {
             return posts;
         } else {
@@ -141,7 +145,9 @@ public class PostResource {
                                         @QueryParam("limit") Integer limit,
                                         @QueryParam("offset") Integer offset,
                                         @QueryParam("order_by") String orderBy,
-                                        @QueryParam("order_type") String orderType) {
+                                        @QueryParam("order_type") String orderType,
+                                        @QueryParam("withCategory") Boolean withCategory,
+                                        @QueryParam("withUser") Boolean withUser) {
         Post post = new Post();
         if (userId != null) {
             post.setUser_id(userId);
@@ -161,7 +167,9 @@ public class PostResource {
 
         Pagination<Post> page = new Pagination<Post>(limit, offset);
         Sort<Post> sort = new Sort<Post>(orderBy, orderType, Post.class);
-        page = PostService.getPostList(post, page, sort);
+        page = PostService.getPostList(post, page, sort,
+                withCategory == null ? false : withCategory,
+                withUser == null ? false : withUser);
 
         if (page != null && page.getData().size() > 0) {
             return page;
