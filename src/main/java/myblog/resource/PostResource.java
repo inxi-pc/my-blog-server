@@ -1,8 +1,8 @@
 package myblog.resource;
 
-import myblog.dao.Pagination;
+import myblog.dao.Sql.Pagination;
+import myblog.dao.Sql.Sort;
 import myblog.domain.Post;
-import myblog.dao.Sort;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.service.PostService;

@@ -6,96 +6,61 @@ import myblog.annotation.PrimaryKey;
 import myblog.annotation.Updatable;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
-import myblog.exception.LiteralMessageMeta;
-import sun.misc.Regexp;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Domain {
 
-    /**
-     * @param field
-     * @return
-     */
+	private enum SetterPrefix {
+
+		DEFAULT_SETTER("setDefault"),
+
+		BEAN_SETTER("set");
+
+		private String prefix;
+
+		SetterPrefix(String prefix) {
+			this.prefix = prefix;
+		}
+
+		public String getPrefix() {
+			return prefix;
+		}
+	}
+
     private static boolean isUpdatable(Field field) {
         return field.isAnnotationPresent(Updatable.class);
     }
 
-    /**
-     * @param field
-     * @return
-     */
     private static boolean isInsertable(Field field) {
         return field.isAnnotationPresent(Insertable.class);
     }
 
-    /**
-     * @param field
-     * @return
-     */
     private static boolean isOuterSettable(Field field) {
         return field.isAnnotationPresent(OuterSettable.class);
     }
 
-    /**
-     * @param field
-     * @return
-     */
     private static boolean isNullable(Field field) {
         return isInsertable(field) && field.getDeclaredAnnotation(Insertable.class).nullable();
     }
 
-    /**
-     * @param field
-     * @return
-     */
     private static boolean isDefaultable(Field field) {
         return isInsertable(field) && field.getDeclaredAnnotation(Insertable.class).defaultable();
     }
 
-    /**
-     * @param field
-     * @return
-     */
-    private static String getDefaultValueSetterName(Field field) {
+    private static String getSetterName(SetterPrefix prefix, Field field) {
         String fieldName = field.getName();
-        String prefix = "setDefault";
 
-        return prefix + fieldName.substring(0, 1).toUpperCase()
+        return prefix.getPrefix() + fieldName.substring(0, 1).toUpperCase()
                 + fieldName.substring(1, fieldName.length());
     }
-
-    /**
-     * @param field
-     * @return
-     */
-    private static String getSetterName(Field field) {
-        String fieldName = field.getName();
-        String prefix = "set";
-
-        return prefix + fieldName.substring(0, 1).toUpperCase()
-                + fieldName.substring(1, fieldName.length());
-    }
-
-    public static String getTableName(Class<? extends Domain> clazz) {
-		return clazz.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
-	}
-
-	public static Field getPrimaryKeyField(Class<? extends Domain> clazz) {
-		Field[] fields = Arrays.stream(clazz.getDeclaredFields())
-				.filter((field) -> field.isAnnotationPresent(PrimaryKey.class))
-				.toArray(Field[]::new);
-
-		if (fields == null || fields.length != 1) {
-			throw new GenericException(GenericMessageMeta.NOT_EXIST_PRIMARKEY, clazz, Response.Status.INTERNAL_SERVER_ERROR);
-		}
-
-		return fields[0];
-	}
 
     public void setDefaultableFieldValue() {
 		Arrays.stream(getClass().getDeclaredFields()).forEach((Field field) -> {
@@ -109,7 +74,7 @@ public abstract class Domain {
 				}
 
 				if (value == null) {
-					String setterName = getDefaultValueSetterName(field);
+					String setterName = getSetterName(SetterPrefix.DEFAULT_SETTER, field);
 					try {
 						Method method = getClass().getDeclaredMethod(setterName);
 						method.invoke(this);
@@ -193,7 +158,9 @@ public abstract class Domain {
 			for (final Field field : instance.getClass().getDeclaredFields()) {
 				if (field.getName().equals(entry.getKey())) {
 					try {
-						Method method = clazz.getDeclaredMethod(getSetterName(field), field.getType());
+						Method method = clazz.getDeclaredMethod(
+								getSetterName(SetterPrefix.BEAN_SETTER, field),
+								field.getType());
 						method.invoke(instance, entry.getValue());
 					} catch (Exception e) {
 						throw new GenericException(e);
@@ -211,21 +178,13 @@ public abstract class Domain {
      */
     public HashMap<String, Object> convertToHashMap(Field[] unless) {
         Field[] fields = getClass().getDeclaredFields();
-        List<Field> result = new ArrayList<Field>();
+        List<Field> result;
 
         if (unless != null) {
-            for (Field field : fields) {
-                boolean removable = false;
-                for (Field unles : unless) {
-                    if (unles.getName().equals(field.getName())) {
-                        removable = true;
-                    }
-                }
-
-                if (!removable) {
-                    result.add(field);
-                }
-            }
+        	List<Field> unlessList = Arrays.asList(unless);
+			result = Arrays.stream(fields)
+					.filter(field -> !unlessList.contains(field))
+					.collect(Collectors.toList());
         } else {
             result = Arrays.asList(fields);
         }
@@ -243,4 +202,28 @@ public abstract class Domain {
 
         return params;
     }
+
+	public static String getTableName(Class<? extends Domain> clazz) {
+		return clazz.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+	}
+
+	public static Field getPrimaryKeyField(Class<? extends Domain> clazz) {
+		Field[] fields = Arrays.stream(clazz.getDeclaredFields())
+				.filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+				.toArray(Field[]::new);
+
+		if (fields == null || fields.length < 1) {
+			throw new GenericException(GenericMessageMeta.NOT_EXIST_PRIMARYKEY, clazz, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+
+		return fields[0];
+	}
+
+	public static boolean containsField(Class<? extends Domain> clazz, String fieldName) {
+		Field[] fields = Arrays.stream(clazz.getDeclaredFields())
+				.filter(field -> field.getName().equals(fieldName))
+				.toArray(Field[]::new);
+
+		return fields != null && fieldName.length() >= 1;
+	}
 }

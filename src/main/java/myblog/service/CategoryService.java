@@ -2,9 +2,9 @@ package myblog.service;
 
 import myblog.dao.DaoFactory;
 import myblog.dao.MyBatis.CategoryDaoMyBatisImpl;
+import myblog.dao.Sql.Pagination;
+import myblog.dao.Sql.Sort;
 import myblog.domain.Category;
-import myblog.dao.Pagination;
-import myblog.dao.Sort;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
 import myblog.exception.LiteralMessageMeta;

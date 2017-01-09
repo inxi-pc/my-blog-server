@@ -1,10 +1,9 @@
 package myblog.dao.MyBatis;
 
-import myblog.dao.Condition;
 import myblog.dao.MyBatis.Mapper.PostMapper;
 import myblog.dao.PostDao;
+import myblog.dao.Sql.ConditionBuilder;
 import myblog.domain.Category;
-import myblog.domain.Domain;
 import myblog.domain.Post;
 import myblog.domain.User;
 import myblog.exception.GenericException;
@@ -107,18 +106,18 @@ public class PostDaoMyBatisImpl implements PostDao {
 			throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
 		}
 
-		Condition condition = new Condition();
+		ConditionBuilder conditionBuilder = new ConditionBuilder();
 		if (withCategory) {
-			condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
+            conditionBuilder.addLeftJoinCondition(Category.class);
 		}
 		if (withUser) {
-			condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
+			conditionBuilder.addLeftJoinCondition(User.class);
 		}
 
 		SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
 		PostMapper postMapper = session.getMapper(PostMapper.class);
 
-		Post post = postMapper.getPostById(postId, condition);
+		Post post = postMapper.getPostById(postId, conditionBuilder.build());
         session.close();
 
         return post;
@@ -134,18 +133,18 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new GenericException(GenericMessageMeta.EMPTY_IDS, Post.class, Response.Status.BAD_REQUEST);
         }
 
-        Condition condition = new Condition();
-        if (withCategory) {
-            condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
-        }
-        if (withUser) {
-            condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
-        }
+		ConditionBuilder conditionBuilder = new ConditionBuilder();
+		if (withCategory) {
+			conditionBuilder.addLeftJoinCondition(Category.class);
+		}
+		if (withUser) {
+			conditionBuilder.addLeftJoinCondition(User.class);
+		}
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        List<Post> posts = postMapper.getPostsByIds(postIds, condition);
+        List<Post> posts = postMapper.getPostsByIds(postIds, conditionBuilder.build());
         session.close();
 
         return posts;
@@ -161,18 +160,18 @@ public class PostDaoMyBatisImpl implements PostDao {
             throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
         }
 
-        Condition condition = new Condition();
-        if (withCategory) {
-            condition.addLeftJoinCondition(Domain.getTableName(Category.class), Domain.getPrimaryKeyField(Category.class));
-        }
-        if (withUser) {
-            condition.addLeftJoinCondition(Domain.getTableName(User.class), Domain.getPrimaryKeyField(User.class));
-        }
+		ConditionBuilder conditionBuilder = new ConditionBuilder();
+		if (withCategory) {
+			conditionBuilder.addLeftJoinCondition(Category.class);
+		}
+		if (withUser) {
+			conditionBuilder.addLeftJoinCondition(User.class);
+		}
 
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         PostMapper postMapper = session.getMapper(PostMapper.class);
 
-        List<Post> posts = postMapper.getPostsByCondition(params, condition);
+        List<Post> posts = postMapper.getPostsByCondition(params, conditionBuilder.build());
         session.close();
 
         return posts;

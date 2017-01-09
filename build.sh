@@ -13,7 +13,7 @@ function check_env {
         fi
     done
     if [[ $exist = 0 ]]; then
-        error_exit "`date "+%Y-%m-%d% %H:%M:%S"` Error: Not valid region, Got $1"
+        error_exit "`date "+%Y-%m-%d% %H:%M:%S"` Error: Not valid env, Got $1"
     fi
 }
 

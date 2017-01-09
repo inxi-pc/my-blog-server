@@ -1,4 +1,4 @@
-package myblog.dao;
+package myblog.dao.Sql;
 
 import myblog.annotation.PrimaryKey;
 

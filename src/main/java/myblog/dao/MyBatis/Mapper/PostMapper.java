@@ -1,6 +1,6 @@
 package myblog.dao.MyBatis.Mapper;
 
-import myblog.dao.Condition;
+import myblog.dao.Sql.Condition;
 import myblog.domain.Post;
 import org.apache.ibatis.annotations.Param;
 

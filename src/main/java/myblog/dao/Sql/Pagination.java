@@ -1,4 +1,4 @@
-package myblog.dao;
+package myblog.dao.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
