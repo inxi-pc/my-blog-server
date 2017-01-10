@@ -99,7 +99,31 @@
         </if>
     </select>
 
-    <select id="countAllCategory" resultType="int">
-        SELECT COUNT(*) FROM category WHERE category_enabled = true
+    <select id="countCategoriesByCondition" resultType="int">
+        SELECT COUNT(*) FROM category
+        <where>
+            <if test="category_parent_id != null">
+                AND category_parent_id = #{category_parent_id}
+            </if>
+            <if test="category_root_id != null">
+                AND category_root_id = #{category_root_id}
+            </if>
+            <if test="category_name_en != null">
+                <bind name="nameEnPattern" value="'%' + category_name_en + '%'"/>
+                AND category_name_en LIKE #{nameEnPattern}
+                OR category_name_cn LIKE #{nameEnPattern}
+            </if>
+            <if test="category_name_cn != null">
+                <bind name="nameCnPattern" value="'%' + category_name_cn + '%'"/>
+                AND category_name_cn LIKE #{nameCnPattern}
+                OR category_name_en LIKE #{nameCnPattern}
+            </if>
+            <if test="category_level != null">
+                AND category_level = #{category_level}
+            </if>
+            <if test="category_enabled != null">
+                AND category_enabled = #{category_enabled}
+            </if>
+        </where>
     </select>
 </mapper>

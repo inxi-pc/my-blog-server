@@ -156,11 +156,19 @@ public class UserDaoMyBatisImpl implements UserDao {
     }
 
     @Override
-    public int countAllUser() {
+    public int countUsersByCondition(Map<String, Object> params) {
+        if (params == null) {
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+        }
+
+        if (params.size() <= 0) {
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+        }
+
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         UserMapper userMapper = session.getMapper(UserMapper.class);
 
-        int count = userMapper.countAllUser();
+        int count = userMapper.countUsersByCondition(params);
         session.close();
 
         return count;

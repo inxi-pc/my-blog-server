@@ -47,8 +47,10 @@ public interface UserMapper {
      */
     List<User> getUsersByCondition(Map<String, Object> params);
 
-    /**
+	/**
+     *
+     * @param params
      * @return
      */
-    int countAllUser();
+    int countUsersByCondition(Map<String, Object> params);
 }

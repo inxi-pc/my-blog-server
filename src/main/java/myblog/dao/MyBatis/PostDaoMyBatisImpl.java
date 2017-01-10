@@ -85,21 +85,6 @@ public class PostDaoMyBatisImpl implements PostDao {
         return isSucceed;
     }
 
-    @Override
-    public Post getPostById(int postId) {
-        if (!Post.isValidPostId(postId)) {
-            throw new GenericException(GenericMessageMeta.INVALID_ID, "post_id", Response.Status.BAD_REQUEST);
-        }
-
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-        PostMapper postMapper = session.getMapper(PostMapper.class);
-
-        Post post = postMapper.getPostById(postId, null);
-        session.close();
-
-        return post;
-    }
-
 	@Override
 	public Post getPostById(int postId, boolean withCategory, boolean withUser) {
 		if (!Post.isValidPostId(postId)) {
@@ -178,13 +163,29 @@ public class PostDaoMyBatisImpl implements PostDao {
     }
 
     @Override
-    public int countAllPost() {
-        SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
-        PostMapper postMapper = session.getMapper(PostMapper.class);
+    public int countPostsByCondition(Map<String, Object> params, boolean withCategory, boolean withUser) {
+		if (params == null) {
+			throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+		}
 
-        int count = postMapper.countAllPost();
-        session.close();
+		if (params.size() <= 0) {
+			throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+		}
 
-        return count;
+		ConditionBuilder conditionBuilder = new ConditionBuilder();
+		if (withCategory) {
+			conditionBuilder.addLeftJoinCondition(Category.class);
+		}
+		if (withUser) {
+			conditionBuilder.addLeftJoinCondition(User.class);
+		}
+
+		SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
+		PostMapper postMapper = session.getMapper(PostMapper.class);
+
+		int count = postMapper.countPostsByCondition(params, conditionBuilder.build());
+		session.close();
+
+		return count;
     }
 }

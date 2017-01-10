@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="myblog.dao.MyBatis.Mapper.PostMapper">
-    <resultMap id="postView" type="Post">
-        <id property="post_id" column="post_id"/>
-        <result property="post_title" column="post_title"/>
-        <result property="post_content" column="post_content"/>
-        <result property="post_published" column="post_published"/>
-        <result property="post_enabled" column="post_enabled"/>
-        <result property="post_created_at" column="post_created_at"/>
-        <result property="post_updated_at" column="post_updated_at"/>
-        <result property="user_id" column="user_id"/>
-        <result property="category_id" column="category_id"/>
+    <resultMap id="postView" type="Post" autoMapping="true">
         <association property="user" resultMap="userView"/>
         <association property="category" resultMap="categoryView"/>
     </resultMap>
@@ -173,7 +164,45 @@
         </if>
     </select>
 
-    <select id="countAllPost" resultType="int">
-        SELECT COUNT(*) FROM post WHERE post_enabled = true
+    <select id="countPostsByCondition" resultType="int">
+        SELECT COUNT(*) FROM post
+        <if test="condition.leftJoinList.size > 0">
+            <foreach collection="condition.leftJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.rightJoinList.size > 0">
+            <foreach collection="condition.rightJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <if test="condition.innerJoinList.size > 0">
+            <foreach collection="condition.innerJoinList" item="item" index="index">
+                LEFT JOIN ${item.table} ON ${item.table}.${item.field} = post.${item.field}
+            </foreach>
+        </if>
+        <where>
+            <!-- find by post title -->
+            <if test="params.post_title != null">
+                <bind name="titlePattern" value="'%' + params.post_title + '%'"/>
+                AND post.post_title LIKE #{titlePattern}
+            </if>
+            <!-- find by user id -->
+            <if test="params.user_id != null">
+                AND post.user_id = #{params.user_id}
+            </if>
+            <!-- find by published-->
+            <if test="params.post_published != null">
+                AND post.post_published = #{params.post_published}
+            </if>
+            <!-- find by enabled-->
+            <if test="params.post_enabled != null">
+                AND post.post_enabled = #{params.post_enabled}
+            </if>
+            <!-- find by category-->
+            <if test="params.category_id != null">
+                AND post.category_id = #{params.category_id}
+            </if>
+        </where>
     </select>
 </mapper>

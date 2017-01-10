@@ -87,7 +87,13 @@
         </if>
     </select>
 
-    <select id="countAllUser" resultType="int">
-        SELECT COUNT(*) FROM user WHERE user_enabled = true
+    <select id="countUsersByCondition" resultType="int">
+        SELECT COUNT(*) FROM user
+        <where>
+            <!-- find by enabled-->
+            <if test="user_enabled != null">
+                AND user_enabled = #{user_enabled}
+            </if>
+        </where>
     </select>
 </mapper>

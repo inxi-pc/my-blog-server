@@ -26,12 +26,6 @@ public interface PostDao {
      */
     boolean updatePost(int postId, Post update);
 
-    /**
-     * @param postId
-     * @return
-     */
-    Post getPostById(int postId);
-
 	/**
 	 *
 	 * @param postId
@@ -40,6 +34,16 @@ public interface PostDao {
 	 * @return
 	 */
 	Post getPostById(int postId, boolean withCategory, boolean withUser);
+
+	/**
+	 * Wrapped method for getPostById
+	 *
+	 * @param postId
+	 * @return
+	 */
+	default Post getPostById(int postId) {
+		return getPostById(postId, false, false);
+	}
 
     /**
      *
@@ -51,6 +55,16 @@ public interface PostDao {
     List<Post> getPostsByIds(int[] postIds, boolean withCategory, boolean withUser);
 
 
+	/**
+	 * Wrapped method for getPostsByIds
+	 *
+	 * @param postIds
+	 * @return
+	 */
+	default List<Post> getPostsByIds(int[] postIds) {
+		return getPostsByIds(postIds, false, false);
+	}
+
     /**
      *
      * @param params
@@ -60,8 +74,23 @@ public interface PostDao {
      */
     List<Post> getPostsByCondition(Map<String, Object> params, boolean withCategory, boolean withUser);
 
-    /**
-     * @return
-     */
-    int countAllPost();
+
+	/**
+	 * Wrapped method for getPostsByCondition
+	 *
+	 * @param params
+	 * @return
+	 */
+	default List<Post> getPostsByCondition(Map<String, Object> params) {
+		return getPostsByCondition(params, false, false);
+	}
+
+	/**
+	 *
+	 * @param params
+	 * @param withCategory
+	 * @param withUser
+	 * @return
+	 */
+    int countPostsByCondition(Map<String, Object> params, boolean withCategory, boolean withUser);
 }

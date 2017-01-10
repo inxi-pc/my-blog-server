@@ -44,8 +44,10 @@ public interface CategoryDao {
      */
     List<Category> getCategoriesByCondition(Map<String, Object> params);
 
-    /**
+	/**
+     *
+     * @param params
      * @return
      */
-    int countAllCategory();
+    int countCategoriesByCondition(Map<String, Object> params);
 }

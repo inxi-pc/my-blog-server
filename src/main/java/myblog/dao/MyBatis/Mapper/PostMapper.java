@@ -49,8 +49,11 @@ public interface PostMapper {
      */
     List<Post> getPostsByCondition(@Param("params") Map<String, Object> params, @Param("condition") Condition condition);
 
-    /**
-     * @return
-     */
-    int countAllPost();
+	/**
+	 *
+	 * @param params
+	 * @param condition
+	 * @return
+	 */
+    int countPostsByCondition(@Param("params") Map<String, Object> params, @Param("condition") Condition condition);
 }

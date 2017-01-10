@@ -137,11 +137,19 @@ public class CategoryDaoMyBatisImpl implements CategoryDao {
     }
 
     @Override
-    public int countAllCategory() {
+    public int countCategoriesByCondition(Map<String, Object> params) {
+        if (params == null) {
+            throw new GenericException(LiteralMessageMeta.NULL_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+        }
+
+        if (params.size() <= 0) {
+            throw new GenericException(LiteralMessageMeta.EMPTY_QUERY_PARAM_LIST, Response.Status.BAD_REQUEST);
+        }
+
         SqlSession session = this.myBatisDaoFactory.getDefaultSqlSessionFactory().openSession(true);
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
 
-        int count = categoryMapper.countAllCategory();
+        int count = categoryMapper.countCategoriesByCondition(params);
         session.close();
 
         return count;

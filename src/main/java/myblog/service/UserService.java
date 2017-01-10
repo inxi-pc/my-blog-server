@@ -102,7 +102,7 @@ public class UserService {
         List<User> users = myBatisUserDao.getUsersByCondition(params);
 
         page.setData(users);
-        page.setRecordsTotal(myBatisUserDao.countAllUser());
+        page.setRecordsTotal(myBatisUserDao.countUsersByCondition(params));
 
         return page;
     }

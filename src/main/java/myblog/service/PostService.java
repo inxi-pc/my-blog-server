@@ -118,7 +118,7 @@ public class PostService {
         List<Post> posts = myBatisPostDao.getPostsByCondition(params, withCategory, withUser);
 
         page.setData(posts);
-        page.setRecordsTotal(myBatisPostDao.countAllPost());
+        page.setRecordsTotal(myBatisPostDao.countPostsByCondition(params, withCategory, withUser));
 
         return page;
     }
