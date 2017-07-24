@@ -11,7 +11,6 @@ function parse_param {
                 shift
                 env=${!paramIndex}
                 check_env $env
-                env=${env:-development}
             ;;
         esac
         paramIndex=$(expr $paramIndex + 1)
@@ -19,31 +18,37 @@ function parse_param {
 }
 
 function check_env {
-    exist=0
+    echoLog 'INFO' 'check env'
+    valid=0
     for i in "${VALID_ENV[@]}"
     do
         if [[ $i = $1 ]]; then
-            exist=1
+            valid=1
         fi
     done
-    if [[ $exist = 0 ]]; then
+
+    if [[ $valid = 0 ]]; then
         echoLog 'ERROR' "invalid env '$1'"
         exit
     fi
+
+    echoLog 'INFO' 'PASS'
 }
 
 function check_grunt {
     echoLog 'INFO' 'check global grunt'
-    if [[ `which grunt` != "" ]]; then
+    if [[ `npm list -g grunt | grep grunt` != "" ]]; then
         echoLog 'INFO' 'PASS'
     else
-        echoLog 'ERROR' 'grunt is not installed'
-        exit
+        npm install -g grunt
     fi
 
     echoLog 'INFO' 'check local grunt'
-    grunt=`npm list -g grunt | grep grunt`
-    if [[  ]]
+    if [[ `npm list grunt | grep grunt` != "" ]]; then
+        echoLog 'INFO' 'PASS'
+    else
+        npm install
+    fi
 }
 
 function check_mvn {
@@ -61,11 +66,12 @@ function echoLog {
 }
 
 echoLog 'INFO' 'begin build'
-parse_param
+parse_param $@
 check_grunt
 check_mvn
 
 echoLog 'INFO' 'begin grunt build & mvn build'
+echo $env;
 if [ $env = 'development' ]; then
     grunt build:dev
     mvn clean package
