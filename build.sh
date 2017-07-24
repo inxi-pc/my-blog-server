@@ -1,8 +1,22 @@
 #!/bin/bash
 
 env='development'
-
 VALID_ENV=('production' 'development')
+
+function parse_param {
+    paramIndex=0
+    while [ $paramIndex -le $# ];do
+        case ${!paramIndex} in
+            -env)
+                shift
+                env=${!paramIndex}
+                check_env $env
+                env=${env:-development}
+            ;;
+        esac
+        paramIndex=$(expr $paramIndex + 1)
+    done
+}
 
 function check_env {
     exist=0
@@ -13,33 +27,45 @@ function check_env {
         fi
     done
     if [[ $exist = 0 ]]; then
-        error_exit "`date "+%Y-%m-%d% %H:%M:%S"` Error: Not valid env, Got $1"
+        echoLog 'ERROR' "invalid env '$1'"
+        exit
     fi
 }
 
-function error_exit {
-    echo $1 1>&2
-    exit 1
+function check_grunt {
+    echoLog 'INFO' 'check global grunt'
+    if [[ `which grunt` != "" ]]; then
+        echoLog 'INFO' 'PASS'
+    else
+        echoLog 'ERROR' 'grunt is not installed'
+        exit
+    fi
+
+    echoLog 'INFO' 'check local grunt'
+    grunt=`npm list -g grunt | grep grunt`
+    if [[  ]]
 }
 
-function echo_with_date {
-    echo "`date "+%Y-%m-%d% %H:%M:%S"` Info: $1"
+function check_mvn {
+    echoLog 'INFO' 'check maven'
+    if [[ `which mvn` != "" ]]; then
+        echoLog 'INFO' 'PASS'
+    else
+        echoLog 'ERROR' 'maven is not installed'
+        exit
+    fi
 }
 
-paramIndex=0
-while [ $paramIndex -le $# ];do
-    case ${!paramIndex} in
-        -env)
-            shift
-            env=${!paramIndex}
-            check_env $env
-            env=${env:-development}
-        ;;
-    esac
-    paramIndex=$(expr $paramIndex + 1)
-done
+function echoLog {
+    echo "`date "+%Y-%m-%d %H:%M:%S"` [$1]: $2"
+}
 
-echo_with_date "Grunt.js task running..."
+echoLog 'INFO' 'begin build'
+parse_param
+check_grunt
+check_mvn
+
+echoLog 'INFO' 'begin grunt build & mvn build'
 if [ $env = 'development' ]; then
     grunt build:dev
     mvn clean package
@@ -47,9 +73,5 @@ else
     grunt build:prod
     mvn clean package
 fi
-
-echo_with_date 'End task with success status'
+echoLog 'INFO' 'end build'
 exit
-
-
-
