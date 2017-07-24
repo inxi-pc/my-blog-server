@@ -35,7 +35,19 @@ function check_env {
     echoLog 'INFO' 'PASS'
 }
 
+function check_npm {
+    echoLog 'INFO' 'check npm'
+    if [[ `which npm` != "" ]]; then
+        echoLog 'INFO' 'PASS'
+    else
+        echoLog 'ERROR' 'npm is not installed'
+        exit
+    fi
+}
+
 function check_grunt {
+    check_npm
+
     echoLog 'INFO' 'check global grunt'
     if [[ `npm list -g grunt | grep grunt` != "" ]]; then
         echoLog 'INFO' 'PASS'
