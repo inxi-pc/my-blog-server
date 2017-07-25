@@ -35,6 +35,16 @@ function check_env {
     echoLog 'INFO' 'PASS'
 }
 
+function check_mvn {
+    echoLog 'INFO' 'check maven'
+    if [[ `which mvn` != "" ]]; then
+        echoLog 'INFO' 'PASS'
+    else
+        echoLog 'ERROR' 'maven is not installed'
+        exit
+    fi
+}
+
 function check_npm {
     echoLog 'INFO' 'check npm'
     if [[ `which npm` != "" ]]; then
@@ -63,16 +73,6 @@ function check_grunt {
     fi
 }
 
-function check_mvn {
-    echoLog 'INFO' 'check maven'
-    if [[ `which mvn` != "" ]]; then
-        echoLog 'INFO' 'PASS'
-    else
-        echoLog 'ERROR' 'maven is not installed'
-        exit
-    fi
-}
-
 function echoLog {
     echo "`date "+%Y-%m-%d %H:%M:%S"` [$1]: $2"
 }
@@ -83,7 +83,6 @@ check_grunt
 check_mvn
 
 echoLog 'INFO' 'begin grunt build & mvn build'
-echo $env;
 if [ $env = 'development' ]; then
     grunt build:dev
     mvn clean package
