@@ -1,19 +1,19 @@
 #!/bin/bash
 
-env='development'
-VALID_ENV=('production' 'development')
+env='dev'
+VALID_ENV=('prod' 'dev')
 
 function parse_param {
-    paramIndex=0
-    while [ $paramIndex -le $# ];do
-        case ${!paramIndex} in
+    param_index=0
+    while [ $param_index -le $# ];do
+        case ${!param_index} in
             -env)
                 shift
-                env=${!paramIndex}
+                env=${!param_index}
                 check_env $env
             ;;
         esac
-        paramIndex=$(expr $paramIndex + 1)
+        param_index=$(expr $param_index + 1)
     done
 }
 
@@ -81,14 +81,8 @@ echoLog 'INFO' 'begin build'
 parse_param $@
 check_grunt
 check_mvn
+grunt build:$env
+mvn clean package
 
-echoLog 'INFO' 'begin grunt build & mvn build'
-if [ $env = 'development' ]; then
-    grunt build:dev
-    mvn clean package
-else
-    grunt build:prod
-    mvn clean package
-fi
 echoLog 'INFO' 'end build'
 exit
