@@ -18,7 +18,7 @@ function parse_param {
 }
 
 function check_env {
-    echoLog 'INFO' 'check env'
+    echo_log 'INFO' 'check env'
     valid=0
     for i in "${VALID_ENV[@]}"
     do
@@ -28,29 +28,29 @@ function check_env {
     done
 
     if [[ $valid = 0 ]]; then
-        echoLog 'ERROR' "invalid env '$1'"
+        echo_log 'ERROR' "invalid env '$1'"
         exit
     fi
 
-    echoLog 'INFO' 'PASS'
+    echo_log 'INFO' 'PASS'
 }
 
 function check_mvn {
-    echoLog 'INFO' 'check maven'
+    echo_log 'INFO' 'check maven'
     if [[ `which mvn` != "" ]]; then
-        echoLog 'INFO' 'PASS'
+        echo_log 'INFO' 'PASS'
     else
-        echoLog 'ERROR' 'maven is not installed'
+        echo_log 'ERROR' 'maven is not installed'
         exit
     fi
 }
 
 function check_npm {
-    echoLog 'INFO' 'check npm'
+    echo_log 'INFO' 'check npm'
     if [[ `which npm` != "" ]]; then
-        echoLog 'INFO' 'PASS'
+        echo_log 'INFO' 'PASS'
     else
-        echoLog 'ERROR' 'npm is not installed'
+        echo_log 'ERROR' 'npm is not installed'
         exit
     fi
 }
@@ -58,31 +58,31 @@ function check_npm {
 function check_grunt {
     check_npm
 
-    echoLog 'INFO' 'check global grunt'
+    echo_log 'INFO' 'check global grunt'
     if [[ `npm list -g grunt | grep grunt` != "" ]]; then
-        echoLog 'INFO' 'PASS'
+        echo_log 'INFO' 'PASS'
     else
         npm install -g grunt
     fi
 
-    echoLog 'INFO' 'check local grunt'
+    echo_log 'INFO' 'check local grunt'
     if [[ `npm list grunt | grep grunt` != "" ]]; then
-        echoLog 'INFO' 'PASS'
+        echo_log 'INFO' 'PASS'
     else
         npm install
     fi
 }
 
-function echoLog {
+function echo_log {
     echo "`date "+%Y-%m-%d %H:%M:%S"` [$1]: $2"
 }
 
-echoLog 'INFO' 'begin build'
+echo_log 'INFO' 'begin build'
 parse_param $@
 check_grunt
 check_mvn
 grunt build:$env
 mvn clean package
 
-echoLog 'INFO' 'end build'
+echo_log 'INFO' 'end build'
 exit
