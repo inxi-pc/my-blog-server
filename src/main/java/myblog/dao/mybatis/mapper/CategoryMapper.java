@@ -1,4 +1,4 @@
-package myblog.dao.MyBatis.Mapper;
+package myblog.dao.mybatis.mapper;
 
 import myblog.domain.Category;
 import org.apache.ibatis.annotations.Param;

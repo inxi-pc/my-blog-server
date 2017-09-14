@@ -1,10 +1,10 @@
-package myblog.dao.Sql;
+package myblog.dao.sql;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Sql pagination statement
+ * sql pagination statement
  */
 public class Pagination<T> {
 

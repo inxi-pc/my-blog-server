@@ -1,6 +1,6 @@
-package myblog.dao.MyBatis;
+package myblog.dao.mybatis;
 
-import myblog.dao.MyBatis.Mapper.UserMapper;
+import myblog.dao.mybatis.mapper.UserMapper;
 import myblog.dao.UserDao;
 import myblog.domain.Credential;
 import myblog.domain.User;

@@ -1,11 +1,11 @@
-package myblog.dao.Sql;
+package myblog.dao.sql;
 
 import myblog.annotation.PrimaryKey;
 
 import java.lang.reflect.Field;
 
 /**
- * Sql Sort statement
+ * sql Sort statement
  */
 public class Sort<T> {
 

@@ -1,7 +1,7 @@
-package myblog.dao.MyBatis;
+package myblog.dao.mybatis;
 
 import myblog.dao.CategoryDao;
-import myblog.dao.MyBatis.Mapper.CategoryMapper;
+import myblog.dao.mybatis.mapper.CategoryMapper;
 import myblog.domain.Category;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;

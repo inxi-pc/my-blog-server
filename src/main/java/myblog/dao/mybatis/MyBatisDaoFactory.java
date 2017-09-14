@@ -1,4 +1,4 @@
-package myblog.dao.MyBatis;
+package myblog.dao.mybatis;
 
 import myblog.dao.DaoFactory;
 import org.apache.ibatis.io.Resources;
@@ -25,7 +25,7 @@ public class MyBatisDaoFactory extends DaoFactory {
             InputStream inputStream = Resources.getResourceAsStream(resource);
             this.defaultSqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException("MyBatis dao factory instance initial failed: " + e.getMessage(), e);
+            throw new RuntimeException("mybatis dao factory instance initial failed: " + e.getMessage(), e);
         }
     }
 
@@ -33,7 +33,7 @@ public class MyBatisDaoFactory extends DaoFactory {
         if (instance != null) {
             return instance;
         } else {
-            throw new NullPointerException("MyBatis dao factory instance is null");
+            throw new NullPointerException("mybatis dao factory instance is null");
         }
     }
 

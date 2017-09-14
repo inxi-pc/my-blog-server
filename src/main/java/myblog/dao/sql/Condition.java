@@ -1,4 +1,4 @@
-package myblog.dao.Sql;
+package myblog.dao.sql;
 
 import java.util.List;
 import java.util.Map;

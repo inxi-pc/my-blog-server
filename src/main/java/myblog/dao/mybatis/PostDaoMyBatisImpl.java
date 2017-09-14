@@ -1,8 +1,8 @@
-package myblog.dao.MyBatis;
+package myblog.dao.mybatis;
 
-import myblog.dao.MyBatis.Mapper.PostMapper;
+import myblog.dao.mybatis.mapper.PostMapper;
 import myblog.dao.PostDao;
-import myblog.dao.Sql.ConditionBuilder;
+import myblog.dao.sql.ConditionBuilder;
 import myblog.domain.Category;
 import myblog.domain.Post;
 import myblog.domain.User;

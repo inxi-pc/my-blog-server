@@ -1,6 +1,6 @@
 package myblog.dao;
 
-import myblog.dao.MyBatis.MyBatisDaoFactory;
+import myblog.dao.mybatis.MyBatisDaoFactory;
 
 /**
  * Dao factory, every dao backend need extend this class

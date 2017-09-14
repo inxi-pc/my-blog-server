@@ -1,4 +1,4 @@
-package myblog.dao.MyBatis;
+package myblog.dao.mybatis;
 
 import myblog.dao.CommentDao;
 

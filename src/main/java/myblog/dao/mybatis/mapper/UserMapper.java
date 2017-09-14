@@ -1,4 +1,4 @@
-package myblog.dao.MyBatis.Mapper;
+package myblog.dao.mybatis.mapper;
 
 import myblog.domain.Credential;
 import myblog.domain.User;

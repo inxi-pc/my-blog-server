@@ -4,7 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import myblog.App;
 import myblog.dao.DaoFactory;
-import myblog.dao.MyBatis.UserDaoMyBatisImpl;
+import myblog.dao.mybatis.UserDaoMyBatisImpl;
 import myblog.domain.User;
 import myblog.exception.GenericException;
 import myblog.exception.GenericMessageMeta;
